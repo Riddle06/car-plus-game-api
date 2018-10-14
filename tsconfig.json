@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2017",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "outDir": "./dist",
+        "baseUrl": "src",
+        "paths": {
+            "@dataAccessors/*": [
+                "data-accessors/*"
+            ],
+            "@utilities": [
+                "utilities"
+            ],
+            "@utilities/*": [
+                "utilities/*"
+            ],
+            "@services/*": [
+                "services/*"
+            ],
+            "@configuration": [
+                "configuration"
+            ]
+        }
+    },
+    "include": [
+        "./src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
