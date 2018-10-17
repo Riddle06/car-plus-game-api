@@ -1,17 +1,8 @@
-import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId } from "typeorm";
+import { Entity, Column, BaseEntity } from "typeorm";
 
 
 @Entity("vars", { schema: "carPlusGame" })
-export class vars {
-
-    @Column("varchar", {
-        nullable: false,
-        length: 200,
-        default: "",
-        name: "description"
-    })
-    description: string;
-
+export class VarsEntity extends BaseEntity {
 
     @Column("varchar", {
         nullable: false,
@@ -21,6 +12,13 @@ export class vars {
     })
     key: string;
 
+    @Column("varchar", {
+        nullable: false,
+        length: 200,
+        default: "",
+        name: "description"
+    })
+    description: string;
 
     @Column("datetime", {
         nullable: true,

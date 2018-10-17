@@ -1,8 +1,12 @@
-import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 
 
 @Entity("member", { schema: "carPlusGame" })
-export class member {
+export class MemberEntity extends BaseEntity {
+
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
 
     @Column("varchar", {
         nullable: true,
@@ -12,10 +16,8 @@ export class member {
     carPlusMemberId: string | null;
 
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @Column("decimal", {
+        default: 0,
         name: "car_plus_point"
     })
     carPlusPoint: number;
@@ -37,31 +39,20 @@ export class member {
     dateUpdated: Date;
 
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @Column("decimal", {
+        default: 0,
         name: "experience"
     })
     experience: number;
 
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @Column("decimal", {
+        default: 0,
         name: "game_point"
     })
     gamePoint: number;
 
 
-    @Column("varchar", {
-        nullable: false,
-        primary: true,
-        length: 50,
-        name: "id"
-    })
-    id: string;
 
 
     @Column("int", {

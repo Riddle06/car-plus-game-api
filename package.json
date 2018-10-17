@@ -38,5 +38,5 @@
     "@dataAccessors": "dist/dataAccessors",
     "@services": "dist/services",
     "@configuration": "dist/configuration"
-  } 
+  }
 }

@@ -1,58 +1,49 @@
-import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId } from "typeorm";
+import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId, BaseEntity } from "typeorm";
 
 
 @Entity("member_game_point_history", { schema: "carPlusGame" })
-export class member_game_point_history {
+export class MemberGamePointHistoryEntity extends BaseEntity {
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column("decimal", {
+        default: 0,
         name: "after_car_plus_point"
     })
     afterCarPlusPoint: number;
 
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @Column("decimal", {
+        default: 0,
         name: "after_game_point"
     })
     afterGamePoint: number;
 
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @Column("decimal", {
+        default: 0,
         name: "before_car_plus_point"
     })
     beforeCarPlusPoint: number;
 
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @Column("decimal", {
+        default: 0,
         name: "before_game_point"
     })
     beforeGamePoint: number;
 
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @Column("decimal", {
+        default: 0,
         name: "change_car_plus_point"
     })
     changeCarPlusPoint: number;
 
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @Column("decimal", {
+        default: 0,
         name: "change_game_point"
     })
     changeGamePoint: number;
@@ -89,16 +80,6 @@ export class member_game_point_history {
         name: "game_item_member_id"
     })
     gameItemMemberId: string | null;
-
-
-    @Column("varchar", {
-        nullable: false,
-        primary: true,
-        length: 50,
-        name: "id"
-    })
-    id: string;
-
 
     @Column("varchar", {
         nullable: false,

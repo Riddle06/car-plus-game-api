@@ -1,13 +1,14 @@
-import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId } from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity("member_game_history", { schema: "carPlusGame" })
-export class member_game_history {
+export class MemberGameHistoryEntity extends BaseEntity {
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column("decimal", {
+        default: 0,
         name: "after_experience"
     })
     afterExperience: number;
@@ -21,7 +22,7 @@ export class member_game_history {
     afterLevel: number;
 
 
-    @Column("float", {
+    @Column("decimal", {
         nullable: false,
         default: "0",
         precision: 12,
@@ -38,7 +39,7 @@ export class member_game_history {
     beforeLevel: number;
 
 
-    @Column("float", {
+    @Column("decimal", {
         nullable: false,
         default: "0",
         precision: 12,
@@ -78,23 +79,11 @@ export class member_game_history {
     gameId: string;
 
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @Column("decimal", {
+        default: 0,
         name: "game_score"
     })
     gameScore: number;
-
-
-    @Column("varchar", {
-        nullable: false,
-        primary: true,
-        length: 50,
-        name: "id"
-    })
-    id: string;
-
 
     @Column("varchar", {
         nullable: false,

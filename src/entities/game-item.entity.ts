@@ -1,8 +1,12 @@
-import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId } from "typeorm";
+import { Entity, Column, BaseEntity,PrimaryGeneratedColumn } from "typeorm";
 
 
-@Entity("game_item", { schema: "carPlusGame" })
-export class game_item {
+@Entity("game_item")
+export class GameItemEntity extends BaseEntity {
+
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
 
     @Column("datetime", {
         nullable: false,
@@ -12,13 +16,6 @@ export class game_item {
     dateCreated: Date;
 
 
-    @Column("varchar", {
-        nullable: false,
-        primary: true,
-        length: 50,
-        name: "id"
-    })
-    id: string;
 
 
     @Column("varchar", {

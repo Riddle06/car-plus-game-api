@@ -1,12 +1,18 @@
-import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId } from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryColumn } from "typeorm";
 
 
 @Entity("member_login", { schema: "carPlusGame" })
-export class member_login {
+export class MemberLoginEntity extends BaseEntity {
 
-    @Column("varchar", {
+    @PrimaryColumn("varchar", {
         nullable: false,
-        primary: true,
+        length: 50,
+        name: "member_id"
+    })
+    memberId: string;
+
+    @PrimaryColumn("varchar", {
+        nullable: false,
         length: 50,
         name: "client_id"
     })
@@ -44,12 +50,6 @@ export class member_login {
     isLogout: boolean;
 
 
-    @Column("varchar", {
-        nullable: false,
-        primary: true,
-        length: 50,
-        name: "member_id"
-    })
-    memberId: string;
+
 
 }

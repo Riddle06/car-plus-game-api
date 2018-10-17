@@ -1,47 +1,41 @@
-import {Index,Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId} from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from "typeorm";
 
 
-@Entity("game",{schema:"carPlusGame"})
-export class game {
+@Entity("game", { schema: "carPlusGame" })
+export class GameEntity extends BaseEntity {
 
-    @Column("text",{ 
-        nullable:false,
-        name:"description"
-        })
-    description:string;
-        
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
 
-    @Column("varchar",{ 
-        nullable:false,
-        length:500,
-        default:"",
-        name:"game_cover_image_url"
-        })
-    gameCoverImageUrl:string;
-        
+    @Column("text", {
+        nullable: false,
+        name: "description",
+        default: ""
+    })
+    description: string;
 
-    @Column("varchar",{ 
-        nullable:false,
-        primary:true,
-        length:50,
-        name:"id"
-        })
-    id:string;
-        
 
-    @Column("varchar",{ 
-        nullable:false,
-        length:45,
-        default:"",
-        name:"name"
-        })
-    name:string;
-        
+    @Column("varchar", {
+        nullable: false,
+        length: 500,
+        default: "",
+        name: "game_cover_image_url"
+    })
+    gameCoverImageUrl: string;
 
-    @Column("json",{ 
-        nullable:false,
-        name:"parameters"
-        })
-    parameters:Object;
-        
+    @Column("varchar", {
+        nullable: false,
+        length: 45,
+        default: "",
+        name: "name"
+    })
+    name: string;
+
+
+    @Column("json", {
+        nullable: false,
+        name: "parameters"
+    })
+    parameters: Object;
+
 }
