@@ -15,7 +15,13 @@ export interface GameItem {
 }
 
 export enum GameItemType {
+    /**
+     * 角色
+     */
     role = "role",
+    /**
+     * 道具
+     */
     tool = "tool"
 }
 
