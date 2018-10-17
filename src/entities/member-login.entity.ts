@@ -1,0 +1,55 @@
+import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId } from "typeorm";
+
+
+@Entity("member_login", { schema: "carPlusGame" })
+export class member_login {
+
+    @Column("varchar", {
+        nullable: false,
+        primary: true,
+        length: 50,
+        name: "client_id"
+    })
+    clientId: string;
+
+
+    @Column("datetime", {
+        nullable: false,
+        default: "CURRENT_TIMESTAMP",
+        name: "date_created"
+    })
+    dateCreated: Date;
+
+
+    @Column("datetime", {
+        nullable: true,
+        name: "date_last_logout"
+    })
+    dateLastLogout: Date | null;
+
+
+    @Column("datetime", {
+        nullable: false,
+        default: "CURRENT_TIMESTAMP",
+        name: "date_updated"
+    })
+    dateUpdated: Date;
+
+
+    @Column("bit", {
+        nullable: false,
+        default: "0",
+        name: "is_logout"
+    })
+    isLogout: boolean;
+
+
+    @Column("varchar", {
+        nullable: false,
+        primary: true,
+        length: 50,
+        name: "member_id"
+    })
+    memberId: string;
+
+}

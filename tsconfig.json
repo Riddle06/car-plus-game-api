@@ -6,6 +6,8 @@
         "sourceMap": true,
         "outDir": "./dist",
         "baseUrl": "src",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "paths": {
             "@dataAccessors/*": [
                 "data-accessors/*"
