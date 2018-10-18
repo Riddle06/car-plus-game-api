@@ -13,9 +13,14 @@ interface DatabaseConfig {
     databaseName: string
 }
 
+interface TokenConfig {
+    securityKey: string
+}
+
 interface Configurations {
     app: ApplicationConfig
     db: DatabaseConfig
+    token: TokenConfig
 }
 
 function getNodeEnv(env: string): "dev" | "sit" | "production" {
@@ -51,6 +56,9 @@ export const configurations: Configurations = {
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         databaseName: process.env.DB_DATABASE_NAME,
+    },
+    token: {
+        securityKey: process.env.DB_DATABASE_NAME
     }
 
 }

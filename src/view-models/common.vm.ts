@@ -21,6 +21,18 @@ export class BaseResult {
         this.message = message || "";
         this.exception = exception
     }
+
+    setResultValue(success: boolean, code?: ResultCode, message?: string, exception?: string): this {
+        this.success = success;
+        if (!code) {
+            this.code = this.success ? ResultCode.success : ResultCode.clientError
+        } else {
+            this.code = code;
+        }
+        this.message = message || "";
+        this.exception = exception;
+        return this;
+    }
 }
 
 export class Result<T> extends BaseResult {
@@ -39,10 +51,7 @@ export class AppError extends Error {
         this.code = code || ResultCode.clientError
     }
     public getResult(): BaseResult {
-        return {
-            success: false,
-            code: this.code,
-            message: this.message
-        };
+        const ret = new BaseResult(false, this.code, this.message)
+        return ret;
     }
 }

@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity,PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity("game_item")
@@ -36,10 +36,8 @@ export class GameItemEntity extends BaseEntity {
     name: string;
 
 
-    @Column("float", {
-        nullable: false,
-        default: "0",
-        precision: 12,
+    @Column("decimal", {
+        default: 0,
         name: "point"
     })
     point: number;
@@ -51,6 +49,6 @@ export class GameItemEntity extends BaseEntity {
         enum: ["role", "tool"],
         name: "type"
     })
-    type: string;
+    type: "role" | "tool";
 
 }
