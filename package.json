@@ -37,6 +37,8 @@
     "@utilities": "dist/utilities",
     "@dataAccessors": "dist/dataAccessors",
     "@services": "dist/services",
-    "@configuration": "dist/configuration"
+    "@configuration": "dist/configuration",
+    "@view-models": "dist/view-models",
+    "@entities": "dist/entities"
   }
 }

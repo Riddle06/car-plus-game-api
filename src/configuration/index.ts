@@ -1,4 +1,5 @@
 import * as dotenv from "dotenv";
+dotenv.config();
 
 interface ApplicationConfig {
     port: number
@@ -11,6 +12,7 @@ interface DatabaseConfig {
     user: string
     password: string
     databaseName: string
+    connectionName: string
 }
 
 interface TokenConfig {
@@ -56,6 +58,7 @@ export const configurations: Configurations = {
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         databaseName: process.env.DB_DATABASE_NAME,
+        connectionName: 'carPlusGame'
     },
     token: {
         securityKey: process.env.DB_DATABASE_NAME

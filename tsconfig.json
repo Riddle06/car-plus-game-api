@@ -23,7 +23,13 @@
             ],
             "@configuration": [
                 "configuration"
-            ]
+            ],
+            "@view-models/*": [
+                "view-models/*"
+            ],
+            "@entities/*": [
+                "entities/*"
+            ],
         }
     },
     "include": [
