@@ -50,7 +50,7 @@ export class MemberGameItemEntity extends BaseEntity {
     dateUpdated: Date = new Date();
 
 
-    @Column("bit", {
+    @Column("tinyint", {
         nullable: false,
         name: "enabled"
     })

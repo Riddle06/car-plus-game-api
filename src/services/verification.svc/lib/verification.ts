@@ -33,7 +33,7 @@ class Verification extends BaseConnection {
     private async logout(memberId: string): Promise<BaseResult> {
         const ret = new BaseResult(false);
 
-        await this.entityManager
+        await this.queryRunner.manager
             .getRepository<MemberLoginEntity>(MemberLoginEntity)
             .update({
                 isLogout: false, memberId
@@ -48,7 +48,7 @@ class Verification extends BaseConnection {
     }
 
 
-    private async login(memberId: string, clientId: string, carPlusMemberId: string): Promise<BaseResult> { 
+    private async login(memberId: string, clientId: string, carPlusMemberId: string): Promise<BaseResult> {
         return null;
     }
 }

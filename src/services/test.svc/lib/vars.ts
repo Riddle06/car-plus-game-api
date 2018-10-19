@@ -4,7 +4,7 @@ import { VarsEntity } from '@entities/vars.entity';
 export class Vars extends BaseConnection {
 
     async test(): Promise<BaseResult> {
-        this.entityManager.getRepository(VarsEntity).insert({
+        await this.queryRunner.manager.getRepository(VarsEntity).insert({
             key: 'test',
             description: 'test_description',
             metaInt1: 1,

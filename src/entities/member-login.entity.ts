@@ -42,7 +42,7 @@ export class MemberLoginEntity extends BaseEntity {
     dateUpdated: Date;
 
 
-    @Column("bit", {
+    @Column("tinyint", {
         nullable: false,
         default: "0",
         name: "is_logout"
