@@ -1,11 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany, JoinColumn } from "typeorm";
+import { MemberGameItemEntity } from "./member-game-item.entity";
+import { uniqueId } from "@utilities";
 
 
 @Entity("member", { schema: "carPlusGame" })
 export class MemberEntity extends BaseEntity {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id: string = uniqueId.generateV4UUID();
 
 
     @Column("varchar", {
@@ -20,7 +22,7 @@ export class MemberEntity extends BaseEntity {
         default: 0,
         name: "car_plus_point"
     })
-    carPlusPoint: number;
+    carPlusPoint: number = 0;
 
 
     @Column("datetime", {
@@ -28,7 +30,7 @@ export class MemberEntity extends BaseEntity {
         default: "CURRENT_TIMESTAMP",
         name: "date_created"
     })
-    dateCreated: Date;
+    dateCreated: Date = new Date();
 
 
     @Column("datetime", {
@@ -36,23 +38,21 @@ export class MemberEntity extends BaseEntity {
         default: "CURRENT_TIMESTAMP",
         name: "date_updated"
     })
-    dateUpdated: Date;
+    dateUpdated: Date = new Date();
 
 
     @Column("decimal", {
         default: 0,
         name: "experience"
     })
-    experience: number;
+    experience: number = 0;
 
 
     @Column("decimal", {
         default: 0,
         name: "game_point"
     })
-    gamePoint: number;
-
-
+    gamePoint: number = 0;
 
 
     @Column("int", {
@@ -60,7 +60,7 @@ export class MemberEntity extends BaseEntity {
         default: "1",
         name: "level"
     })
-    level: number;
+    level: number = 1;
 
 
     @Column("varchar", {
@@ -69,6 +69,12 @@ export class MemberEntity extends BaseEntity {
         default: "",
         name: "nick_name"
     })
-    nickName: string;
+    nickName: string = "";
 
+    @OneToMany(type => MemberGameItemEntity, MemberGameItemEntity => MemberGameItemEntity.member)
+    @JoinColumn({
+        referencedColumnName: "member_id",
+        name: 'id'
+    })
+    memberGameItems: MemberGameItemEntity[]
 }

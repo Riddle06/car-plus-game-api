@@ -9,6 +9,7 @@ export class MemberGameHistoryEntity extends BaseEntity {
 
     @Column("decimal", {
         default: 0,
+        nullable: false,
         name: "after_experience"
     })
     afterExperience: number;
@@ -23,9 +24,8 @@ export class MemberGameHistoryEntity extends BaseEntity {
 
 
     @Column("decimal", {
+        default: 0,
         nullable: false,
-        default: "0",
-        precision: 12,
         name: "before_experience"
     })
     beforeExperience: number;
@@ -40,9 +40,8 @@ export class MemberGameHistoryEntity extends BaseEntity {
 
 
     @Column("decimal", {
+        default: 0,
         nullable: false,
-        default: "0",
-        precision: 12,
         name: "change_experience"
     })
     changeExperience: number;

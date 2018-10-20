@@ -51,4 +51,42 @@ export class GameItemEntity extends BaseEntity {
     })
     type: "role" | "tool";
 
+
+    @Column("tinyint", {
+        name: "enabled_add_score_rate",
+        nullable: false,
+        default: false
+    })
+    enabledAddScoreRate: boolean;
+
+    @Column("tinyint", {
+        name: "enabled_add_game_point_rate",
+        nullable: false,
+        default: false
+    })
+    enabledAddGamePointRate: boolean;
+
+    @Column("float", {
+        name: "add_score_rate",
+        nullable: true,
+        default: null
+    })
+    addScoreRate: number | null;
+
+    @Column("float", {
+        name: "add_game_point_rate",
+        nullable: true,
+        default: 0
+    })
+
+    addGamePointRate: number | null
+
+
+    @Column("int", {
+        name: "used_times",
+        nullable: false,
+        default: -1
+    })
+    usedTimes: number
+
 }

@@ -6,7 +6,7 @@ export enum HistoryType {
 
 }
 
-export interface PointHistory {
+export interface PointHistoryVM {
     id: string
     type: HistoryType
     dateCreated: Date

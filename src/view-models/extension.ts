@@ -1,5 +1,6 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { MemberToken } from "./verification.vm";
+import { AppError, BaseResult } from "./common.vm";
 
 export interface RequestExtension extends Request {
     query: {
@@ -10,4 +11,9 @@ export interface RequestExtension extends Request {
     }
 
     memberToken: MemberToken
+}
+
+export interface ResponseExtension extends Response {
+    result?: BaseResult
+    appError?: AppError
 }

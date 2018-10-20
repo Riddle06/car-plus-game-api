@@ -21,6 +21,9 @@
             "@services/*": [
                 "services/*"
             ],
+            "@services": [
+                "services"
+            ],
             "@configuration": [
                 "configuration"
             ],

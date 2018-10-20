@@ -11,15 +11,11 @@ export class BaseResult {
     message: string
     exception?: string
 
-    constructor(success: boolean, code?: ResultCode, message?: string, exception?: string) {
-        this.success = success;
-        if (!code) {
-            this.code = this.success ? ResultCode.success : ResultCode.clientError
-        } else {
-            this.code = code;
+    constructor(success?: boolean, code?: ResultCode, message?: string, exception?: string) {
+        if (!success) { 
+            success = false
         }
-        this.message = message || "";
-        this.exception = exception
+        this.setResultValue(success, code, message, exception);
     }
 
     setResultValue(success: boolean, code?: ResultCode, message?: string, exception?: string): this {
@@ -54,4 +50,18 @@ export class AppError extends Error {
         const ret = new BaseResult(false, this.code, this.message)
         return ret;
     }
+
+    static getAppError(err: unknown): AppError {
+
+        if (err instanceof AppError) {
+            return err
+        } else if (err instanceof Error) {
+            return new AppError(err.message, ResultCode.serverError)
+        } else {
+            console.log(`error handler un catch exception`, err)
+            return new AppError('server error', ResultCode.serverError)
+        }
+    }
 }
+
+

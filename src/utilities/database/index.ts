@@ -36,8 +36,12 @@ class DatabaseProvider {
             password,
             database: databaseName,
             insecureAuth: true,
+            logger: 'advanced-console',
+            logging: 'all',
             entities: [`${path.resolve(__dirname, '../../entities')}/*.js`]
         });
+
+        this.isInitial = true;
 
         return this;
     }

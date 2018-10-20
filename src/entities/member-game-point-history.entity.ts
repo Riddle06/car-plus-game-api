@@ -77,9 +77,9 @@ export class MemberGamePointHistoryEntity extends BaseEntity {
     @Column("varchar", {
         nullable: true,
         length: 50,
-        name: "game_item_member_id"
+        name: "member_game_item_id"
     })
-    gameItemMemberId: string | null;
+    memberGameItemId: string | null;
 
     @Column("varchar", {
         nullable: false,

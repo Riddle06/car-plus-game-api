@@ -4,7 +4,8 @@ import { AppError } from "@view-models/common.vm";
 
 const router = Router();
 
-// 取得會員資料
+
+// 取得遊戲道具資訊
 router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
@@ -13,10 +14,10 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
         res.appError = AppError.getAppError(error)
     }
     next();
-});
+})
 
-// 修改暱稱
-router.put('/nick-name', async (req: RequestExtension, res: ResponseExtension, next) => {
+// 取得單一道具資訊
+router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
         res.result = null;
@@ -26,8 +27,8 @@ router.put('/nick-name', async (req: RequestExtension, res: ResponseExtension, n
     next();
 })
 
-// 取得目前會員遊戲道具資訊
-router.get('/game-item', async (req: RequestExtension, res: ResponseExtension, next) => {
+// 購買道具（多個）
+router.post('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
         res.result = null;
@@ -37,16 +38,6 @@ router.get('/game-item', async (req: RequestExtension, res: ResponseExtension, n
     next();
 })
 
-// 會員開始使用道具（可以多個）
-router.post('/game-item', async (req: RequestExtension, res: ResponseExtension, next) => {
-
-    try {
-        res.result = null;
-    } catch (error) {
-        res.appError = AppError.getAppError(error)
-    }
-    next();
-})
 
 
 export default router;

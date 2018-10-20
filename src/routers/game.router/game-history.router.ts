@@ -6,18 +6,24 @@ const router = Router();
 
 router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
-
     try {
-
+        res.result = null;
     } catch (error) {
-        if (error instanceof AppError) {
-            error.getResult()
-        }
-
+        res.appError = AppError.getAppError(error)
     }
-
     next();
 })
+
+router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
+
+    try {
+        res.result = null;
+    } catch (error) {
+        res.appError = AppError.getAppError(error)
+    }
+    next();
+})
+
 
 
 export default router;

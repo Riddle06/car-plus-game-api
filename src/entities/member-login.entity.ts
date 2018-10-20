@@ -1,4 +1,5 @@
-import { Entity, Column, BaseEntity, PrimaryColumn } from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryColumn, ManyToOne, JoinColumn } from "typeorm";
+import { MemberEntity } from "./member.entity";
 
 
 @Entity("member_login", { schema: "carPlusGame" })
@@ -49,7 +50,10 @@ export class MemberLoginEntity extends BaseEntity {
     })
     isLogout: boolean;
 
+    @ManyToOne(type => MemberEntity)
+    @JoinColumn({
+        name: "member_id"
+    })
+    member: MemberEntity
 
-
-
-}
+}   
