@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { RequestExtension, ResponseExtension } from "view-models/extension";
 import { AppError } from "@view-models/common.vm";
+import { memberSvc } from "@services";
 
 const router = Router();
 
@@ -19,7 +20,10 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 router.put('/nick-name', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
-        res.result = null;
+        const param = req.body;
+        const { memberToken } = req
+        const ret = await memberSvc.updateMemberNickName(memberToken, param);
+        res.result = ret;
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }

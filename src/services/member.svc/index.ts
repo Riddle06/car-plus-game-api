@@ -10,12 +10,14 @@ class MemberSvc {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const memberInfoLibSvc = new MemberInformationLibSvc(memberToken.payload.mi, queryRunner)
-            return memberInfoLibSvc.getInformation()
+            const ret = await memberInfoLibSvc.getInformation()
+            await queryRunner.commitTransaction();
+            return ret;
         } catch (error) {
-            queryRunner.rollbackTransaction();
+            await queryRunner.rollbackTransaction();
             throw error
         } finally {
-            queryRunner.release();
+            await queryRunner.release();
         }
 
     }
@@ -24,12 +26,14 @@ class MemberSvc {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const memberInfoLibSvc = new MemberInformationLibSvc(memberToken.payload.mi, queryRunner)
-            return memberInfoLibSvc.updateNickName(param)
+            const ret = await memberInfoLibSvc.updateNickName(param)
+            await queryRunner.commitTransaction();
+            return ret;
         } catch (error) {
-            queryRunner.rollbackTransaction();
+            await queryRunner.rollbackTransaction();
             throw error
         } finally {
-            queryRunner.release();
+            await queryRunner.release();
         }
 
     }
