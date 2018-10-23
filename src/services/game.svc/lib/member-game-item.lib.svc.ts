@@ -1,9 +1,9 @@
 import { BaseConnection } from '../../base-connection';
-import { QueryRunner } from 'typeorm';
+import { QueryRunner, MoreThan } from 'typeorm';
 import { MemberGameItemEntity } from '@entities/member-game-item.entity';
-import { GameItemType } from '../../../view-models/game.vm';
+import { GameItemType, MemberGameItemVM } from '../../../view-models/game.vm';
 import { checker } from '@utilities';
-import { AppError, BaseResult } from '@view-models/common.vm';
+import { AppError, BaseResult, ListResult } from '@view-models/common.vm';
 export class MemberGameItemLibSvc extends BaseConnection {
 
     private memberId: string = null
@@ -11,6 +11,36 @@ export class MemberGameItemLibSvc extends BaseConnection {
     constructor(memberId: string, queryRunner: QueryRunner) {
         super(queryRunner);
         this.memberId = memberId;
+    }
+
+    async getMemberGameItems(): Promise<ListResult<MemberGameItemVM>> {
+        const memberGameItemRepo = await this.entityManager.getRepository(MemberGameItemEntity);
+
+        const memberGameItemEntities = await memberGameItemRepo.find({
+            relations: ['gameItem'],
+            where: {
+                memberId: this.memberId,
+                remainTimes: MoreThan(0),
+                enabled: true
+            }
+        })
+
+        const ret = new ListResult<MemberGameItemVM>(true)
+
+        ret.items = memberGameItemEntities.map(memberGameItem => {
+            const item: MemberGameItemVM = {
+                haveThisItem: true,
+                dateCreated: memberGameItem.dateCreated,
+                id: memberGameItem.id,
+                imageUrl: memberGameItem.gameItem.imageUrl,
+                gamePoint: memberGameItem.gameItem.point,
+                type: memberGameItem.gameItem.type
+            }
+            return item
+        })
+
+
+        return ret;
     }
 
     async useGameItem(memberGameItemId: string): Promise<BaseResult> {

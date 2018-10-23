@@ -1,4 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from "typeorm";
+import { GameItemType } from '../view-models/game.vm';
 
 
 @Entity("game_item")
@@ -49,7 +50,7 @@ export class GameItemEntity extends BaseEntity {
         enum: ["role", "tool"],
         name: "type"
     })
-    type: "role" | "tool";
+    type: GameItemType;
 
 
     @Column("tinyint", {

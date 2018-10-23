@@ -1,4 +1,4 @@
-import { GameToolItemVM } from "./game.vm";
+import { GameItemVM } from "./game.vm";
 
 export enum HistoryType {
     game = "game",
@@ -36,7 +36,7 @@ export interface StartGameHistoryVM {
     id: string
     gameId: string
     gameParameters: {}
-    usedItems: GameToolItemVM[]
+    usedItems: GameItemVM[]
     dateCreated: string
     dateFinish: Date
 }

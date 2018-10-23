@@ -7,7 +7,7 @@ export interface GameVM {
 }
 
 
-export interface GameToolItemVM {
+export interface GameItemVM {
     id: string
     imageUrl: string
     gamePoint: number
@@ -25,7 +25,7 @@ export enum GameItemType {
     tool = "tool"
 }
 
-export interface MemberGameItemVM extends GameToolItemVM {
+export interface MemberGameItemVM extends GameItemVM {
     haveThisItem: boolean
     dateCreated: Date
 }
