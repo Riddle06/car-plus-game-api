@@ -7,7 +7,7 @@ export class GameEntity extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column("text", {
+    @Column("nvarchar", {
         nullable: false,
         name: "description",
         default: ""
@@ -15,7 +15,7 @@ export class GameEntity extends BaseEntity {
     description: string;
 
 
-    @Column("varchar", {
+    @Column("nvarchar", {
         nullable: false,
         length: 500,
         default: "",
@@ -23,7 +23,7 @@ export class GameEntity extends BaseEntity {
     })
     gameCoverImageUrl: string;
 
-    @Column("varchar", {
+    @Column("nvarchar", {
         nullable: false,
         length: 45,
         default: "",
@@ -32,10 +32,11 @@ export class GameEntity extends BaseEntity {
     name: string;
 
 
-    @Column("json", {
+    @Column("nvarchar", {
         nullable: false,
-        name: "parameters"
+        name: "parameters",
+        length: 1000
     })
-    parameters: Object;
+    parameters: string;
 
 }

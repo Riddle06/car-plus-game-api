@@ -14,7 +14,7 @@ export class GameQuestionEntity extends BaseEntity {
     })
     answer: string;
 
-    @Column("varchar", {
+    @Column("nvarchar", {
         nullable: false,
         length: 500,
         default: "",

@@ -18,11 +18,11 @@ export enum GameItemType {
     /**
      * 角色
      */
-    role = "role",
+    role = 1,
     /**
      * 道具
      */
-    tool = "tool"
+    tool = 2
 }
 
 export interface MemberGameItemVM extends GameItemVM {

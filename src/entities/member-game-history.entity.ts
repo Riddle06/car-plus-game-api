@@ -55,24 +55,23 @@ export class MemberGameHistoryEntity extends BaseEntity {
     changeLevel: number;
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: false,
-        default: "CURRENT_TIMESTAMP",
+        default: "GETDATE()",
         name: "date_created"
     })
     dateCreated: Date;
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: true,
         name: "date_finished"
     })
     dateFinished: Date | null;
 
 
-    @Column("varchar", {
+    @Column("uniqueidentifier", {
         nullable: false,
-        length: 50,
         name: "game_id"
     })
     gameId: string;
@@ -84,9 +83,8 @@ export class MemberGameHistoryEntity extends BaseEntity {
     })
     gameScore: number;
 
-    @Column("varchar", {
+    @Column("uniqueidentifier", {
         nullable: false,
-        length: 50,
         name: "member_id"
     })
     memberId: string;

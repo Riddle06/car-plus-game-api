@@ -5,45 +5,43 @@ import { MemberEntity } from "./member.entity";
 @Entity("member_login", { schema: "carPlusGame" })
 export class MemberLoginEntity extends BaseEntity {
 
-    @PrimaryColumn("varchar", {
+    @PrimaryColumn("uniqueidentifier", {
         nullable: false,
-        length: 50,
         name: "member_id"
     })
     memberId: string;
 
-    @PrimaryColumn("varchar", {
+    @PrimaryColumn("uniqueidentifier", {
         nullable: false,
-        length: 50,
         name: "client_id"
     })
     clientId: string;
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: false,
-        default: "CURRENT_TIMESTAMP",
+        default: "GETDATE()",
         name: "date_created"
     })
     dateCreated: Date;
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: true,
         name: "date_last_logout"
     })
     dateLastLogout: Date | null;
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: false,
-        default: "CURRENT_TIMESTAMP",
+        default: "GETDATE()",
         name: "date_updated"
     })
     dateUpdated: Date;
 
 
-    @Column("tinyint", {
+    @Column("bit", {
         nullable: false,
         default: "0",
         name: "is_logout"

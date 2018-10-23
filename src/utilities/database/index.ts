@@ -29,15 +29,18 @@ class DatabaseProvider {
 
         this.connection = await createConnection({
             name: connectionName,
-            type: "mysql",
+            type: "mssql",
             host,
             port,
             username: user,
             password,
             database: databaseName,
-            insecureAuth: true,
             logger: 'advanced-console',
             logging: 'all',
+            extra:{
+                encrypt: false
+            },
+            
             entities: [`${path.resolve(__dirname, '../../entities')}/*.js`]
         });
 

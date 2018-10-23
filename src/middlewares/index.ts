@@ -4,7 +4,8 @@ import { AppError, ResultCode } from "@view-models/common.vm";
 import { verificationSvc } from "@services";
 
 export const memberTokenVerificationMiddleware = async (req: RequestExtension, res: Response, next: NextFunction) => {
-
+    next()
+    return;
     try {
         const token = req.header('Authorization');
         const verificationRet = await verificationSvc.parseToken(req.path, token)
@@ -14,7 +15,8 @@ export const memberTokenVerificationMiddleware = async (req: RequestExtension, r
         }
         next();
     } catch (error) {
-        console.dir(`memberTokenVerificationMiddleware error`, error)
+        console.log(`memberTokenVerificationMiddleware error`)
+        console.dir(error)
         if (error instanceof AppError) {
             res.json(error.getResult())
         } else {

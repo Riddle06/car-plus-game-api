@@ -10,47 +10,44 @@ export class MemberGameItemEntity extends BaseEntity {
     id: string
 
 
-    @Column("varchar", {
+    @Column("uniqueidentifier", {
         nullable: false,
-        length: 50,
         name: "game_item_id"
     })
     gameItemId: string;
 
 
-    @Column("varchar", {
-        nullable: false,
-        length: 50,
+    @Column("uniqueidentifier", {
+        nullable: false, 
         name: "member_id"
     })
     memberId: string;
 
 
-    @Column("varchar", {
+    @Column("uniqueidentifier", {
         nullable: true,
-        length: 50,
         name: "member_game_point_history_id"
     })
     memberGamePointHistoryId: string | null;
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: false,
-        default: "CURRENT_TIMESTAMP",
+        default: "GETDATE()",
         name: "date_created"
     })
     dateCreated: Date = new Date();
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: false,
-        default: "CURRENT_TIMESTAMP",
+        default: "GETDATE()",
         name: "date_updated"
     })
     dateUpdated: Date = new Date();
 
 
-    @Column("tinyint", {
+    @Column("bit", {
         nullable: false,
         name: "enabled"
     })
@@ -70,13 +67,13 @@ export class MemberGameItemEntity extends BaseEntity {
     })
     remainTimes: number
 
-    @Column("datetime", {
+    @Column("datetime2", {
         name: "date_last_used",
         nullable: false
     })
     dateLastUsed: Date
 
-    @Column("tinyint", {
+    @Column("bit", {
         name: "is_using",
         nullable: false,
         default: false

@@ -45,6 +45,7 @@ export class AppError extends Error {
     constructor(message: string, code?: ResultCode) {
         super(message)
         this.code = code || ResultCode.clientError
+        console.dir(this)
     }
     public getResult(): BaseResult {
         const ret = new BaseResult(false, this.code, this.message)
@@ -52,8 +53,7 @@ export class AppError extends Error {
     }
 
     static getAppError(err: unknown): AppError {
-
-        if (err instanceof AppError) {
+        if (err instanceof AppError) {  
             return err
         } else if (err instanceof Error) {
             return new AppError(err.message, ResultCode.serverError)

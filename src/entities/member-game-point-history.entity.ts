@@ -49,15 +49,15 @@ export class MemberGamePointHistoryEntity extends BaseEntity {
     changeGamePoint: number;
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: false,
-        default: "CURRENT_TIMESTAMP",
+        default: "GETDATE()",
         name: "date_created"
     })
     dateCreated: Date;
 
 
-    @Column("varchar", {
+    @Column("nvarchar", {
         nullable: false,
         length: 100,
         default: "",
@@ -66,35 +66,32 @@ export class MemberGamePointHistoryEntity extends BaseEntity {
     description: string;
 
 
-    @Column("varchar", {
+    @Column("uniqueidentifier", {
         nullable: true,
-        length: 50,
         name: "game_item_id"
     })
     gameItemId: string | null;
 
 
-    @Column("varchar", {
+    @Column("uniqueidentifier", {
         nullable: true,
-        length: 50,
+        
         name: "member_game_item_id"
     })
     memberGameItemId: string | null;
 
-    @Column("varchar", {
+    @Column("uniqueidentifier", {
         nullable: false,
-        length: 50,
         name: "member_id"
     })
     memberId: string;
 
 
-    @Column("enum", {
+    @Column("int", {
         nullable: false,
-        default: "game",
-        enum: ["game", "car_plus_point_transfer_to_game_point", "game_point_transfer_to_car_plus_point", "game_point_transfer_to_game_item"],
+        default: "0",
         name: "type"
     })
-    type: "game" | "car_plus_point_transfer_to_game_point" | "game_point_transfer_to_car_plus_point" | "game_point_transfer_to_game_item";
+    type: number
 
 }

@@ -10,9 +10,8 @@ export class MemberEntity extends BaseEntity {
     id: string = uniqueId.generateV4UUID();
 
 
-    @Column("varchar", {
+    @Column("uniqueidentifier", {
         nullable: true,
-        length: 50,
         name: "car_plus_member_id"
     })
     carPlusMemberId: string | null;
@@ -25,17 +24,17 @@ export class MemberEntity extends BaseEntity {
     carPlusPoint: number = 0;
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: false,
-        default: "CURRENT_TIMESTAMP",
+        default: "GETDATE()",
         name: "date_created"
     })
     dateCreated: Date = new Date();
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: false,
-        default: "CURRENT_TIMESTAMP",
+        default: "GETDATE()",
         name: "date_updated"
     })
     dateUpdated: Date = new Date();
@@ -63,7 +62,7 @@ export class MemberEntity extends BaseEntity {
     level: number = 1;
 
 
-    @Column("varchar", {
+    @Column("nvarchar", {
         nullable: false,
         length: 50,
         default: "",

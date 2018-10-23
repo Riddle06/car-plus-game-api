@@ -6,12 +6,13 @@ import { GameItemType } from '../view-models/game.vm';
 export class GameItemEntity extends BaseEntity {
 
     @PrimaryGeneratedColumn("uuid")
+
     id: string;
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: false,
-        default: "CURRENT_TIMESTAMP",
+        default: "GETDATE()",
         name: "date_created"
     })
     dateCreated: Date;
@@ -28,7 +29,7 @@ export class GameItemEntity extends BaseEntity {
     imageUrl: string;
 
 
-    @Column("varchar", {
+    @Column("nvarchar", {
         nullable: false,
         length: 50,
         default: "",
@@ -44,23 +45,22 @@ export class GameItemEntity extends BaseEntity {
     point: number;
 
 
-    @Column("enum", {
+    @Column("int", {
         nullable: false,
-        default: "role",
-        enum: ["role", "tool"],
+        default: 0,
         name: "type"
     })
     type: GameItemType;
 
 
-    @Column("tinyint", {
+    @Column("bit", {
         name: "enabled_add_score_rate",
         nullable: false,
         default: false
     })
     enabledAddScoreRate: boolean;
 
-    @Column("tinyint", {
+    @Column("bit", {
         name: "enabled_add_game_point_rate",
         nullable: false,
         default: false

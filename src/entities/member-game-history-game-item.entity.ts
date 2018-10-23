@@ -6,27 +6,25 @@ import { MemberGameHistoryEntity } from "./member-game-history.entity";
 @Entity("member_game_history_game_item", { schema: "carPlusGame" })
 export class MemberGameHistoryGameItem extends BaseEntity {
 
-    @PrimaryColumn("uuid", {
-        length: 50,
+    @PrimaryColumn("uniqueidentifier", {
         name: 'member_game_item_id'
     })
     memberGameItemId: string
 
-    @PrimaryColumn("uuid", {
-        length: 50,
+    @PrimaryColumn("uniqueidentifier", {
         name: 'member_game_history_id'
     })
     memberGameHistoryId: string
 
-    @Column("datetime", {
-        default: "CURRENT_TIMESTAMP",
+    @Column("datetime2", {
+        default: "GETDATE()",
         nullable: false,
         name: "date_created"
     })
     dateCreated: Date = new Date()
 
-    @Column("datetime", {
-        default: "CURRENT_TIMESTAMP",
+    @Column("datetime2", {
+        default: "GETDATE()",
         nullable: false,
         name: "date_updated"
     })

@@ -12,7 +12,7 @@ export class VarsEntity extends BaseEntity {
     })
     key: string;
 
-    @Column("varchar", {
+    @Column("nvarchar", {
         nullable: false,
         length: 200,
         default: "",
@@ -20,14 +20,14 @@ export class VarsEntity extends BaseEntity {
     })
     description: string;
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: true,
         name: "meta_date_1"
     })
     metaDate1: Date | null;
 
 
-    @Column("datetime", {
+    @Column("datetime2", {
         nullable: true,
         name: "meta_date_2"
     })
@@ -48,7 +48,7 @@ export class VarsEntity extends BaseEntity {
     metaInt2: number | null;
 
 
-    @Column("varchar", {
+    @Column("nvarchar", {
         nullable: true,
         length: 100,
         name: "meta_str_1"
@@ -56,7 +56,7 @@ export class VarsEntity extends BaseEntity {
     metaStr1: string | null;
 
 
-    @Column("varchar", {
+    @Column("nvarchar", {
         nullable: true,
         length: 100,
         name: "meta_str_2"
@@ -64,8 +64,9 @@ export class VarsEntity extends BaseEntity {
     metaStr2: string | null;
 
 
-    @Column("longtext", {
+    @Column("nvarchar", {
         nullable: true,
+        length:1000,
         name: "meta_str_long"
     })
     metaStrLong: string | null;
