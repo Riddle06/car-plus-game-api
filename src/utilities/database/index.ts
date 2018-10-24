@@ -37,10 +37,12 @@ class DatabaseProvider {
             database: databaseName,
             logger: 'advanced-console',
             logging: 'all',
-            extra:{
-                encrypt: false
+            schema: 'dbo',
+            options: {
+                
             },
-            
+
+
             entities: [`${path.resolve(__dirname, '../../entities')}/*.js`]
         });
 

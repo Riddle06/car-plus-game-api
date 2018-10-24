@@ -5,8 +5,13 @@ import { MemberEntity } from '@entities/member.entity';
 export class Vars extends BaseConnection {
 
     async test(): Promise<BaseResult> {
-        await this.queryRunner.manager.getRepository(MemberEntity).find({
-            relations: ['memberGameItems']
+        // await this.queryRunner.manager.getRepository(MemberEntity).find({
+        //     relations: ['memberGameItems']
+        // })
+
+        await this.entityManager.getRepository(VarsEntity).insert({
+            key: `中文測試`,
+            description: '中文測試中文測試中文測試中文測試中文測試'
         })
 
 
@@ -56,9 +61,6 @@ export class Vars extends BaseConnection {
 
         await this.queryRunner.manager.getRepository(MemberEntity).manager.save(member)
 
-        
-
-        
 
         return new BaseResult(true);
 

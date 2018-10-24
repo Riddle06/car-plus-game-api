@@ -3,7 +3,7 @@ import { MemberGameItemEntity } from "./member-game-item.entity";
 import { MemberGameHistoryEntity } from "./member-game-history.entity";
 
 
-@Entity("member_game_history_game_item", { schema: "carPlusGame" })
+@Entity("member_game_history_game_item")
 export class MemberGameHistoryGameItem extends BaseEntity {
 
     @PrimaryColumn("uniqueidentifier", {

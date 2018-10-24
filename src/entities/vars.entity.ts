@@ -1,7 +1,7 @@
 import { Entity, Column, BaseEntity } from "typeorm";
 
 
-@Entity("vars", { schema: "carPlusGame" })
+@Entity("vars")
 export class VarsEntity extends BaseEntity {
 
     @Column("varchar", {

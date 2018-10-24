@@ -3,7 +3,7 @@ import { MemberGameItemEntity } from "./member-game-item.entity";
 import { uniqueId } from "@utilities";
 
 
-@Entity("member", { schema: "carPlusGame" })
+@Entity("member")
 export class MemberEntity extends BaseEntity {
 
     @PrimaryGeneratedColumn("uuid")

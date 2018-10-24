@@ -11,7 +11,7 @@ class GameSvc {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const libGameSvc = new GameLibSvc(queryRunner)
-            const ret = libGameSvc.getGameList();
+            const ret = await libGameSvc.getGameList();
             await queryRunner.commitTransaction();
             return ret;
         } catch (error) {

@@ -2,7 +2,7 @@ import { Entity, Column, BaseEntity, PrimaryColumn, ManyToOne, JoinColumn } from
 import { MemberEntity } from "./member.entity";
 
 
-@Entity("member_login", { schema: "carPlusGame" })
+@Entity("member_login")
 export class MemberLoginEntity extends BaseEntity {
 
     @PrimaryColumn("uniqueidentifier", {

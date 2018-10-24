@@ -1,7 +1,7 @@
 import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 
 
-@Entity("game_question", { schema: "carPlusGame" })
+@Entity("game_question")
 export class GameQuestionEntity extends BaseEntity {
 
     @PrimaryGeneratedColumn("uuid")

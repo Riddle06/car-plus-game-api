@@ -49,7 +49,7 @@ function getNodeEnv(env: string): "dev" | "sit" | "production" {
 
 export const configurations: Configurations = {
     app: {
-        port: process.env.PORT ? +process.env.PORT : 8080,
+        port: process.env.APP_PORT ? +process.env.APP_PORT : 8080,
         env: getNodeEnv(process.env.NODE_ENV)
     },
     db: {
