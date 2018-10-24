@@ -1,6 +1,11 @@
-CREATE DATABASE carPlusGame;
 
-use carPlusGame;
+
+CREATE DATABASE carPlusGame
+COLLATE Chinese_Taiwan_Stroke_CI_AI;
+
+USE carPlusGame;
+
+-- Alter DATABASE carPlusGame COLLATE Chinese_Taiwan_Stroke_CI_AI
 
 CREATE TABLE carPlusGame.dbo.game (
   [id] UNIQUEIDENTIFIER NOT NULL,
@@ -9,7 +14,7 @@ CREATE TABLE carPlusGame.dbo.game (
   [description] nvarchar(max) NOT NULL,
   [game_cover_image_url] varchar(500) NOT NULL DEFAULT '',
   PRIMARY KEY ([id])
-)  ;
+);
 
 
 
@@ -26,7 +31,7 @@ CREATE TABLE carPlusGame.dbo.game_item (
   [add_scroe_rate] float DEFAULT '0' ,
   [add_game_point_rate] float DEFAULT '0' ,
   PRIMARY KEY ([id])
-)  ;
+);
 
 
 
