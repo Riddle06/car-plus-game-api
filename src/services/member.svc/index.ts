@@ -1,3 +1,4 @@
+import { QueryRunner } from 'typeorm';
 import { MemberInformationVM, MemberUpdateInformationParameterVM } from "@view-models/member.vm";
 import { Result } from "@view-models/common.vm";
 import { dbProvider } from "@utilities";
@@ -5,6 +6,9 @@ import { MemberInformationLibSvc } from "./lib/information.lib.svc";
 import { MemberToken } from "@view-models/verification.vm";
 
 class MemberSvc {
+    async createMember(carPlusId: string, queryRunner: QueryRunner): Promise<Result<MemberInformationVM>> {
+        return null;
+    }
 
     async getMemberInformation(memberToken: MemberToken): Promise<Result<MemberInformationVM>> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
