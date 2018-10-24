@@ -9,9 +9,13 @@ export interface GameVM {
 
 export interface GameItemVM {
     id: string
+    description: string
+    name: string
     imageUrl: string
     gamePoint: number
+    carPlusPoint: number
     type: GameItemType
+    enableBuy: boolean
 }
 
 export enum GameItemType {
@@ -22,7 +26,15 @@ export enum GameItemType {
     /**
      * 道具
      */
-    tool = 2
+    tool = 2,
+    /**
+     * 超人金幣
+     */
+    gamePoint = 3,
+    /**
+     * 格上紅利
+     */
+    carPlusPoint = 4
 }
 
 export interface MemberGameItemVM extends GameItemVM {

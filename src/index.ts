@@ -13,7 +13,6 @@ app.use(routers);
 app.use(responseEndMiddleware)
 app.listen(configurations.app.port, async () => {
     console.log(`Car Plus Game API  is Starting on port ${configurations.app.port} , environment is ${configurations.app.env}`);
-    await testSvc.test()
 });
 
 process.on('unhandledRejection', console.dir);

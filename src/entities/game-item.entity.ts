@@ -40,9 +40,16 @@ export class GameItemEntity extends BaseEntity {
 
     @Column("decimal", {
         default: 0,
-        name: "point"
+        name: "game_point"
     })
-    point: number;
+    gamePoint: number;
+
+
+    @Column("decimal", {
+        default: 0,
+        name: "car_plus_point"
+    })
+    carPlusPoint: number;
 
 
     @Column("int", {
@@ -90,4 +97,24 @@ export class GameItemEntity extends BaseEntity {
     })
     usedTimes: number
 
+    @Column("int", {
+        name: "level_min_limit",
+        nullable: false,
+        default: -1
+    })
+    levelMinLimit: number = -1
+
+
+    @Column("nvarchar", {
+        name: "description",
+        length: 1000,
+        default: ""
+    })
+    description: string = ''
+
+    @Column("bit", {
+        name: "enabled",
+        default: "1"
+    })
+    enabled: boolean = false;
 }

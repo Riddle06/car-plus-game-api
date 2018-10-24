@@ -1,3 +1,5 @@
+import { GameItemVM } from './../../../view-models/game.vm';
+import { GameItemEntity } from './../../../entities/game-item.entity';
 import { BaseConnection } from "@services/base-connection";
 import { BaseResult, ListResult } from "@view-models/common.vm";
 import { GameVM } from "@view-models/game.vm";
@@ -21,5 +23,38 @@ export class GameLibSvc extends BaseConnection {
         })
 
         return ret.setResultValue(true)
+    }
+
+    async getGameItems(reMemberId: string): Promise<ListResult<GameItemVM>> {
+        const gameItemPepo = await this.entityManager.getRepository(GameItemEntity);
+
+        const gameItemEntities = await gameItemPepo.find({
+            where: {
+                enabled: true
+            },
+            order: {
+                type: "ASC",
+                gamePoint: "ASC"
+            }
+        })
+
+        const ret = new ListResult<GameItemVM>();
+        ret.items = gameItemEntities.map(gameItemEntity => {
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type } = gameItemEntity
+            const gameItemVM: GameItemVM = {
+                id,
+                description,
+                name,
+                imageUrl,
+                gamePoint,
+                carPlusPoint,
+                type,
+                enableBuy: true
+            }
+
+            return gameItemVM;
+        })
+
+        return ret.setResultValue(true);
     }
 }

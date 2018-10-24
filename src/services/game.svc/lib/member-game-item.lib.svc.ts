@@ -33,8 +33,12 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 dateCreated: memberGameItem.dateCreated,
                 id: memberGameItem.id,
                 imageUrl: memberGameItem.gameItem.imageUrl,
-                gamePoint: memberGameItem.gameItem.point,
-                type: memberGameItem.gameItem.type
+                gamePoint: memberGameItem.gameItem.gamePoint,
+                type: memberGameItem.gameItem.type,
+                carPlusPoint: memberGameItem.gameItem.gamePoint,
+                description: memberGameItem.gameItem.description,
+                enableBuy: false,
+                name: memberGameItem.gameItem.name
             }
             return item
         })

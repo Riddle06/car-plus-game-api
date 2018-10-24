@@ -1,3 +1,4 @@
+import { GameItemVM } from './../../view-models/game.vm';
 import { ListResult, Result, BaseResult } from "@view-models/common.vm";
 import { GameVM, MemberGameItemVM } from "@view-models/game.vm";
 import { GameLibSvc } from "./lib/game.lib.svc";
@@ -42,6 +43,21 @@ class GameSvc {
 
             await queryRunner.commitTransaction();
             return null
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async getGameItems(memberToken: MemberToken): Promise<ListResult<GameItemVM>> {
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const gameLibSvc = new GameLibSvc(queryRunner);
+            const ret = await gameLibSvc.getGameItems(null);
+            await queryRunner.commitTransaction();
+            return ret;
         } catch (error) {
             await queryRunner.rollbackTransaction();
             throw error
