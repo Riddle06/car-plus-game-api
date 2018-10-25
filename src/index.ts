@@ -5,12 +5,13 @@ import routers from "./routers";
 import { memberTokenVerificationMiddleware, responseEndMiddleware } from "./middlewares";
 import { testSvc } from "@services/test.svc";
 import * as bodyParser from "body-parser";
+import * as path from "path";
 
 const app = express();
 
-app.use(bodyParser.json(), memberTokenVerificationMiddleware);
-app.use(routers);
-app.use(responseEndMiddleware)
+app.use('/', express.static(path.resolve(__dirname, '../client-dist')))
+app.use('/api', [bodyParser.json(), memberTokenVerificationMiddleware, routers, responseEndMiddleware])
+
 app.listen(configurations.app.port, async () => {
     console.log(`Car Plus Game API  is Starting on port ${configurations.app.port} , environment is ${configurations.app.env}`);
 });
