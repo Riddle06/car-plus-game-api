@@ -10,7 +10,8 @@
     "prebuild": "npm run clean && npm run init",
     "build": "node_modules/typescript/bin/tsc",
     "start": "npm run build && node ./dist",
-    "webpack:watch": "./node_modules/.bin/webpack --mode production --watch"
+    "webpack:watch": "./node_modules/.bin/webpack --mode production --watch",
+    "webpack": "./node_modules/.bin/webpack"
   },
   "author": "rexli",
   "license": "MIT",
