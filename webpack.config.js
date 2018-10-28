@@ -2,7 +2,9 @@ var path = require('path');
 
 module.exports = {
     mode: "production",
-    entry: './src-client/index.ts',
+    entry: {
+        "catch.game": './src-client/scenes/catch.game.scene.ts'
+    },
     output: {
         path: path.resolve(__dirname, 'client-dist/js'),
         filename: '[name].bundle.js',
