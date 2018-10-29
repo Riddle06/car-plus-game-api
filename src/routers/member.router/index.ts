@@ -1,14 +1,18 @@
 import { Router } from "express";
-import { RequestExtension, ResponseExtension } from "view-models/extension";
+import { RequestExtension, ResponseExtension } from "@view-models/extension";
 import { AppError } from "@view-models/common.vm";
 import { memberSvc } from "@services";
+import MemberLoginRouter from "./member-login.router";
 
 const router = Router();
+
+router.use('/login', MemberLoginRouter)
 
 // 取得會員資料
 router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
+        const { memberToken } = req;
         res.result = null;
     } catch (error) {
         res.appError = AppError.getAppError(error)

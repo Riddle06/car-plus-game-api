@@ -1,14 +1,30 @@
 import { QueryRunner } from 'typeorm';
-import { MemberInformationVM, MemberUpdateInformationParameterVM } from "@view-models/member.vm";
+import { MemberInformationVM, MemberUpdateInformationParameterVM, MemberLoginCreateParameterVM } from "@view-models/member.vm";
 import { Result } from "@view-models/common.vm";
 import { dbProvider } from "@utilities";
 import { MemberInformationLibSvc } from "./lib/information.lib.svc";
 import { MemberToken } from "@view-models/verification.vm";
 
 class MemberSvc {
-    async createMember(carPlusId: string, queryRunner: QueryRunner): Promise<Result<MemberInformationVM>> {
+
+    async createMemberLogin(param: MemberLoginCreateParameterVM): Promise<Result<string>> {
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        // try {
+        //     const memberInfoLibSvc = new MemberInformationLibSvc(memberToken.payload.mi, queryRunner)
+        //     const ret = await memberInfoLibSvc.getInformation()
+        //     await queryRunner.commitTransaction();
+        //     return ret;
+        // } catch (error) {
+        //     await queryRunner.rollbackTransaction();
+        //     throw error
+        // } finally {
+        //     await queryRunner.release();
+        // }
+
         return null;
+
     }
+
 
     async getMemberInformation(memberToken: MemberToken): Promise<Result<MemberInformationVM>> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()

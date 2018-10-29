@@ -6,6 +6,8 @@ export class RegisterLibSvc extends BaseConnection {
 
     async createMember(carPlusId: string): Promise<MemberInformationVM> {
 
+    
+
         // this.entityManager.getRepository(MemberEntity).create({
         //     id: uniqueId.generateV4UUID(),
         //     carPlusMemberId: carPlusId,

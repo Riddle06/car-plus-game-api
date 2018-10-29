@@ -1,7 +1,9 @@
+import { checker, uniqueId } from '@utilities';
 import { RequestExtension, ResponseExtension } from "view-models/extension";
 import { NextFunction, Response } from "express";
 import { AppError, ResultCode } from "@view-models/common.vm";
 import { verificationSvc } from "@services";
+import * as luxon from "luxon";
 
 export const memberTokenVerificationMiddleware = async (req: RequestExtension, res: Response, next: NextFunction) => {
     next()
@@ -15,8 +17,7 @@ export const memberTokenVerificationMiddleware = async (req: RequestExtension, r
         }
         next();
     } catch (error) {
-        console.log(`memberTokenVerificationMiddleware error`)
-        console.dir(error)
+        console.error(`memberTokenVerificationMiddleware error`, error)
         if (error instanceof AppError) {
             res.json(error.getResult())
         } else {
@@ -49,4 +50,18 @@ export const responseEndMiddleware = async (req: RequestExtension, res: Response
     } finally {
         res.end();
     }
+}
+
+
+
+export const clientMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
+
+    if (checker.isNullOrUndefinedOrWhiteSpace(req.cookies.clientId)) {
+        res.cookie('clientId', uniqueId.generateV4UUID(), {
+            httpOnly: true,
+            expires: luxon.DateTime.local().plus({ years: 200 }).toJSDate(),
+        })
+    }
+
+    next();
 }

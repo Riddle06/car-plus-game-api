@@ -10,6 +10,11 @@ export interface RequestExtension extends Request {
         [key: string]: string | number | Array<string | number>
     }
 
+    cookies: {
+        clientId?: string
+        [key: string]: any
+    }
+
     memberToken: MemberToken
 }
 

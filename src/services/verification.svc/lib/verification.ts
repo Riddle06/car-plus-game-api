@@ -1,13 +1,17 @@
+import { MemberLoginEntity } from './../../../entities/member-login.entity';
 import { BaseConnection } from "@services/base-connection";
 import { BaseResult, ResultCode, AppError, Result } from "view-models/common.vm";
 import * as jwt from "jsonwebtoken";
 import { configurations } from "@configuration";
-import { MemberToken } from "view-models/verification.vm";
+import { MemberToken } from "@view-models/verification.vm";
 import * as luxon from "luxon";
-import { MemberLoginEntity } from "entities/member-login.entity";
+import { Not } from 'typeorm';
+import { memberSvc } from '@services/member.svc';
 
 class Verification extends BaseConnection {
-    async verifyToken(token): Promise<BaseResult> {
+
+   
+    async verifyToken(token: string): Promise<BaseResult> {
         const ret = new BaseResult(false);
 
         try {
@@ -46,10 +50,7 @@ class Verification extends BaseConnection {
 
         return ret.setResultValue(true, ResultCode.success)
     }
+    
 
-
-    private async login(memberId: string, clientId: string, carPlusMemberId: string): Promise<BaseResult> {
-        return null;
-    }
 }
 

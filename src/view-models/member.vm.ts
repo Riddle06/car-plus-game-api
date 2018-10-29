@@ -10,3 +10,8 @@ export interface MemberInformationVM {
 export interface MemberUpdateInformationParameterVM {
     nickName: string
 }
+
+export interface MemberLoginCreateParameterVM {
+    clientId: string
+    carPlusMemberId: string
+}

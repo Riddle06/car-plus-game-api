@@ -1,9 +1,10 @@
 import "module-alias/register";
 import * as express from "express";
+import * as cookieParser from "cookie-parser";
 import { configurations } from "@configuration";
 import routers from "./routers";
 import pageRouter from "./page.routers";
-import { memberTokenVerificationMiddleware, responseEndMiddleware } from "./middlewares";
+import { memberTokenVerificationMiddleware, responseEndMiddleware, clientMiddleware } from "./middlewares";
 import { testSvc } from "@services/test.svc";
 import * as bodyParser from "body-parser";
 import * as path from "path";
@@ -18,7 +19,7 @@ app.engine('hbs', hbs.__express);
 hbs.registerPartials(path.resolve(__dirname, '../views/partials'));
 app.use('/static', express.static(path.resolve(__dirname, '../client-dist')));
 
-app.use('/', pageRouter);
+app.use('/', [cookieParser(), clientMiddleware, pageRouter]);
 
 app.use('/api',
     [bodyParser.json(),
