@@ -1,5 +1,5 @@
-import { GameItemVM } from './../../view-models/game.vm';
 import { ListResult, Result, BaseResult } from "@view-models/common.vm";
+import { GameItemVM, MemberBuyGameItemParameter } from '@view-models/game.vm';
 import { GameVM, MemberGameItemVM } from "@view-models/game.vm";
 import { GameLibSvc } from "./lib/game.lib.svc";
 import { dbProvider } from "@utilities";
@@ -96,6 +96,10 @@ class GameSvc {
         } finally {
             await queryRunner.release();
         }
+    }
+
+    async memberBuyGameItem(memberToken: MemberToken, param: MemberBuyGameItemParameter): Promise<BaseResult> {
+        return null
     }
 
 }

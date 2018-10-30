@@ -1,3 +1,4 @@
+import { MemberBuyGameItemParameter } from '@view-models/game.vm';
 import { BaseConnection } from '../../base-connection';
 import { QueryRunner, MoreThan } from 'typeorm';
 import { MemberGameItemEntity } from '@entities/member-game-item.entity';
@@ -81,6 +82,8 @@ export class MemberGameItemLibSvc extends BaseConnection {
         }
 
         switch (useMemberGameItem.gameItem.type) {
+
+
             case GameItemType.tool:
 
                 // 判斷目前是否有正在使用的道具
@@ -119,6 +122,20 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
 
         return new BaseResult(true);
+    }
+
+    async memberBuyGameItem(param: MemberBuyGameItemParameter): Promise<BaseResult> {
+        const { gameItemId, num } = param;
+
+        // 商品是否存在
+
+        // 數量是否正確
+
+        // 計算金額是否正確
+
+
+
+        return null;
     }
 
 }
