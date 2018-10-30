@@ -14,9 +14,9 @@ export class MemberGameItemLibSvc extends BaseConnection {
     }
 
     async getMemberGameItems(): Promise<ListResult<MemberGameItemVM>> {
-        const memberGameItemRepo = await this.entityManager.getRepository(MemberGameItemEntity);
+        const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity);
 
-        const memberGameItemEntities = await memberGameItemRepo.find({
+        const memberGameItemEntities = await memberGameItemRepository.find({
             relations: ['gameItem'],
             where: {
                 memberId: this.memberId,
@@ -25,11 +25,12 @@ export class MemberGameItemLibSvc extends BaseConnection {
             }
         })
 
-        const ret = new ListResult<MemberGameItemVM>(true)
+        const ret = new ListResult<MemberGameItemVM>(true);
 
         ret.items = memberGameItemEntities.map(memberGameItem => {
             const item: MemberGameItemVM = {
-                haveThisItem: true,
+                haveItem: true,
+                haveItemCount: 1,
                 dateCreated: memberGameItem.dateCreated,
                 id: memberGameItem.id,
                 imageUrl: memberGameItem.gameItem.imageUrl,
@@ -49,9 +50,9 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
     async useGameItem(memberGameItemId: string): Promise<BaseResult> {
 
-        const memberGameItemRepo = await this.entityManager.getRepository(MemberGameItemEntity);
+        const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity);
 
-        const useMemberGameItem = await memberGameItemRepo.findOne({
+        const useMemberGameItem = await memberGameItemRepository.findOne({
             relations: ['gameItem'],
             where: {
                 id: memberGameItemId,
@@ -67,7 +68,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
             throw new AppError(`查無此道具可使用`);
         }
 
-        const memberGameItems = await memberGameItemRepo.find({
+        const memberGameItems = await memberGameItemRepository.find({
             relations: ['gameItem'],
             where: {
                 isUsing: true,
@@ -104,7 +105,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 // 若目前有正在使用的角色，把目前用的角色設定成沒在使用
                 const currentRoleMemberGameItem = memberGameItems.find(memberGameItem => memberGameItem.gameItem.type === GameItemType.role)
                 if (!checker.isNullOrUndefinedObject(currentRoleMemberGameItem)) {
-                    await memberGameItemRepo.update({ id: currentRoleMemberGameItem.id }, {
+                    await memberGameItemRepository.update({ id: currentRoleMemberGameItem.id }, {
                         isUsing: false
                     })
                 }

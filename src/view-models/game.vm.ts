@@ -38,6 +38,13 @@ export enum GameItemType {
 }
 
 export interface MemberGameItemVM extends GameItemVM {
-    haveThisItem: boolean
+    haveItem: boolean
+    haveItemCount: number
     dateCreated: Date
+}
+
+
+export interface MemberBuyGameItemParameter {
+    gameItemId: string
+    num: number
 }

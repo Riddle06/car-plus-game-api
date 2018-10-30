@@ -82,6 +82,22 @@ class GameSvc {
         }
     }
 
+    async memberUseGameItem(memberToken: MemberToken, memberGameItemId: string): Promise<BaseResult> {
+        const memberId = memberToken.payload.mi;
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const memberGameItemLibSvc = new MemberGameItemLibSvc(memberId, queryRunner)
+            const ret = await memberGameItemLibSvc.useGameItem(memberGameItemId)
+            await queryRunner.commitTransaction();
+            return ret
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
 }
 
 

@@ -1,10 +1,10 @@
 import { GameItemVM } from "./game.vm";
 
 export enum HistoryType {
-    game = "game",
-    carPlusPointTransferToGamePoint = "car_plus_point_transfer_to_game_point",
-    gamePointTransferToCarPlusPoint = "game_point_transfer_to_car_plus_point",
-    gamePointTransferToGameItem = "game_point_transfer_to_game_item"
+    game = 1,
+    carPlusPointTransferToGamePoint = 2,
+    gamePointTransferToCarPlusPoint = 3,
+    gamePointTransferToGameItem = 4
 
 }
 

@@ -2,7 +2,8 @@ export enum ResultCode {
     success = 200,
     clientError = 403,
     resourceNotFound = 404,
-    serverError = 500
+    serverError = 500,
+    accessTokenExpired = 1,
 }
 
 export class BaseResult {
@@ -12,7 +13,7 @@ export class BaseResult {
     exception?: string
 
     constructor(success?: boolean, code?: ResultCode, message?: string, exception?: string) {
-        if (!success) { 
+        if (!success) {
             success = false
         }
         this.setResultValue(success, code, message, exception);
@@ -53,7 +54,7 @@ export class AppError extends Error {
 
     static getAppError(err: unknown): AppError {
         console.dir(err);
-        if (err instanceof AppError) {  
+        if (err instanceof AppError) {
             return err
         } else if (err instanceof Error) {
             return new AppError(err.message, ResultCode.serverError)

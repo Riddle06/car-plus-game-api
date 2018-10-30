@@ -1,35 +1,46 @@
 import { MemberLoginEntity } from './../../../entities/member-login.entity';
 import { BaseConnection } from "@services/base-connection";
 import { BaseResult, ResultCode, AppError, Result } from "view-models/common.vm";
-import * as jwt from "jsonwebtoken";
 import { configurations } from "@configuration";
 import { MemberToken } from "@view-models/verification.vm";
+import { checker } from '@utilities';
+import * as jwt from "jsonwebtoken";
 import * as luxon from "luxon";
-import { Not } from 'typeorm';
-import { memberSvc } from '@services/member.svc';
 
-class Verification extends BaseConnection {
+export class VerificationLibSvc extends BaseConnection {
 
-   
-    async verifyToken(token: string): Promise<BaseResult> {
-        const ret = new BaseResult(false);
+    async verifyToken(token: string): Promise<Result<MemberToken>> {
+        const ret = new Result<MemberToken>(false)
 
         try {
             jwt.verify(token, configurations.token.securityKey);
         } catch (error) {
-            throw new AppError(`金鑰驗證錯誤(1)`, ResultCode.clientError)
+            throw new AppError(`金鑰驗證錯誤(1)`, ResultCode.accessTokenExpired)
         }
 
         const tokenVM = jwt.decode(token, { complete: true }) as MemberToken;
 
         if (luxon.DateTime.local() > luxon.DateTime.fromMillis(tokenVM.payload.exp)) {
             await this.logout(tokenVM.payload.mi);
-            throw new AppError(`金鑰過期(2)`, ResultCode.clientError)
+            throw new AppError(`金鑰過期(2)`, ResultCode.accessTokenExpired)
         }
 
-        // check this client id
+        const memberLoginRepository = await this.entityManager.getRepository(MemberLoginEntity);
 
+        const memberLoginEntity = await memberLoginRepository.findOne({
+            memberId: tokenVM.payload.mi,
+            clientId: tokenVM.payload.ci
+        })
 
+        if (checker.isNullOrUndefinedObject(memberLoginEntity)) {
+            throw new AppError(`查無登入紀錄`)
+        }
+
+        if (memberLoginEntity.isLogout) {
+            throw new AppError(`此裝置已被登出`)
+        }
+
+        ret.item = tokenVM;
 
         return ret.setResultValue(true, ResultCode.success)
     }
@@ -37,7 +48,7 @@ class Verification extends BaseConnection {
     private async logout(memberId: string): Promise<BaseResult> {
         const ret = new BaseResult(false);
 
-        await this.queryRunner.manager
+        await this.entityManager
             .getRepository<MemberLoginEntity>(MemberLoginEntity)
             .update({
                 isLogout: false, memberId
@@ -46,11 +57,7 @@ class Verification extends BaseConnection {
                     dateLastLogout: luxon.DateTime.local().toJSDate()
                 });
 
-
-
         return ret.setResultValue(true, ResultCode.success)
     }
-    
-
 }
 

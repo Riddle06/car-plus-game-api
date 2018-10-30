@@ -4,25 +4,26 @@ import { Result } from "@view-models/common.vm";
 import { dbProvider } from "@utilities";
 import { MemberInformationLibSvc } from "./lib/information.lib.svc";
 import { MemberToken } from "@view-models/verification.vm";
+import { MemberLoginLibSvc } from './lib/member.login.svc';
+import { RegisterLibSvc } from './lib/register.lib.svc';
+
 
 class MemberSvc {
 
     async createMemberLogin(param: MemberLoginCreateParameterVM): Promise<Result<string>> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
-        // try {
-        //     const memberInfoLibSvc = new MemberInformationLibSvc(memberToken.payload.mi, queryRunner)
-        //     const ret = await memberInfoLibSvc.getInformation()
-        //     await queryRunner.commitTransaction();
-        //     return ret;
-        // } catch (error) {
-        //     await queryRunner.rollbackTransaction();
-        //     throw error
-        // } finally {
-        //     await queryRunner.release();
-        // }
-
-        return null;
-
+        try {
+            const registerLibSvc = new RegisterLibSvc(queryRunner)
+            const memberLoginLibSvc = new MemberLoginLibSvc(queryRunner, registerLibSvc)
+            const ret = await memberLoginLibSvc.create(param)
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
     }
 
 

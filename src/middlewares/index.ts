@@ -10,7 +10,7 @@ export const memberTokenVerificationMiddleware = async (req: RequestExtension, r
     return;
     try {
         const token = req.header('Authorization');
-        const verificationRet = await verificationSvc.parseToken(req.path, token)
+        const verificationRet = await verificationSvc.verifyAndParseToken(req.path, token)
 
         if (verificationRet.success && verificationRet.item) {
             req.memberToken = verificationRet.item
