@@ -4,6 +4,7 @@ import GameItemRouter from "./game-item.router";
 import { RequestExtension, ResponseExtension } from "view-models/extension";
 import { AppError } from "@view-models/common.vm";
 import { gameSvc } from "@services";
+import { gameQuestionSvc } from "@services/game.question.svc";
 
 const router = Router();
 
@@ -25,7 +26,7 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 router.get('/question', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
-        res.result = null;
+        res.result = await gameQuestionSvc.getQuestions()
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }

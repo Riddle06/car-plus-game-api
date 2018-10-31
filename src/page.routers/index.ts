@@ -9,7 +9,6 @@ router.get('/', async (req, res, next) => {
         layout: 'layouts/index',
         item: 'testItem'
     })
-
 })
 
 
