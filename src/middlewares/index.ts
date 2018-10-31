@@ -6,8 +6,8 @@ import { verificationSvc } from "@services";
 import * as luxon from "luxon";
 
 export const memberTokenVerificationMiddleware = async (req: RequestExtension, res: Response, next: NextFunction) => {
-    next()
-    return;
+    // next()
+    // return;
     try {
         const token = req.header('Authorization');
         const verificationRet = await verificationSvc.verifyAndParseToken(req.path, token)
@@ -26,7 +26,6 @@ export const memberTokenVerificationMiddleware = async (req: RequestExtension, r
         res.end();
     }
 }
-
 
 
 export const responseEndMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
@@ -53,7 +52,9 @@ export const responseEndMiddleware = async (req: RequestExtension, res: Response
 }
 
 
-
+/**
+ * 如果沒有 client id client side 會自動生成 client id
+ */
 export const clientMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
 
     if (checker.isNullOrUndefinedOrWhiteSpace(req.cookies.clientId)) {
