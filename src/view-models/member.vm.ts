@@ -5,6 +5,7 @@ export interface MemberInformationVM {
     gamePoint: number
     level: number
     experience: number
+    carPlusMemberId: string
 }
 
 export interface MemberUpdateInformationParameterVM {

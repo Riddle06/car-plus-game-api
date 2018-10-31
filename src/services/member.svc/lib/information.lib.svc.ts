@@ -4,6 +4,7 @@ import { Result, AppError, ResultCode } from "@view-models/common.vm";
 import { MemberInformationVM, MemberUpdateInformationParameterVM } from "@view-models/member.vm";
 import { MemberEntity } from "@entities/member.entity";
 import { checker } from "@utilities";
+import { carPlusSvc } from '../../car-plus.svc/index';
 
 export class MemberInformationLibSvc extends BaseConnection {
 
@@ -23,7 +24,23 @@ export class MemberInformationLibSvc extends BaseConnection {
             throw new AppError(`不存在此會員`, ResultCode.resourceNotFound);
         }
 
-        const { id, nickName, carPlusPoint, gamePoint, level, experience } = memberEntity;
+        const { id, nickName, gamePoint, level, experience, carPlusMemberId } = memberEntity;
+
+        let { carPlusPoint } = memberEntity;
+
+        // 是否需要同步格上紅利
+        const needSyncCarPlusPoint: boolean = false;
+
+        if (needSyncCarPlusPoint) {
+            const carPlusSystemPoint = await this.getCarPlusPoint(memberEntity.carPlusMemberId);
+            if (carPlusPoint !== carPlusSystemPoint) {
+                await this.entityManager.getRepository(MemberEntity).update({ id }, {
+                    carPlusPoint: carPlusSystemPoint,
+                    dateUpdated: new Date()
+                })
+                carPlusPoint = carPlusSystemPoint;
+            }
+        }
 
         ret.item = {
             id,
@@ -32,9 +49,21 @@ export class MemberInformationLibSvc extends BaseConnection {
             gamePoint,
             level,
             experience,
+            carPlusMemberId
         };
 
         return ret.setResultValue(true);
+    }
+
+    async getCarPlusPoint(carPlusMemberId: string): Promise<number> {
+
+        // call store procedure 同步格上紅利
+        const carPlusMemberInformation = await carPlusSvc.getCarPlusMemberInformation(carPlusMemberId);
+
+
+        // TODO: 
+
+        return 0;
     }
 
     async updateNickName(param: MemberUpdateInformationParameterVM): Promise<Result<MemberInformationVM>> {

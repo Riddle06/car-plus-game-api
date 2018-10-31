@@ -4,7 +4,7 @@ import { GameVM, MemberGameItemVM } from "@view-models/game.vm";
 import { GameLibSvc } from "./lib/game.lib.svc";
 import { dbProvider } from "@utilities";
 import { MemberToken } from "@view-models/verification.vm";
-import { PlayGameParameterVM, StartGameHistoryVM } from "@view-models/game-history.vm";
+import { PlayGameParameterVM, StartGameHistoryVM, ReportPlayGameParameterVM } from "@view-models/game-history.vm";
 import { MemberGameItemLibSvc } from "./lib/member-game-item.lib.svc";
 
 class GameSvc {
@@ -37,7 +37,7 @@ class GameSvc {
         }
     }
 
-    async reportGame(memberToken: MemberToken): Promise<BaseResult> {
+    async reportGame(memberToken: MemberToken, param: ReportPlayGameParameterVM): Promise<StartGameHistoryVM> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
 
@@ -55,7 +55,7 @@ class GameSvc {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const gameLibSvc = new GameLibSvc(queryRunner);
-            const ret = await gameLibSvc.getGameItems(null);
+            const ret = await gameLibSvc.getGameItems(memberToken.payload.mi);
             await queryRunner.commitTransaction();
             return ret;
         } catch (error) {
@@ -99,7 +99,19 @@ class GameSvc {
     }
 
     async memberBuyGameItem(memberToken: MemberToken, param: MemberBuyGameItemParameter): Promise<BaseResult> {
-        return null
+        const memberId = memberToken.payload.mi;
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const memberGameItemLibSvc = new MemberGameItemLibSvc(memberId, queryRunner)
+            const ret = await memberGameItemLibSvc.memberBuyGameItem(param)
+            await queryRunner.commitTransaction();
+            return ret
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
     }
 
 }

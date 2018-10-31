@@ -1,6 +1,6 @@
 import { GameItemVM } from "./game.vm";
 
-export enum HistoryType {
+export enum PointHistoryType {
     game = 1,
     carPlusPointTransferToGamePoint = 2,
     gamePointTransferToCarPlusPoint = 3,
@@ -10,7 +10,7 @@ export enum HistoryType {
 
 export interface PointHistoryVM {
     id: string
-    type: HistoryType
+    type: PointHistoryType
     dateCreated: Date
     description: string
     gameItemId?: string

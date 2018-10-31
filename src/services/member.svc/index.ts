@@ -43,6 +43,12 @@ class MemberSvc {
 
     }
 
+    async getMemberInformationByMemberId(memberId: string, queryRunner: QueryRunner): Promise<Result<MemberInformationVM>> {
+        const memberInfoLibSvc = new MemberInformationLibSvc(memberId, queryRunner)
+        const ret = await memberInfoLibSvc.getInformation()
+        return ret;
+    }
+
     async updateMemberNickName(memberToken: MemberToken, param: MemberUpdateInformationParameterVM): Promise<Result<MemberInformationVM>> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
@@ -56,7 +62,6 @@ class MemberSvc {
         } finally {
             await queryRunner.release();
         }
-
     }
 
 }

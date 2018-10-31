@@ -3,8 +3,13 @@ import { BaseConnection } from '../../base-connection';
 import { QueryRunner, MoreThan } from 'typeorm';
 import { MemberGameItemEntity } from '@entities/member-game-item.entity';
 import { GameItemType, MemberGameItemVM } from '../../../view-models/game.vm';
-import { checker } from '@utilities';
+import { checker, uniqueId } from '@utilities';
 import { AppError, BaseResult, ListResult } from '@view-models/common.vm';
+import { GameItemEntity } from '@entities/game-item.entity';
+import { MemberEntity } from '@entities/member.entity';
+import { memberSvc } from '@services/member.svc';
+import { variableSvc } from '@services/variable.svc';
+import { carPlusSvc } from '@services/car-plus.svc';
 export class MemberGameItemLibSvc extends BaseConnection {
 
     private memberId: string = null
@@ -127,11 +132,88 @@ export class MemberGameItemLibSvc extends BaseConnection {
     async memberBuyGameItem(param: MemberBuyGameItemParameter): Promise<BaseResult> {
         const { gameItemId, num } = param;
 
+        const gameItemEntity = await this.entityManager.getRepository(GameItemEntity).findOne(gameItemId);
+
         // 商品是否存在
+        if (checker.isNullOrUndefinedObject(gameItemEntity)) {
+            throw new AppError('查無此商品')
+        }
 
-        // 數量是否正確
+        if (!checker.isNaturalInteger(num)) {
+            throw new AppError('數量參數錯誤')
+        }
 
-        // 計算金額是否正確
+        if (!gameItemEntity.enabled) {
+            throw new AppError('此商品尚未開放')
+        }
+
+        const memberInformationRet = await memberSvc.getMemberInformationByMemberId(this.memberId, this.queryRunner)
+
+        const { level, carPlusPoint, carPlusMemberId, gamePoint } = memberInformationRet.item;
+
+
+        // 除了超人幣是用格上紅利買，其他都是用
+        // 等級驗證
+        if (gameItemEntity.levelMinLimit > -1 && level < gameItemEntity.levelMinLimit) {
+            throw new AppError('等級不足，無法購買此道具')
+        }
+
+        // 金額驗證
+        if ((gameItemEntity.gamePoint * param.num) > gamePoint) {
+            throw new AppError('超人幣不足，無法扣買')
+        }
+
+        // 新增一筆紀錄
+        const memberGameItemEntities: MemberGameItemEntity[] = [];
+        for (let i = 0; i < num; i++) {
+            memberGameItemEntities.push(await this.addMemberGameItem(gameItemId))
+        }
+
+        await this.entityManager.getRepository(MemberGameItemEntity).insert(memberGameItemEntities);
+
+        return null;
+    }
+
+    private async addMemberGameItem(gameItemId: string): Promise<MemberGameItemEntity> {
+
+        const memberGameItemEntity = new MemberGameItemEntity();
+        memberGameItemEntity.id = uniqueId.generateV4UUID();
+        memberGameItemEntity.gameItemId = gameItemId
+        memberGameItemEntity.memberId = this.memberId
+        memberGameItemEntity.memberGamePointHistoryId = null;
+
+        memberGameItemEntity.dateCreated = new Date();
+        memberGameItemEntity.dateUpdated = new Date();
+        memberGameItemEntity.enabled = true;
+        memberGameItemEntity.totalUsedTimes = 
+        memberGameItemEntity.remainTimes
+        memberGameItemEntity.dateLastUsed
+        memberGameItemEntity.isUsing
+
+
+        // switch (gameItemEntity.type) {
+        //     case GameItemType.tool:
+
+        //         // 扣遊戲點數
+
+        //         break;
+        //     case GameItemType.role:
+
+        //         // 扣遊戲點數
+        //         break;
+        //     case GameItemType.carPlusPoint:
+        //         // 只能買一個
+
+        //         // 扣遊戲點數
+
+        //         // 要加紅利
+        //         break;
+        //     case GameItemType.gamePoint:
+
+        //         // 要扣掉格上紅利
+        //         // 加遊戲點數
+        //         break;
+        // }
 
 
 
