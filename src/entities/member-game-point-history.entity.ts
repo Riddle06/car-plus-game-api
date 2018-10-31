@@ -94,4 +94,9 @@ export class MemberGamePointHistoryEntity extends BaseEntity {
     })
     type: number
 
+    @Column("uniqueidentifier", {
+        nullable: true,
+        name: "member_game_history_id"
+    })
+    memberGameHistoryId:string | null
 }

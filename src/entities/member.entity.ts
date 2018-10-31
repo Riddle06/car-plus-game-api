@@ -10,8 +10,9 @@ export class MemberEntity extends BaseEntity {
     id: string = uniqueId.generateV4UUID();
 
 
-    @Column("uniqueidentifier", {
+    @Column("varchar", {
         nullable: true,
+        length: 50,
         name: "car_plus_member_id"
     })
     carPlusMemberId: string | null;

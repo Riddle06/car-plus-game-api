@@ -51,7 +51,7 @@ CREATE TABLE carPlusGame.dbo.game_question (
 CREATE TABLE carPlusGame.dbo.member (
   [id] UNIQUEIDENTIFIER NOT NULL,
   [level] int NOT NULL DEFAULT '1' ,
-  [car_plus_member_id] UNIQUEIDENTIFIER DEFAULT NULL ,
+  [car_plus_member_id] varchar(50) DEFAULT NULL ,
   [experience] decimal(18,2) NOT NULL DEFAULT '0.00' ,
   [car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00' ,
   [game_point] decimal(18,2) NOT NULL DEFAULT '0.00' ,
@@ -119,6 +119,7 @@ CREATE TABLE carPlusGame.dbo.member_game_point_history (
   [description] nvarchar(100) NOT NULL DEFAULT '',
   [game_item_id] UNIQUEIDENTIFIER DEFAULT NULL,
   [member_game_item_id] UNIQUEIDENTIFIER DEFAULT NULL,
+  [member_game_history_id] UNIQUEIDENTIFIER DEFAULT NULL,
   PRIMARY KEY ([id])
 )  ;
 

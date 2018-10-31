@@ -42,21 +42,57 @@ export class MemberGamePointLibSvc extends BaseConnection {
             dateCreated: new Date(),
             description: '遊戲獲得',
             memberId: this.memberId,
-            type: PointHistoryType.game
+            type: PointHistoryType.game,
+            memberGameHistoryId
         })
 
-        await this.memberRepository.update({ id: this.memberId }, {
-            gamePoint: Raw('game_point + 1') as any
-        })
+        await this.entityManager.createQueryBuilder()
+            .update<MemberEntity>(MemberEntity)
+            .set({
+                gamePoint: () => "game_point + :gamePoint"
+            })
+            .where({
+                id: this.memberId
+            }).setParameters({
+                gamePoint
+            }).execute()
 
         return ret.setResultValue(true);
     }
 
     async addGamePointByTransferFromCarPlusPoint(gamePoint: number, carPlusPoint: number, memberGameItemParam: MemberGameItemParameter): Promise<Result<PointHistoryVM>> {
-        // game
-        // carPlusPointTransferToGamePoint
-        // gamePointTransferToCarPlusPoint
-        // gamePointTransferToGameItem
+        const ret = new Result<PointHistoryVM>(false);
+
+        const memberEntity = await this.memberRepository.findOne(this.memberId)
+
+        const changeCarPlusPoint: number = carPlusPoint * -1
+
+        await this.memberGamePointHistoryRepository.insert({
+            afterGamePoint: memberEntity.gamePoint + gamePoint,
+            afterCarPlusPoint: memberEntity.carPlusPoint + changeCarPlusPoint,
+            beforeCarPlusPoint: memberEntity.carPlusPoint,
+            beforeGamePoint: memberEntity.gamePoint,
+            changeCarPlusPoint: changeCarPlusPoint,
+            changeGamePoint: gamePoint,
+            dateCreated: new Date(),
+            description: '由格上紅利轉換成遊戲點數',
+            memberId: this.memberId,
+            type: PointHistoryType.game,
+            gameItemId: memberGameItemParam.gameItemId,
+            memberGameHistoryId: memberGameItemParam.memberGameItemId
+        })
+
+        // await this.memberRepository.update({ id: this.memberId }, {
+        //     gamePoint: Raw('game_point + ') as any,
+
+        // })
+
+
+        // return ret.setResultValue(true);
+
+
+
+
         return null;
     }
 

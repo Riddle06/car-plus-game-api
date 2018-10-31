@@ -1,3 +1,6 @@
-export interface CarPlusMemberInformation { 
+export interface CarPlusMemberInformation {
+    id: string
+    carPlusPoint: number
+    dateCreated: Date
 
 }
