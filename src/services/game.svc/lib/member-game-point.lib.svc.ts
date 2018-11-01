@@ -4,6 +4,7 @@ import { PointHistoryVM, PointHistoryType } from '@view-models/game-history.vm';
 import { Result } from '@view-models/common.vm';
 import { MemberGamePointHistoryEntity } from '@entities/member-game-point-history.entity';
 import { MemberEntity } from '@entities/member.entity';
+import { carPlusSvc } from '../../car-plus.svc/index';
 
 type MemberGameItemParameter = {
     gameItemId: string
@@ -26,7 +27,11 @@ export class MemberGamePointLibSvc extends BaseConnection {
         this.memberRepository = this.entityManager.getRepository(MemberEntity);
     }
 
-
+    /**
+     * 因為玩遊戲獲得的點數
+     * @param gamePoint 
+     * @param memberGameHistoryId 
+     */
     async addGamePointByGame(gamePoint: number, memberGameHistoryId: string): Promise<Result<PointHistoryVM>> {
         const ret = new Result<PointHistoryVM>(false);
 
@@ -60,6 +65,12 @@ export class MemberGamePointLibSvc extends BaseConnection {
         return ret.setResultValue(true);
     }
 
+    /**
+     * 用格上紅利換得的遊戲點數
+     * @param gamePoint 
+     * @param carPlusPoint 
+     * @param memberGameItemParam 
+     */
     async addGamePointByTransferFromCarPlusPoint(gamePoint: number, carPlusPoint: number, memberGameItemParam: MemberGameItemParameter): Promise<Result<PointHistoryVM>> {
         const ret = new Result<PointHistoryVM>(false);
 
@@ -82,18 +93,24 @@ export class MemberGamePointLibSvc extends BaseConnection {
             memberGameHistoryId: memberGameItemParam.memberGameItemId
         })
 
-        // await this.memberRepository.update({ id: this.memberId }, {
-        //     gamePoint: Raw('game_point + ') as any,
 
-        // })
+        await this.entityManager.createQueryBuilder()
+            .update<MemberEntity>(MemberEntity)
+            .set({
+                gamePoint: () => "game_point + :gamePoint",
+                carPlusPoint: () => "car_pus_point - :carPlusPoint"
+            })
+            .where({
+                id: this.memberId
+            }).setParameters({
+                gamePoint,
+                carPlusPoint
+            }).execute()
+
+        await carPlusSvc.plusCarPlusPoint(memberEntity.carPlusMemberId, changeCarPlusPoint)
 
 
-        // return ret.setResultValue(true);
-
-
-
-
-        return null;
+        return ret.setResultValue(true);
     }
 
     async addCarPlusPointByTransferFromGamePoint(carPlusPoint: number, gamePoint: number, memberGameItemParam: MemberGameItemParameter): Promise<Result<PointHistoryVM>> {
