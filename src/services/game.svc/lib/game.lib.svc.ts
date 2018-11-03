@@ -26,9 +26,9 @@ export class GameLibSvc extends BaseConnection {
     }
 
     async getGameItems(reMemberId: string): Promise<ListResult<GameItemVM>> {
-        const gameItemPepo = await this.entityManager.getRepository(GameItemEntity);
+        const gameItemRepository = await this.entityManager.getRepository(GameItemEntity);
 
-        const gameItemEntities = await gameItemPepo.find({
+        const gameItemEntities = await gameItemRepository.find({
             where: {
                 enabled: true
             },

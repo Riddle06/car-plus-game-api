@@ -29,7 +29,6 @@ class VariableSvc {
         ret.item = 1;
         return ret.setResultValue(true);
     }
-
 }
 
 export const variableSvc = new VariableSvc();

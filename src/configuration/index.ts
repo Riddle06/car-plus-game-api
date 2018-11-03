@@ -23,6 +23,7 @@ interface Configurations {
     app: ApplicationConfig
     db: DatabaseConfig
     token: TokenConfig
+    dbCarPlus: DatabaseConfig
 }
 
 function getNodeEnv(env: string): "dev" | "sit" | "production" {
@@ -62,6 +63,14 @@ export const configurations: Configurations = {
     },
     token: {
         securityKey: process.env.DB_DATABASE_NAME
+    },
+    dbCarPlus: {
+        host: process.env.DB_CAR_PLUS_HOST,
+        port: +process.env.DB_CAR_PLUS_PORT,
+        user: process.env.DB_CAR_PLUS_USER,
+        password: process.env.DB_CAR_PLUS_PASSWORD,
+        databaseName: process.env.DB_CAR_PLUS_DATABASE_NAME,
+        connectionName: 'carPlusSystem'
     }
 
 }

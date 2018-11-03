@@ -14,7 +14,7 @@ export interface PointHistoryVM {
     dateCreated: Date
     description: string
     gameItemId?: string
-    gameItemMemberId?: string
+    memberGameItemId?: string
     beforeGamePoint: number;
     afterGamePoint: number;
     changeGamePoint: number;

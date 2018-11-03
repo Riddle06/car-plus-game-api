@@ -69,7 +69,7 @@ export class MemberGameItemEntity extends BaseEntity {
 
     @Column("datetime2", {
         name: "date_last_used",
-        nullable: false
+        nullable: true
     })
     dateLastUsed: Date
 

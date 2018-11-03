@@ -65,4 +65,22 @@ export class Vars extends BaseConnection {
         return new BaseResult(true);
 
     }
+
+    async testAddAmountMetaInt1Amount(): Promise<BaseResult> {
+        const metaInt1 = 2;
+
+        await this.entityManager.createQueryBuilder()
+            .update<VarsEntity>(VarsEntity)
+            .set({
+                metaInt1: () => "meta_int_1 + :metaInt1"
+            })
+            .where({
+                key: 'test-data'
+            }).setParameters({
+                metaInt1
+            }).printSql().execute();
+
+        return new BaseResult(true);
+
+    }
 }

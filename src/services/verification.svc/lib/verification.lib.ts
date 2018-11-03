@@ -1,6 +1,6 @@
 import { MemberLoginEntity } from './../../../entities/member-login.entity';
 import { BaseConnection } from "@services/base-connection";
-import { BaseResult, ResultCode, AppError, Result } from "view-models/common.vm";
+import { BaseResult, ResultCode, AppError, Result } from "@view-models/common.vm";
 import { configurations } from "@configuration";
 import { MemberToken } from "@view-models/verification.vm";
 import { checker } from '@utilities';

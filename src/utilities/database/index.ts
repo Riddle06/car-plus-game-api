@@ -17,6 +17,8 @@ class DatabaseProvider {
 
     private connection: Connection = null;
 
+    private carPlusConnection: Connection = null
+
     private isInitial: boolean = false
 
     private async init(): Promise<this> {
@@ -27,6 +29,7 @@ class DatabaseProvider {
 
         const { host, port, databaseName, password, user, connectionName } = configurations.db;
 
+        // 遊戲資料庫連線設定
         this.connection = await createConnection({
             name: connectionName,
             type: "mssql",
@@ -38,13 +41,12 @@ class DatabaseProvider {
             logger: 'advanced-console',
             logging: 'all',
             schema: 'dbo',
-            options: {
-                
-            },
-
-
+            options: {},
             entities: [`${path.resolve(__dirname, '../../entities')}/*.js`]
         });
+
+        // 格上會員系統資料庫連線設定
+        await this.setCarPlusConnection();
 
         this.isInitial = true;
 
@@ -72,6 +74,46 @@ class DatabaseProvider {
 
         return queryRunner;
     }
+
+
+    async createCarPlusQueryRunner(): Promise<QueryRunner> {
+        if (!this.isInitial) {
+            await this.init();
+        }
+
+        return this.carPlusConnection.createQueryRunner();
+    }
+
+    async createCarPlusTransactionQueryRunner(): Promise<QueryRunner> {
+        if (!this.isInitial) {
+            await this.init();
+        }
+        const queryRunner = await this.createCarPlusQueryRunner();
+
+        await queryRunner.startTransaction()
+
+        return queryRunner;
+    }
+
+    private async setCarPlusConnection(): Promise<void> {
+
+        const { host, port, databaseName, password, user, connectionName } = configurations.dbCarPlus;
+        this.carPlusConnection = await createConnection({
+            name: connectionName,
+            type: "mssql",
+            host,
+            port,
+            username: user,
+            password,
+            database: databaseName,
+            logger: 'advanced-console',
+            logging: 'all',
+            schema: 'dbo',
+            options: {},
+            entities: []
+        });
+    }
+
 
 }
 

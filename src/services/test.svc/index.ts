@@ -64,6 +64,23 @@ class TestSvc {
         return new BaseResult(true);
     }
 
+    async testAddAmount(): Promise<BaseResult> {
+        const queryRunner = await dbProvider.createTransactionQueryRunner();
+
+        const vars = new Vars(queryRunner);
+        try {
+            await vars.testAddAmountMetaInt1Amount()
+            await queryRunner.commitTransaction();
+        } catch (error) {
+            console.log(`error`, error)
+            await queryRunner.rollbackTransaction();
+        } finally {
+            await queryRunner.release();
+        }
+
+        return new BaseResult(true);
+    }
+
 }
 
 export const testSvc = new TestSvc();

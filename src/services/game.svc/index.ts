@@ -6,6 +6,7 @@ import { dbProvider } from "@utilities";
 import { MemberToken } from "@view-models/verification.vm";
 import { PlayGameParameterVM, StartGameHistoryVM, ReportPlayGameParameterVM } from "@view-models/game-history.vm";
 import { MemberGameItemLibSvc } from "./lib/member-game-item.lib.svc";
+import { MemberGamePointLibSvc } from "./lib/member-game-point.lib.svc";
 
 class GameSvc {
     async getGameList(): Promise<ListResult<GameVM>> {
@@ -40,7 +41,6 @@ class GameSvc {
     async reportGame(memberToken: MemberToken, param: ReportPlayGameParameterVM): Promise<StartGameHistoryVM> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
-
             await queryRunner.commitTransaction();
             return null
         } catch (error) {
@@ -103,7 +103,8 @@ class GameSvc {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const memberGameItemLibSvc = new MemberGameItemLibSvc(memberId, queryRunner)
-            const ret = await memberGameItemLibSvc.memberBuyGameItem(param)
+            const memberGamePointLibSvc = new MemberGamePointLibSvc(memberId, queryRunner);
+            const ret = await memberGameItemLibSvc.memberBuyGameItem(param, memberGamePointLibSvc)
             await queryRunner.commitTransaction();
             return ret
         } catch (error) {

@@ -13,6 +13,7 @@ CREATE TABLE carPlusGame.dbo.game (
   [parameters] NVARCHAR(max) NOT NULL,
   [description] nvarchar(max) NOT NULL,
   [game_cover_image_url] varchar(500) NOT NULL DEFAULT '',
+  [code] varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY ([id])
 );
 
@@ -98,7 +99,7 @@ CREATE TABLE carPlusGame.dbo.member_game_item (
   [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
   [total_used_times] int NOT NULL,
   [remain_times] int NOT NULL,
-  [date_last_used] datetime2(0) NOT NULL,
+  [date_last_used] datetime2(0) DEFAULT NULL,
   [is_using] bit NOT NULL DEFAULT '0' ,
   [member_game_point_history_id] UNIQUEIDENTIFIER DEFAULT NULL,
   PRIMARY KEY ([id])

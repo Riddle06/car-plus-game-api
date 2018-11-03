@@ -1,15 +1,18 @@
 import { MemberBuyGameItemParameter } from '@view-models/game.vm';
 import { BaseConnection } from '../../base-connection';
-import { QueryRunner, MoreThan } from 'typeorm';
+import { QueryRunner, MoreThan, Between } from 'typeorm';
 import { MemberGameItemEntity } from '@entities/member-game-item.entity';
 import { GameItemType, MemberGameItemVM } from '../../../view-models/game.vm';
 import { checker, uniqueId } from '@utilities';
-import { AppError, BaseResult, ListResult } from '@view-models/common.vm';
+import { AppError, BaseResult, ListResult, Result } from '@view-models/common.vm';
 import { GameItemEntity } from '@entities/game-item.entity';
 import { MemberEntity } from '@entities/member.entity';
 import { memberSvc } from '@services/member.svc';
 import { variableSvc } from '@services/variable.svc';
 import { carPlusSvc } from '@services/car-plus.svc';
+import { MemberGamePointLibSvc } from './member-game-point.lib.svc';
+import { PointHistoryVM } from '@view-models/game-history.vm';
+import * as luxon from "luxon";
 export class MemberGameItemLibSvc extends BaseConnection {
 
     private memberId: string = null
@@ -129,7 +132,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
         return new BaseResult(true);
     }
 
-    async memberBuyGameItem(param: MemberBuyGameItemParameter): Promise<BaseResult> {
+    async memberBuyGameItem(param: MemberBuyGameItemParameter, memberGamePointLibSvc: MemberGamePointLibSvc): Promise<BaseResult> {
         const { gameItemId, num } = param;
 
         const gameItemEntity = await this.entityManager.getRepository(GameItemEntity).findOne(gameItemId);
@@ -152,72 +155,150 @@ export class MemberGameItemLibSvc extends BaseConnection {
         const { level, carPlusPoint, carPlusMemberId, gamePoint } = memberInformationRet.item;
 
 
-        // 除了超人幣是用格上紅利買，其他都是用
         // 等級驗證
         if (gameItemEntity.levelMinLimit > -1 && level < gameItemEntity.levelMinLimit) {
             throw new AppError('等級不足，無法購買此道具')
         }
 
-        // 金額驗證
-        if ((gameItemEntity.gamePoint * param.num) > gamePoint) {
-            throw new AppError('超人幣不足，無法扣買')
+        const useGamePointItems = [GameItemType.tool, GameItemType.role, GameItemType.carPlusPoint]
+        // 金額驗證 
+        if (useGamePointItems.some(item => item === gameItemEntity.type)) {
+            // 用超人幣購買的
+            if ((gameItemEntity.gamePoint * param.num) > gamePoint) {
+                throw new AppError('超人幣不足，無法購買')
+            }
+        } else {
+            // 用格上紅利購嗎
+            if ((gameItemEntity.carPlusPoint * param.num) > carPlusPoint) {
+                throw new AppError('格上紅利不足，無法兌換超人幣')
+            }
         }
+
 
         // 新增一筆紀錄
         const memberGameItemEntities: MemberGameItemEntity[] = [];
         for (let i = 0; i < num; i++) {
-            memberGameItemEntities.push(await this.addMemberGameItem(gameItemId))
+            memberGameItemEntities.push(await this.addMemberGameItem(gameItemEntity, memberGamePointLibSvc))
         }
 
         await this.entityManager.getRepository(MemberGameItemEntity).insert(memberGameItemEntities);
 
-        return null;
+        return new BaseResult(true);
     }
 
-    private async addMemberGameItem(gameItemId: string): Promise<MemberGameItemEntity> {
+    private async addMemberGameItem(gameItemEntity: GameItemEntity, memberGamePointLibSvc: MemberGamePointLibSvc): Promise<MemberGameItemEntity> {
+        const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity)
+        // 驗證
+        switch (gameItemEntity.type) {
+            case GameItemType.carPlusPoint:
+                // 一天只能買限量
+                const maxCarPlusPointAmountRet = await variableSvc.maxCarPlusPointAmountPerDay();
+
+                // 先查出今天是否有購買過
+                const findAndCountRet = await memberGameItemRepository.findAndCount({
+                    relations: ['gameItem'],
+                    where: {
+                        gameItemId: gameItemEntity.id,
+                        memberId: this.memberId,
+                        dateCreated: Between(luxon.DateTime.local().startOf('day').toJSDate(), luxon.DateTime.local().endOf('day').toJSDate()),
+                        gameItem: {
+                            type: GameItemType.carPlusPoint
+                        }
+                    }
+                })
+
+                if (findAndCountRet[1] >= maxCarPlusPointAmountRet.item) { 
+                    throw new AppError('今日已達購賣數量上限')
+                }
+
+                break;
+            case GameItemType.gamePoint:
+            case GameItemType.role:
+            case GameItemType.tool:
+                break;
+            default:
+                throw new AppError('不支援的道具種類')
+        }
 
         const memberGameItemEntity = new MemberGameItemEntity();
         memberGameItemEntity.id = uniqueId.generateV4UUID();
-        memberGameItemEntity.gameItemId = gameItemId
+        memberGameItemEntity.gameItemId = gameItemEntity.id
         memberGameItemEntity.memberId = this.memberId
         memberGameItemEntity.memberGamePointHistoryId = null;
-
+        memberGameItemEntity.dateLastUsed = null;
         memberGameItemEntity.dateCreated = new Date();
         memberGameItemEntity.dateUpdated = new Date();
-        memberGameItemEntity.enabled = true;
-        memberGameItemEntity.totalUsedTimes = 
-        memberGameItemEntity.remainTimes
-        memberGameItemEntity.dateLastUsed
-        memberGameItemEntity.isUsing
+        memberGameItemEntity.remainTimes = gameItemEntity.usedTimes
+        memberGameItemEntity.totalUsedTimes = gameItemEntity.usedTimes;
+        memberGameItemEntity.enabled = gameItemEntity.usedTimes > 0
+        memberGameItemEntity.isUsing = false
+
+        memberGameItemRepository.insert(memberGameItemEntity);
+
+        let pointHistoryResult: Result<PointHistoryVM> = null;
 
 
-        // switch (gameItemEntity.type) {
-        //     case GameItemType.tool:
+        switch (gameItemEntity.type) {
+            case GameItemType.tool:
 
-        //         // 扣遊戲點數
+                // 扣遊戲點數
+                pointHistoryResult = await memberGamePointLibSvc.minusGamePointByBuyGameItem(
+                    gameItemEntity.gamePoint,
+                    {
+                        gameItemId: gameItemEntity.id,
+                        memberGameItemId: memberGameItemEntity.id
+                    });
 
-        //         break;
-        //     case GameItemType.role:
+                break;
+            case GameItemType.role:
 
-        //         // 扣遊戲點數
-        //         break;
-        //     case GameItemType.carPlusPoint:
-        //         // 只能買一個
+                // 扣遊戲點數
+                pointHistoryResult = await memberGamePointLibSvc.minusGamePointByBuyGameItem(
+                    gameItemEntity.gamePoint,
+                    {
+                        gameItemId: gameItemEntity.id,
+                        memberGameItemId: memberGameItemEntity.id
+                    });
 
-        //         // 扣遊戲點數
+                break;
+            case GameItemType.carPlusPoint:
 
-        //         // 要加紅利
-        //         break;
-        //     case GameItemType.gamePoint:
+                // 扣遊戲點數
+                // 要加紅利
+                pointHistoryResult = await memberGamePointLibSvc.addCarPlusPointByTransferFromGamePoint(
+                    gameItemEntity.carPlusPoint,
+                    gameItemEntity.gamePoint,
+                    {
+                        gameItemId: gameItemEntity.id,
+                        memberGameItemId: memberGameItemEntity.id
+                    });
 
-        //         // 要扣掉格上紅利
-        //         // 加遊戲點數
-        //         break;
-        // }
+                break;
+            case GameItemType.gamePoint:
+
+                // 要扣掉格上紅利
+                // 加遊戲點數
+                pointHistoryResult = await memberGamePointLibSvc.addGamePointByTransferFromCarPlusPoint(
+                    gameItemEntity.carPlusPoint,
+                    gameItemEntity.gamePoint,
+                    {
+                        gameItemId: gameItemEntity.id,
+                        memberGameItemId: memberGameItemEntity.id
+                    });
+                break;
+        }
 
 
 
-        return null;
+        if (pointHistoryResult.success) {
+            await memberGameItemRepository.update({ id: memberGameItemEntity.id }, { memberGamePointHistoryId: pointHistoryResult.item.id })
+            memberGameItemEntity.memberGamePointHistoryId = pointHistoryResult.item.id;
+        }
+
+
+
+
+        return memberGameItemEntity;
     }
 
 }

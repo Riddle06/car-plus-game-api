@@ -48,8 +48,8 @@ export class MemberLoginLibSvc extends BaseConnection {
 
         // 若會員不存在則要幫他建立資料
         if (!isExistInMember) {
-            const createMemberRet = await this.registerLibSvc.createMember(carPlusMemberId);
-            memberEntity = await this.entityManager.getRepository(MemberEntity).findOne(createMemberRet.id)
+            const createMemberRet = await this.registerLibSvc.createMemberByCarPlusId(carPlusMemberId);
+            memberEntity = await this.entityManager.getRepository(MemberEntity).findOne(createMemberRet.item.id)
         }
 
         const memberLoginRepository = await this.entityManager.getRepository(MemberLoginEntity)

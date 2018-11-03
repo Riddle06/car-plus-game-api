@@ -1,4 +1,5 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from "typeorm";
+import { GameEntity } from '@entities/game.entity';
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
 
 
 @Entity("member_game_history")
@@ -88,5 +89,11 @@ export class MemberGameHistoryEntity extends BaseEntity {
         name: "member_id"
     })
     memberId: string;
+
+    @OneToOne(type => GameEntity, GameEntity => GameEntity.id)
+    @JoinColumn({
+        name: "game_id",
+    })
+    game: GameEntity
 
 }

@@ -39,4 +39,12 @@ export class GameEntity extends BaseEntity {
     })
     parameters: string;
 
+
+    @Column("varchar", {
+        nullable: false,
+        name: "code",
+        length: 50
+    })
+    code: "catch" | "shot";
+
 }
