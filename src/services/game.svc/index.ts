@@ -1,3 +1,4 @@
+import { MemberGameLibSvc } from './lib/member-game.lib.svc';
 import { ListResult, Result, BaseResult } from "@view-models/common.vm";
 import { GameItemVM, MemberBuyGameItemParameter } from '@view-models/game.vm';
 import { GameVM, MemberGameItemVM } from "@view-models/game.vm";
@@ -27,9 +28,10 @@ class GameSvc {
     async startGame(memberToken: MemberToken, param: PlayGameParameterVM): Promise<Result<StartGameHistoryVM>> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
-            const libGameSvc = new GameLibSvc(queryRunner)
+            const memberGameLibSvc = new MemberGameLibSvc(memberToken.payload.mi, queryRunner)
+            const ret = await memberGameLibSvc.startGame(param);
             await queryRunner.commitTransaction();
-            return null
+            return ret;
         } catch (error) {
             await queryRunner.rollbackTransaction();
             throw error
@@ -38,11 +40,13 @@ class GameSvc {
         }
     }
 
-    async reportGame(memberToken: MemberToken, param: ReportPlayGameParameterVM): Promise<StartGameHistoryVM> {
+    async reportGame(memberToken: MemberToken, param: ReportPlayGameParameterVM): Promise<Result<StartGameHistoryVM>> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
+            const memberGameLibSvc = new MemberGameLibSvc(memberToken.payload.mi, queryRunner)
+            const ret = await memberGameLibSvc.reportGame(param);
             await queryRunner.commitTransaction();
-            return null
+            return ret;
         } catch (error) {
             await queryRunner.rollbackTransaction();
             throw error
