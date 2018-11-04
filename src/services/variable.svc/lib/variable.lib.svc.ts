@@ -1,5 +1,5 @@
 import { ResultCode } from './../../../view-models/common.vm';
-import { AppError } from 'view-models/common.vm';
+import { AppError } from '@view-models/common.vm';
 import { checker } from './../../../utilities/type-checker/index';
 import { BaseConnection } from '@services/base-connection';
 import { LevelUpInformation } from '@view-models/variable.vm';

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import GameHistoryRouter from "./game-history.router";
 import GameItemRouter from "./game-item.router";
-import { RequestExtension, ResponseExtension } from "view-models/extension";
+import { RequestExtension, ResponseExtension } from "@view-models/extension";
 import { AppError } from "@view-models/common.vm";
 import { gameSvc } from "@services";
 import { gameQuestionSvc } from "@services/game.question.svc";

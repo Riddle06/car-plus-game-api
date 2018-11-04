@@ -7,6 +7,7 @@ import { StartGameHistoryVM, PlayGameParameterVM, ReportPlayGameParameterVM } fr
 import { ShotGameType } from './game-types/shot.game.type';
 import { checker } from '@utilities';
 import { MemberGameHistoryEntity } from '@entities/member-game-history.entity';
+import { BaseMemberGame } from './game-types/base-member.game';
 
 export class MemberGameLibSvc extends BaseConnection {
     private memberId: string = null
@@ -58,27 +59,3 @@ export class MemberGameLibSvc extends BaseConnection {
 
 }
 
-export abstract class BaseMemberGame extends BaseConnection {
-    protected memberId: string = null
-    protected game: GameEntity = null;
-    constructor(memberId: string, game: GameEntity, queryRunner: QueryRunner) {
-        super(queryRunner)
-        this.memberId = memberId;
-        this.game = game;
-    }
-    async init(): Promise<this> {
-        return this;
-    }
-    abstract startGame(): Promise<Result<StartGameHistoryVM>>
-    abstract reportGame(score: number): Promise<Result<StartGameHistoryVM>>
-
-    getScoreByEncryptString(encryptString: string): number {
-
-        try {
-            const ret = parseInt(atob(atob(encryptString)))
-            return ret;
-        } catch (error) {
-            throw new AppError('參數錯誤')
-        }
-    }
-}

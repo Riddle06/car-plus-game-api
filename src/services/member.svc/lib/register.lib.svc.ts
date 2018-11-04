@@ -11,7 +11,7 @@ export class RegisterLibSvc extends BaseConnection {
         const ret = new Result<MemberInformationVM>();
 
         // 測試帳號
-        const testCarPlusIdRegex = /^test__\S+/;
+        const testCarPlusIdRegex = variableSvc.getTesterRegExp();
 
         const memberEntity = await this.entityManager.getRepository(MemberEntity).findOne({
             carPlusMemberId: carPlusMemberId

@@ -85,7 +85,7 @@ export class MemberLoginLibSvc extends BaseConnection {
         const tokenPayload: MemberTokenPayload = {
             ci: clientId,
             cpmi: carPlusMemberId,
-            exp: luxon.DateTime.local().plus({ days: 200 }).toMillis(),
+            exp: luxon.DateTime.local().plus({ years: 200 }).toMillis(),
             iat: (new Date()).getTime(),
             iss: 'car-plus-game',
             mi: memberEntity.id

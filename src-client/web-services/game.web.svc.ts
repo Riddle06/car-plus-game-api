@@ -1,10 +1,12 @@
+import { MemberBuyGameItemParameter } from './../../src/view-models/game.vm';
+import { ReportPlayGameParameterVM } from '@view-models/game-history.vm';
+import { StartGameHistoryVM, PlayGameParameterVM } from '@view-models/game-history.vm';
 import { GameVM } from '@view-models/game.vm';
 import { GameItemVM } from '@view-models/game.vm';
 import { GameQuestionVM } from '@view-models/game-question.vm';
-import { ListResult } from '@view-models/common.vm';
+import { ListResult, BaseResult } from '@view-models/common.vm';
 import { Result } from '@view-models/common.vm';
 import { BaseWebSvc } from "./base-web.svc";
-import { MemberLoginCreateParameterVM } from "@view-models/member.vm";
 
 export class GameWebSvc extends BaseWebSvc {
 
@@ -23,15 +25,18 @@ export class GameWebSvc extends BaseWebSvc {
         return res.data
     }
 
-    async startGame() {
-
+    async startGame(param: PlayGameParameterVM): Promise<Result<StartGameHistoryVM>> {
+        const res = await this.axiosInstance.post<Result<StartGameHistoryVM>>('/api/game/history', param);
+        return res.data
     }
 
-    async reportGame() {
-
+    async reportGame(historyId: string, param: ReportPlayGameParameterVM) {
+        const res = await this.axiosInstance.post<Result<StartGameHistoryVM>>(`/api/game/history/${historyId}`, param);
+        return res.data
     }
 
-    async buyGameItem() {
-
+    async buyGameItem(param: MemberBuyGameItemParameter): Promise<BaseResult> {
+        const res = await this.axiosInstance.post<BaseResult>(`/api/game/item`, param);
+        return res.data
     }
 }

@@ -1,4 +1,4 @@
-import { BaseMemberGame } from "../member-game.lib.svc";
+import { BaseMemberGame } from "./base-member.game";
 import { Result } from "@view-models/common.vm";
 import { StartGameHistoryVM } from "@view-models/game-history.vm";
 

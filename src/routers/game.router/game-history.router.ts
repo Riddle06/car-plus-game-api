@@ -1,5 +1,7 @@
+import { ReportPlayGameParameterVM } from '@view-models/game-history.vm';
+import { gameSvc } from '@services';
 import { Router } from "express";
-import { RequestExtension, ResponseExtension } from "view-models/extension";
+import { RequestExtension, ResponseExtension } from "@view-models/extension";
 import { AppError } from "@view-models/common.vm";
 
 const router = Router();
@@ -9,7 +11,7 @@ const router = Router();
 router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
-        res.result = null;
+        res.result = null
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }
@@ -22,8 +24,9 @@ router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) =
 router.post('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
-        res.result = null;
+        const { memberToken } = req
         const param = req.body;
+        res.result = await gameSvc.startGame(memberToken, param);
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }
@@ -34,7 +37,11 @@ router.post('/', async (req: RequestExtension, res: ResponseExtension, next) => 
 router.put('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
-        res.result = null;
+
+        const { memberToken } = req
+        const param: ReportPlayGameParameterVM = req.body
+        param.gameHistoryId = req.params.id
+        res.result = await gameSvc.reportGame(memberToken, param)
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }

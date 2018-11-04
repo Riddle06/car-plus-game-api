@@ -7,11 +7,15 @@ export interface RequestExtension extends Request {
         page: number,
         size: number,
         keyword: string | string[]
+        mi: string
         [key: string]: string | number | Array<string | number>
     }
 
     cookies: {
         clientId?: string
+        r?: string
+        e?: string
+        x?: string
         [key: string]: any
     }
 

@@ -29,6 +29,11 @@ class VariableSvc {
         ret.item = 1;
         return ret.setResultValue(true);
     }
+
+    getTesterRegExp(): RegExp {
+        const testCarPlusIdRegex = /^test__\S+/;
+        return testCarPlusIdRegex
+    }
 }
 
 export const variableSvc = new VariableSvc();
