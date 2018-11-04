@@ -7,10 +7,16 @@
         "outDir": "./dist-client",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "baseUrl": "../src",
         "lib": [
             "es2015",
             "dom"
-        ]
+        ],
+        "paths": {
+            "@view-models/*": [
+                "view-models/*"
+            ]
+        }
     },
     "include": [
         "./**/*"

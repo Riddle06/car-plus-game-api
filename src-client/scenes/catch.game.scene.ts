@@ -1,6 +1,7 @@
 import { Application, loader, Texture, extras, glCore } from "pixi.js";
 import * as PIXI from "pixi.js";
 import * as dat from "dat.gui";
+import { MemberLoginWebSvc } from "../web-services/member-login.web.svc";
 const gui = new dat.GUI();
 
 interface LoaderResponse {
@@ -32,6 +33,7 @@ class CatchGameScene {
     constructor() { }
 
     async init(): Promise<this> {
+        const memberSvc = new MemberLoginWebSvc();
         // application 
         const height = window.innerHeight;
         const width = window.innerWidth;
@@ -111,7 +113,7 @@ class CatchGameScene {
     private collisionHandler(): void {
 
         if (this.app.screen.width < this.superMan.x + (this.superMan.width / 2)) {
-        
+
             this.turnDirection();
         } else if (this.superMan.x - (this.superMan.width / 2) < 0) {
             this.turnDirection();

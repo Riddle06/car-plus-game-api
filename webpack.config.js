@@ -14,6 +14,12 @@ module.exports = {
             chunks: 'all'
         }
     },
+    resolve: {
+        extensions: ['.js', '.ts', '.tsx'],
+        alias: {
+            "@view-models": path.resolve(__dirname, 'src/view-models/')
+        }
+    },
     module: {
         rules: [
             {

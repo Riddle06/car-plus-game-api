@@ -4,6 +4,7 @@ export interface GameVM {
     description: string
     imageUrl: string
     parameters: any
+    code: string
 }
 
 

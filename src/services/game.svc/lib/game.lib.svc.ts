@@ -11,13 +11,14 @@ export class GameLibSvc extends BaseConnection {
 
         const ret = new ListResult<GameVM>();
         ret.items = gameEntities.map(entity => {
-            const { id, description, parameters, name, gameCoverImageUrl } = entity
+            const { id, description, parameters, name, gameCoverImageUrl, code } = entity
             const game: GameVM = {
                 id,
                 description,
                 imageUrl: gameCoverImageUrl,
                 name,
-                parameters
+                parameters,
+                code
             }
             return game;
         })

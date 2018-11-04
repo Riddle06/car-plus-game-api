@@ -15,7 +15,7 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
         const { memberToken } = req;
-        res.result = null;
+        res.result = await memberSvc.getMemberInformation(memberToken)
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }
@@ -36,27 +36,6 @@ router.put('/nick-name', async (req: RequestExtension, res: ResponseExtension, n
     next();
 })
 
-// 取得目前會員遊戲道具資訊
-router.get('/game-item', async (req: RequestExtension, res: ResponseExtension, next) => {
-
-    try {
-        res.result = null;
-    } catch (error) {
-        res.appError = AppError.getAppError(error)
-    }
-    next();
-})
-
-// 會員開始使用道具（可以多個）
-router.post('/game-item', async (req: RequestExtension, res: ResponseExtension, next) => {
-
-    try {
-        res.result = null;
-    } catch (error) {
-        res.appError = AppError.getAppError(error)
-    }
-    next();
-})
 
 
 export default router;
