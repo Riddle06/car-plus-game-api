@@ -20,11 +20,20 @@ export class MemberGameLibSvc extends BaseConnection {
         const { gameId } = param;
         const gameRepository = await this.entityManager.getRepository(GameEntity)
         const gameEntity = await gameRepository.findOne(gameId);
+
         if (checker.isNullOrUndefinedObject(gameEntity)) {
             throw new AppError('查無此遊戲')
         }
         const memberGameType = await this.getMemberGame(gameEntity);
-        return memberGameType.startGame()
+
+        // 先註冊遊戲資料
+        const ret = await memberGameType.startGame();
+        // 處理遊戲使用的道具
+        const gameItems = await memberGameType.getUsingItemToUse(ret.item.id);
+
+        ret.item.usedItems = gameItems;
+
+        return ret;
     }
 
     async reportGame(param: ReportPlayGameParameterVM): Promise<Result<StartGameHistoryVM>> {
@@ -41,10 +50,10 @@ export class MemberGameLibSvc extends BaseConnection {
             throw new AppError('查無此遊戲')
         }
         const memberGameType = await this.getMemberGame(gameEntity.game);
+        await memberGameType.validateReportGame();
         const score = memberGameType.getScoreByEncryptString(scoreEncryptString)
-        return memberGameType.reportGame(score)
+        return memberGameType.reportGame(gameHistoryId, score)
     }
-
 
     async getMemberGame(game: GameEntity): Promise<BaseMemberGame> {
         switch (game.code) {

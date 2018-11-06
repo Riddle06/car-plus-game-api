@@ -4,7 +4,7 @@ import { MemberGameHistoryEntity } from "./member-game-history.entity";
 
 
 @Entity("member_game_history_game_item")
-export class MemberGameHistoryGameItem extends BaseEntity {
+export class MemberGameHistoryGameItemEntity extends BaseEntity {
 
     @PrimaryColumn("uniqueidentifier", {
         name: 'member_game_item_id'

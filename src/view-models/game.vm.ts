@@ -17,6 +17,8 @@ export interface GameItemVM {
     carPlusPoint: number
     type: GameItemType
     enableBuy: boolean
+    addScoreRate?: number
+    addGamePointRate?: number
 }
 
 export enum GameItemType {
