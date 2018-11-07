@@ -44,7 +44,8 @@ class GameSvc {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const memberGameLibSvc = new MemberGameLibSvc(memberToken.payload.mi, queryRunner)
-            const ret = await memberGameLibSvc.reportGame(param);
+            const memberGamePointLibSvc = new MemberGamePointLibSvc(memberToken.payload.mi, queryRunner)
+            const ret = await memberGameLibSvc.reportGame(param, memberGamePointLibSvc);
             await queryRunner.commitTransaction();
             return ret;
         } catch (error) {

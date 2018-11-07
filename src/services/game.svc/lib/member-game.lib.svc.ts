@@ -8,6 +8,7 @@ import { ShotGameType } from './game-types/shot.game.type';
 import { checker } from '@utilities';
 import { MemberGameHistoryEntity } from '@entities/member-game-history.entity';
 import { BaseMemberGame } from './game-types/base-member.game';
+import { MemberGamePointLibSvc } from './member-game-point.lib.svc';
 
 export class MemberGameLibSvc extends BaseConnection {
     private memberId: string = null
@@ -36,7 +37,7 @@ export class MemberGameLibSvc extends BaseConnection {
         return ret;
     }
 
-    async reportGame(param: ReportPlayGameParameterVM): Promise<Result<StartGameHistoryVM>> {
+    async reportGame(param: ReportPlayGameParameterVM, memberGamePointLibSvc: MemberGamePointLibSvc): Promise<Result<StartGameHistoryVM>> {
         const { gameHistoryId, scoreEncryptString } = param;
 
         const memberGameHistoryRepository = await this.entityManager.getRepository(MemberGameHistoryEntity)
@@ -52,7 +53,7 @@ export class MemberGameLibSvc extends BaseConnection {
         const memberGameType = await this.getMemberGame(gameEntity.game);
         await memberGameType.validateReportGame();
         const score = memberGameType.getScoreByEncryptString(scoreEncryptString)
-        return memberGameType.reportGame(gameHistoryId, score)
+        return memberGameType.reportGame(gameHistoryId, score, memberGamePointLibSvc)
     }
 
     async getMemberGame(game: GameEntity): Promise<BaseMemberGame> {

@@ -10,6 +10,7 @@ import { MemberGameHistoryEntity } from "@entities/member-game-history.entity";
 import { uniqueId } from "@utilities";
 import { MemberEntity } from "@entities/member.entity";
 import { GameItemEntity } from '@entities/game-item.entity';
+import { MemberGamePointLibSvc } from "../member-game-point.lib.svc";
 
 export abstract class BaseMemberGame extends BaseConnection {
     protected memberId: string = null
@@ -67,7 +68,7 @@ export abstract class BaseMemberGame extends BaseConnection {
 
     }
 
-    async reportGame(memberGameHistoryId: string, score: number): Promise<Result<StartGameHistoryVM>> {
+    async reportGame(memberGameHistoryId: string, score: number, memberGamePointLibSvc: MemberGamePointLibSvc): Promise<Result<StartGameHistoryVM>> {
 
         const memberGameHistoryMemberGameItemEntities = await this.memberGameHistoryMemberGameItemRepository.find({
             relations: ['memberGameItem', 'memberGameItem.gameItem'],
@@ -109,7 +110,8 @@ export abstract class BaseMemberGame extends BaseConnection {
             })
 
 
-    
+        // 增加遊戲點數
+        await memberGamePointLibSvc.addGamePointByGame(gamePoint, memberGameHistoryId)
 
         return;
     }
