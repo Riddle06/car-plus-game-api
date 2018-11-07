@@ -199,8 +199,6 @@ export abstract class BaseMemberGame extends BaseConnection {
         let newExperience = currentExperience + changeExperience;
         const levelInformation = await variableSvc.getLevelInformation();
 
-
-
         for (let i = 0; i < levelInformation.items.length; i++) {
             const item = levelInformation.items[i];
 
@@ -212,11 +210,10 @@ export abstract class BaseMemberGame extends BaseConnection {
                 const nextItem = levelInformation.items[i + 1];
 
                 if (newExperience >= nextItem.experience) {
-                    newExperience = changeExperience + currentExperience - nextItem.experience;
+                    newExperience = newExperience - nextItem.experience;
                     currentLevel += 1;
                     changeLevel += 1;
                     levelUpGamePoint += nextItem.levelUpGetGamePoint
-
                 }
             }
         }
