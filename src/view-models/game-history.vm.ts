@@ -30,6 +30,7 @@ export interface PlayGameParameterVM {
 export interface ReportPlayGameParameterVM {
     gameHistoryId: string
     scoreEncryptString: string
+    gamePintEncryptString: string
 }
 
 export interface StartGameHistoryVM {

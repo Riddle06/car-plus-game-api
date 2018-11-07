@@ -1,3 +1,4 @@
+import { variableSvc } from '@services/variable.svc';
 import { GameEntity } from "@entities/game.entity";
 import { BaseConnection } from "@services/base-connection";
 import { QueryRunner, MoreThan, Repository } from 'typeorm';
@@ -33,7 +34,10 @@ export abstract class BaseMemberGame extends BaseConnection {
 
     abstract getExperienceByScore(score: number): Promise<number>
 
-    abstract getGamePointByScore(score: number, gameItemEntities: GameItemEntity[]): Promise<number>
+    async getUseGameItemGamePoint(oriGamePoint: number, gameItemEntities: GameItemEntity[]): Promise<number> {
+
+        return oriGamePoint;
+    }
 
 
 
@@ -68,7 +72,9 @@ export abstract class BaseMemberGame extends BaseConnection {
 
     }
 
-    async reportGame(memberGameHistoryId: string, score: number, memberGamePointLibSvc: MemberGamePointLibSvc): Promise<Result<StartGameHistoryVM>> {
+    async reportGame(memberGameHistoryId: string, score: number,
+        gamePoint: number,
+        memberGamePointLibSvc: MemberGamePointLibSvc): Promise<Result<StartGameHistoryVM>> {
 
         const memberGameHistoryMemberGameItemEntities = await this.memberGameHistoryMemberGameItemRepository.find({
             relations: ['memberGameItem', 'memberGameItem.gameItem'],
@@ -82,42 +88,51 @@ export abstract class BaseMemberGame extends BaseConnection {
 
         const enableAddScoreGameItems = memberGameHistoryMemberGameItemEntities.filter(entity => entity.memberGameItem.gameItem.type === GameItemType.tool && entity.memberGameItem.gameItem.enabledAddScoreRate).map(entity => entity.memberGameItem.gameItem);
 
-
+        // 因為遊戲分數加成得到的分數
         const totalScore = await this.getTotalScore(score, enableAddScoreGameItems);
-        const changeExperience = await this.getExperienceByScore(totalScore);
-        const gamePoint = await this.getGamePointByScore(totalScore, enableAddGamePointGameItems);
-        const changeLevel = await this.getLevelByExperience(memberEntity.level, memberEntity.experience, changeExperience)
 
-        this.memberGameHistoryRepository.update(
+        // 取得經驗值（目前跟分數是 1 : 1)
+        const changeExperience = await this.getExperienceByScore(totalScore);
+
+        // 因為遊戲道具加成後得到的金幣
+        const gamePointAfterAddBonus = await this.getUseGameItemGamePoint(gamePoint, enableAddGamePointGameItems);
+
+        const { changeLevel, levelUpGamePoint, newExperience } = await this.getLevelUpInfoByExperience(memberEntity.level, memberEntity.experience, changeExperience);
+
+        // 更新遊戲紀錄
+        await this.memberGameHistoryRepository.update(
             { id: memberGameHistoryId },
             {
                 beforeExperience: memberEntity.experience,
                 changeExperience,
-                afterExperience: memberEntity.experience + changeExperience,
+                afterExperience: newExperience,
                 changeLevel,
                 afterLevel: memberEntity.level + changeLevel,
                 beforeLevel: memberEntity.level,
                 gameScore: totalScore
             });
 
-
-
-        // update member entity
+        // 更新會員紀錄
         await this.memberRepository.update({ id: this.memberId },
             {
-                experience: memberEntity.experience + changeExperience,
+                experience: newExperience,
                 level: memberEntity.level + changeLevel,
             })
 
 
         // 增加遊戲點數
-        await memberGamePointLibSvc.addGamePointByGame(gamePoint, memberGameHistoryId)
+        await memberGamePointLibSvc.addGamePointByGame(gamePointAfterAddBonus + levelUpGamePoint, memberGameHistoryId)
 
         return;
     }
 
     async getTotalScore(oriScore: number, gameItems: GameItemEntity[]): Promise<number> {
-        return 0
+
+        const ret = gameItems.filter(item => item.enabledAddScoreRate).reduce((totalScore, item) => {
+            return totalScore * item.addScoreRate
+        }, oriScore)
+
+        return ret;
     }
 
 
@@ -173,12 +188,57 @@ export abstract class BaseMemberGame extends BaseConnection {
         return gameItems;
     }
 
-    async getLevelByExperience(currentLevel: number, currentExperience: number, changeExperience: number): Promise<number> {
-        throw new Error('尚未實作')
+    async getLevelUpInfoByExperience(currentLevel: number, currentExperience: number, changeExperience: number): Promise<{
+        changeLevel: number,
+        levelUpGamePoint: number,
+        newExperience: number
+    }> {
+
+        let changeLevel = 0;
+        let levelUpGamePoint = 0;
+        let newExperience = currentExperience + changeExperience;
+        const levelInformation = await variableSvc.getLevelInformation();
+
+
+
+        for (let i = 0; i < levelInformation.items.length; i++) {
+            const item = levelInformation.items[i];
+
+            if (currentLevel > item.level) { continue; }
+
+            if (i === (levelInformation.items.length - 1)) { continue; }
+
+            if (currentLevel === item.level) {
+                const nextItem = levelInformation.items[i + 1];
+
+                if (newExperience >= nextItem.experience) {
+                    newExperience = changeExperience + currentExperience - nextItem.experience;
+                    currentLevel += 1;
+                    changeLevel += 1;
+                    levelUpGamePoint += nextItem.levelUpGetGamePoint
+
+                }
+            }
+        }
+
+        return {
+            levelUpGamePoint,
+            changeLevel,
+            newExperience
+        };
     }
 
     getScoreByEncryptString(encryptString: string): number {
 
+        try {
+            const ret = parseInt(atob(atob(encryptString)))
+            return ret;
+        } catch (error) {
+            throw new AppError('參數錯誤')
+        }
+    }
+
+    getPointByEncryptString(encryptString): number {
         try {
             const ret = parseInt(atob(atob(encryptString)))
             return ret;

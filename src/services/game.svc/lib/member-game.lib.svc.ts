@@ -38,7 +38,7 @@ export class MemberGameLibSvc extends BaseConnection {
     }
 
     async reportGame(param: ReportPlayGameParameterVM, memberGamePointLibSvc: MemberGamePointLibSvc): Promise<Result<StartGameHistoryVM>> {
-        const { gameHistoryId, scoreEncryptString } = param;
+        const { gameHistoryId, scoreEncryptString, gamePintEncryptString } = param;
 
         const memberGameHistoryRepository = await this.entityManager.getRepository(MemberGameHistoryEntity)
         const gameEntity = await memberGameHistoryRepository.findOne({
@@ -53,7 +53,8 @@ export class MemberGameLibSvc extends BaseConnection {
         const memberGameType = await this.getMemberGame(gameEntity.game);
         await memberGameType.validateReportGame();
         const score = memberGameType.getScoreByEncryptString(scoreEncryptString)
-        return memberGameType.reportGame(gameHistoryId, score, memberGamePointLibSvc)
+        const gamePoint = memberGameType.getPointByEncryptString(gamePintEncryptString)
+        return memberGameType.reportGame(gameHistoryId, score, gamePoint, memberGamePointLibSvc)
     }
 
     async getMemberGame(game: GameEntity): Promise<BaseMemberGame> {

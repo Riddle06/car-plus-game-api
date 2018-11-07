@@ -5,10 +5,8 @@ import { MemberGameHistoryEntity } from "@entities/member-game-history.entity";
 import { uniqueId } from "@utilities";
 
 export class ShotGameType extends BaseMemberGame {
-    getExperienceByScore(score: number): Promise<number> {
-        throw new Error("Method not implemented.");
+    async getExperienceByScore(score: number): Promise<number> {
+        return score;
     }
-    getGamePointByScore(score: number): Promise<number> {
-        throw new Error("Method not implemented.");
-    }
+    
 }

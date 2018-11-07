@@ -4,12 +4,8 @@ import { StartGameHistoryVM } from "@view-models/game-history.vm";
 
 export class CatchGameType extends BaseMemberGame {
     
-    getExperienceByScore(score: number): Promise<number> {
-        throw new Error("Method not implemented.");
+    async getExperienceByScore(score: number): Promise<number> {
+        return score;
     }
-    getGamePointByScore(score: number): Promise<number> {
-        throw new Error("Method not implemented.");
-    }
-
 
 }
