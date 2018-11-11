@@ -67,13 +67,14 @@ export const clientMiddleware = async (req: RequestExtension, res: ResponseExten
         return;
     }
 
+
     // 裝置
     let clientId = req.cookies.clientId;
 
     if (checker.isNullOrUndefinedOrWhiteSpace(clientId)) {
         clientId = uniqueId.generateV4UUID()
         res.cookie('clientId', clientId, {
-            httpOnly: true,
+            httpOnly: false,
             expires: luxon.DateTime.local().plus({ years: 200 }).toJSDate(),
         })
     }
@@ -82,6 +83,7 @@ export const clientMiddleware = async (req: RequestExtension, res: ResponseExten
     if (checker.isNullOrUndefinedOrWhiteSpace(req.query.mi)) {
         if (checker.isNullOrUndefinedOrWhiteSpace(token)) {
             res.redirect('/no-token')
+            return;
         }
     } else {
         if (checker.isNullOrUndefinedOrWhiteSpace(token)) {
@@ -136,9 +138,9 @@ async function getMemberLoginToken(clientId: string, req: RequestExtension, res:
             const tokenVM = jwt.decode(token, { complete: true }) as MemberToken
             const expires = luxon.DateTime.fromMillis(tokenVM.payload.exp).toJSDate();
 
-            res.cookie('r', tokens[0], { httpOnly: true, expires });
-            res.cookie('e', tokens[1], { httpOnly: true, expires });
-            res.cookie('x', tokens[2], { httpOnly: true, expires });
+            res.cookie('r', tokens[0], { httpOnly: false, expires });
+            res.cookie('e', tokens[1], { httpOnly: false, expires });
+            res.cookie('x', tokens[2], { httpOnly: false, expires });
         }
     } catch (error) {
         res.redirect('/no-token')

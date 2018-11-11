@@ -1,9 +1,16 @@
 var path = require('path');
+var webpack = require('webpack');
 
 module.exports = {
     mode: "production",
     entry: {
-        "catch.game": './src-client/scenes/catch.game.scene.ts'
+        "catch.game": './src-client/entry/catch.game.ts',
+        "shot.game": './src-client/entry/shot.game.ts',
+        "profile": "./src-client/entry/profile.ts",
+        "home": "./src-client/entry/home.ts",
+        "game.intro": "./src-client/entry/game.intro.ts",
+        "game.result": "./src-client/entry/game.result.ts",
+        "question": "./src-client/entry/question.ts"
     },
     output: {
         path: path.resolve(__dirname, 'client-dist/js'),
@@ -26,10 +33,12 @@ module.exports = {
                 test: /\.ts$/,
                 loader: 'ts-loader',
                 exclude: '/node_modules/'
-            }
-        ]
+            }]
     },
-    resolve: {
-        extensions: ['.ts', '.js'],
-    }
+    plugins: [
+        // new webpack.ProvidePlugin({
+        //     $: "jquery",
+        //     jQuery: "jquery"
+        // })
+    ]
 };

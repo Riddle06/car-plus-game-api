@@ -20,8 +20,10 @@ app.use('/static', express.static(path.resolve(__dirname, '../client-dist')));
 
 app.use('/', [cookieParser(), clientMiddleware, pageRouter]);
 
+
+
 app.use('/api', [bodyParser.json(),
-                memberTokenVerificationMiddleware,
+    memberTokenVerificationMiddleware,
     routers,
     responseEndMiddleware])
 
