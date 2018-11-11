@@ -44,6 +44,7 @@
     "module-alias": "^2.1.0",
     "mssql": "^4.2.2",
     "mysql": "^2.16.0",
+    "pad-left": "^2.1.0",
     "pixi.js": "^4.8.2",
     "reflect-metadata": "^0.1.12",
     "ts-loader": "^5.2.2",

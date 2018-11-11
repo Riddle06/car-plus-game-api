@@ -23,8 +23,9 @@ interface BaseShape {
 }
 class CatchGameScene {
     private app: Application = null
-    private superManMoveSpeed: number = 5
-    private superMan: PIXI.extras.AnimatedSprite = null
+    private superManMoveSpeed: number = 10
+    // private superMan: PIXI.extras.AnimatedSprite = null
+    private superMan: PIXI.Container = null
     private superManDirection: SuperManDirection = SuperManDirection.right;
     private fallItems: PIXI.Graphics[] = [];
     private fallSpeed: number = 3;
@@ -50,35 +51,79 @@ class CatchGameScene {
         const superManTextures: Texture[] =
             ["llama1.png", "llama2.png", "llama3.png", "llama4.png", "llama5.png"]
                 .map(x => Texture.fromFrame(x))
-        this.superMan = new PIXI.extras.AnimatedSprite(superManTextures)
-
-
+        // this.superMan = new PIXI.extras.AnimatedSprite(superManTextures)
         // set super man position and scale
-        this.superMan.anchor.x = 0.5
-        this.superMan.scale.set(2)
-        this.superMan.x = this.app.screen.width / 2;
-        this.superMan.y = this.app.screen.height - this.superMan.height;
-        this.superMan.animationSpeed = 0.2;
-        console.log(`this.superMan.height`, this.superMan.height)
-        this.superMan.play()
+        // this.superMan.anchor.x = 0.5
+        // this.superMan.scale.set(2)
+        // this.superMan.x = this.app.screen.width / 2;
+        // this.superMan.y = this.app.screen.height - this.superMan.height;
+        // this.superMan.animationSpeed = 0.2;
+        // console.log(`this.superMan.height`, this.superMan.height)
+        // this.superMan.play()
+
+
+        const superMan = new PIXI.Graphics();
+        superMan.beginFill(0Xfff000);
+        superMan.drawRect(0, 0, 50, 50)
+        superMan.endFill();
+        superMan.width = 50
+        superMan.height = 50
+        superMan.x = this.app.screen.width / 2;
+        superMan.y = this.app.screen.height - superMan.height;
+
+
+        this.superMan = superMan;
 
 
         this.stage.addChild(this.superMan)
-        this.app.ticker.add(this.moveHandle.bind(this));
-        this.app.ticker.add(this.collisionHandler.bind(this))
-        this.app.ticker.add(this.fallHandler.bind(this))
-        setInterval(() => {
-            this.generateFallItemHandler()
-        }, 500);
+        // this.app.ticker.add(this.moveHandle.bind(this));
+        // this.app.ticker.add(this.collisionHandler.bind(this))
+        // this.app.ticker.add(this.fallHandler.bind(this))
+
+
+
+
+        const shape = new PIXI.Graphics();
+        const startOffsetX = this.stage.width - 50;
+        shape.beginFill(0Xffa500);
+        shape.drawRect(0, 0, 50, 50)
+        shape.endFill();
+        shape.x = startOffsetX;
+        shape.y = this.stage.height - 50;
+        shape.width = 50
+        shape.height = 50
+
+        this.fallItems.push(shape);
+        this.stage.addChild(shape)
+
+
+        // setInterval(() => {
+        //     this.generateFallItemHandler()
+        // }, 500);
 
 
         this.stage.interactive = true;
 
         this.stage.on('pointerdown', () => {
-
-
-            this.turnDirection();
+            // this.turnDirection();
         })
+
+        document.addEventListener('keydown', (key) => {
+
+            switch (key.which) {
+                case 37:
+                    this.goLeft();
+                    break;
+                case 39:
+                    this.goRight();
+                    break;
+            }
+
+            if (this.hitTestRectangle(this.superMan, shape)) {
+                shape.visible = false
+            }
+        })
+
         this.app.stage.addChild(this.stage);
         return this;
     }
@@ -93,14 +138,14 @@ class CatchGameScene {
 
     private moveHandle(delta: number): void {
 
-        switch (this.superManDirection) {
-            case SuperManDirection.left:
-                this.goLeft();
-                break;
-            case SuperManDirection.right:
-                this.goRight();
-                break;
-        }
+        // switch (this.superManDirection) {
+        //     case SuperManDirection.left:
+        //         this.goLeft();
+        //         break;
+        //     case SuperManDirection.right:
+        //         this.goRight();
+        //         break;
+        // }
     }
 
     private turnDirection(): void {
@@ -138,12 +183,12 @@ class CatchGameScene {
             const startOffsetX = (Math.ceil(Math.random() * 10000)) % this.app.screen.width + 1
             if ((Math.ceil((Math.random() * 1000)) % 2) === 1) {
                 shape.beginFill(0Xffa500);
-                shape.drawRect(0, 0, 100, 100)
+                shape.drawRect(0, 0, 50, 50)
                 shape.endFill();
                 shape.x = startOffsetX;
                 shape.y = 0;
-                shape.width = 100
-                shape.height = 100
+                shape.width = 50
+                shape.height = 50
 
             } else {
 
@@ -189,6 +234,29 @@ class CatchGameScene {
         //Create a `collision` variable that will tell us
         //if a collision is occurring
         let collision = false;
+
+
+
+        console.log(`r1`, {
+            x: r1.x,
+            y: r1.y,
+            width: r1.width,
+            height: r1.height,
+            halfWidth: r1.halfWidth,
+            halfHeight: r1.halfHeight,
+            centerX: r1.centerX,
+            centerY: r1.centerY,
+        })
+        console.log(`r2`, {
+            x: r2.x,
+            y: r2.y,
+            width: r2.width,
+            height: r2.height,
+            halfWidth: r2.halfWidth,
+            halfHeight: r2.halfHeight,
+            centerX: r2.centerX,
+            centerY: r2.centerY,
+        })
 
         //Check whether the shapes of the sprites are overlapping. If they
         //are, set `collision` to `true`
