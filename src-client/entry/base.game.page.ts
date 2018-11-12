@@ -1,6 +1,6 @@
 import { Application, Container, Graphics, TextStyle, Text } from "pixi.js";
 import { BasePage } from "./base.page";
-import * as  pad from "pad-left";
+import * as pad from "pad-left";
 
 interface BaseShape {
     x: number

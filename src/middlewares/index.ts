@@ -61,7 +61,8 @@ export const responseEndMiddleware = async (req: RequestExtension, res: Response
  * 如果沒有 client id client side 會自動生成 client id
  */
 export const clientMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
-
+    next();
+    return;
     if (req.path.indexOf('no-token') > -1) {
         next();
         return;

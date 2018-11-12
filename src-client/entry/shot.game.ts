@@ -20,6 +20,15 @@ class ShotGamePage extends BaseGamePage {
 
     private isRotating: boolean = false
 
+    private readonly shellInitPower = 10
+    private shellInitWeightSpeed = 0.1
+    private shotting: boolean;
+
+    private currentShellXPower: number = 0
+    private currentShellYPower: number = 0
+    private currentShellWeightSpeed = 0
+
+
     private readonly degreeConfig = {
         max: 90,
         min: 1
@@ -45,6 +54,7 @@ class ShotGamePage extends BaseGamePage {
 
         gui.add(cannon, 'rotation');
 
+
         this.app.ticker.add(() => {
             this.rotationHandler()
         })
@@ -52,15 +62,20 @@ class ShotGamePage extends BaseGamePage {
         this.app.stage.interactive = true;
         this.app.stage.interactiveChildren = true;
         this.app.stage.on('touchstart', () => {
-            console.log(`touchstart`)
+            // console.log(`touchstart`)
             this.isRotating = true;
         })
 
         this.app.stage.on('touchend', () => {
-            console.log(`touchend`)
+            // console.log(`touchend`)
             this.isRotating = false
+            this.fire();
         })
 
+
+        this.app.ticker.add(() => {
+            this.shottingHandler();
+        })
 
 
 
@@ -82,6 +97,11 @@ class ShotGamePage extends BaseGamePage {
             y: shell.y,
         }
         this.shell = shell
+
+        gui.add(shell, 'x');
+        gui.add(shell, 'y');
+        gui.add(shell, 'rotation');
+        gui.add(this, 'shellInitWeightSpeed')
 
         cannon.addChild(shell)
         this.stage.addChild(cannon);
@@ -105,7 +125,8 @@ class ShotGamePage extends BaseGamePage {
 
         this.currentDegree = Math.abs(this.cannon.rotation / (Math.PI / 180))
 
-        console.log("this.currentDegree", this.currentDegree)
+        // console.log("this.currentDegree", this.currentDegree)
+
 
 
         // this.shell.x = this.shellInitPosition.x - (this.shellInitPosition.x *
@@ -132,6 +153,45 @@ class ShotGamePage extends BaseGamePage {
 
     }
 
+
+    async fire() {
+
+
+        this.shotting = true;
+
+        this.currentShellXPower = this.shellInitPower * Math.cos(this.currentDegree * (Math.PI / 180))
+        this.currentShellYPower = this.shellInitPower * Math.sin(this.currentDegree * (Math.PI / 180))
+        this.currentShellWeightSpeed = this.shellInitWeightSpeed;
+        const globalPosition = this.shell.getGlobalPosition();
+
+        this.cannon.removeChild(this.shell)
+
+        this.stage.addChild(this.shell)
+        this.shell.x = globalPosition.x;
+        this.shell.y = globalPosition.y;
+
+        // console.log(`globalPosition`, { x: globalPosition.x, y: globalPosition.y })
+
+
+    }
+
+    async shottingHandler() {
+        if (!this.shotting) {
+            return;
+        }
+
+        // this.currentShellWeightSpeed += this.currentShellWeightSpeed
+
+        this.currentShellYPower -= this.shellInitWeightSpeed
+
+        console.log(`this.currentShellYPower`, this.currentShellYPower)
+
+        this.shell.x += this.currentShellXPower;
+        this.shell.y += ((-1 * this.currentShellYPower) + this.currentShellWeightSpeed);
+
+        console.log(this.shell.y)
+        console.log(this.shell.x)
+    }
 
 
 }
