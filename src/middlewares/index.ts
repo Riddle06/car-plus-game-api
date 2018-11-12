@@ -6,6 +6,7 @@ import { verificationSvc, memberSvc } from "@services";
 import * as luxon from "luxon";
 import * as jwt from "jsonwebtoken";
 import { MemberToken } from '@view-models/verification.vm';
+import { devMiddlewares } from "./webpack.dev.middleware";
 
 export const memberTokenVerificationMiddleware = async (req: RequestExtension, res: Response, next: NextFunction) => {
     // next()
@@ -100,7 +101,7 @@ export const clientMiddleware = async (req: RequestExtension, res: ResponseExten
     next();
 }
 
-
+export { devMiddlewares };
 
 function getToken(req: RequestExtension): string {
 
@@ -149,3 +150,4 @@ async function getMemberLoginToken(clientId: string, req: RequestExtension, res:
 
 
 }
+

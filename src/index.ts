@@ -4,12 +4,17 @@ import * as cookieParser from "cookie-parser";
 import { configurations } from "@configuration";
 import routers from "./routers";
 import pageRouter from "./page.routers";
-import { memberTokenVerificationMiddleware, responseEndMiddleware, clientMiddleware } from "./middlewares";
+import { memberTokenVerificationMiddleware, responseEndMiddleware, clientMiddleware, devMiddlewares  } from "./middlewares";
 import * as bodyParser from "body-parser";
 import * as path from "path";
 import * as hbs from "hbs";
 
+
 const app = express();
+
+if (configurations.app.env === 'dev') {
+    app.use(devMiddlewares);
+}
 
 
 app.set('view engine', 'hbs');

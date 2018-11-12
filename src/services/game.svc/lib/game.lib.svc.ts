@@ -1,4 +1,4 @@
-import { GameItemVM } from './../../../view-models/game.vm';
+import { GameItemVM, GameCode } from './../../../view-models/game.vm';
 import { GameItemEntity } from './../../../entities/game-item.entity';
 import { BaseConnection } from "@services/base-connection";
 import { BaseResult, ListResult } from "@view-models/common.vm";
@@ -18,7 +18,7 @@ export class GameLibSvc extends BaseConnection {
                 imageUrl: gameCoverImageUrl,
                 name,
                 parameters,
-                code
+                code: code as GameCode
             }
             return game;
         })
