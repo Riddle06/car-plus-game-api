@@ -28,6 +28,7 @@
     "@types/mysql": "^2.15.5",
     "@types/pixi.js": "^4.8.2",
     "@types/uuid": "^3.4.4",
+    "@types/webpack": "^4.4.18",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
@@ -61,5 +62,11 @@
     "@configuration": "dist/configuration",
     "@view-models": "dist/view-models",
     "@entities": "dist/entities"
+  },
+  "devDependencies": {
+    "@types/webpack-dev-middleware": "^2.0.2",
+    "@types/webpack-hot-middleware": "^2.16.4",
+    "webpack-dev-middleware": "^3.4.0",
+    "webpack-hot-middleware": "^2.24.3"
   }
 }

@@ -1,1 +1,12 @@
-<h4>game introduction</h4>
+<h1>
+    {{game.name}}
+</h1>
+
+<p>
+    {{{game.description}}}
+</p>
+
+
+<input type="hidden" name="game_code" id="hidden_game_code" value="{{game.code}}">
+
+<script src="/static/js/game.intro.bundle.js"></script>

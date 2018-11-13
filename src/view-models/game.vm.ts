@@ -4,7 +4,7 @@ export interface GameVM {
     description: string
     imageUrl: string
     parameters: any
-    code: string
+    code: GameCode
 }
 
 
@@ -50,4 +50,9 @@ export interface MemberGameItemVM extends GameItemVM {
 export interface MemberBuyGameItemParameter {
     gameItemId: string
     num: number
+}
+
+export enum GameCode { 
+    catch = "catch",
+    shot = "shot"
 }

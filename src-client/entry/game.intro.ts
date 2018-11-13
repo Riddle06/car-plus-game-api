@@ -1,12 +1,13 @@
 import { BasePage } from "./base.page";
 
 class GameIntroPage extends BasePage {
+    private gameCode: string = null
     didMount() {
-        throw new Error("Method not implemented.");
+        this.gameCode = this.$('#hidden_game_code').val() as string  
     }
     domEventBinding() {
-        throw new Error("Method not implemented.");
-    } 
+        
+    }
 
 }
 

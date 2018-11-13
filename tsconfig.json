@@ -18,11 +18,11 @@
             "@utilities/*": [
                 "utilities/*"
             ],
-            "@services/*": [
-                "services/*"
-            ],
             "@services": [
                 "services"
+            ],
+            "@services/*": [
+                "services/*"
             ],
             "@configuration": [
                 "configuration"
