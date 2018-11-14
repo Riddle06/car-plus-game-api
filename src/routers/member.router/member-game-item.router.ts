@@ -30,6 +30,18 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
     next();
 })
 
+// 取得目前會員可使用的道具資訊
+router.get('/usable', async (req: RequestExtension, res: ResponseExtension, next) => {
+
+    try {
+        const { memberToken } = req
+        res.result = await gameSvc.memberGetUsableGameItems(memberToken)
+    } catch (error) {
+        res.appError = AppError.getAppError(error)
+    }
+    next();
+})
+
 
 
 export default router

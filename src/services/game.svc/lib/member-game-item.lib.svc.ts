@@ -1,4 +1,4 @@
-import { MemberBuyGameItemParameter } from '@view-models/game.vm';
+import { MemberBuyGameItemParameter, UseGameItemVM, GameItemVM } from '@view-models/game.vm';
 import { BaseConnection } from '../../base-connection';
 import { QueryRunner, MoreThan, Between } from 'typeorm';
 import { MemberGameItemEntity } from '@entities/member-game-item.entity';
@@ -22,7 +22,49 @@ export class MemberGameItemLibSvc extends BaseConnection {
         this.memberId = memberId;
     }
 
-    async getMemberGameItems(): Promise<ListResult<MemberGameItemVM>> {
+    // 使用者的 "道具" 列表
+    async getMemberUsableGameItems(): Promise<ListResult<UseGameItemVM>> {
+
+        const gameItemRepository = await this.entityManager.getRepository(GameItemEntity);
+
+        const gameItemEntities = await gameItemRepository.find({
+            where: {
+                type: GameItemType.tool,
+                enabled: true
+            }
+        })
+
+        const ret = new ListResult<UseGameItemVM>(true)
+
+        const useGameItems = gameItemEntities.map(entity => {
+
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type } = entity
+            const gameItem: GameItemVM = {
+                id,
+                description,
+                name,
+                imageUrl,
+                gamePoint,
+                carPlusPoint,
+                type,
+                enableBuy: true
+            }
+
+            const useGameItem: UseGameItemVM = {
+                gameItemId: entity.id,
+                isUsing: false,
+                usingRemainTimes: 0,
+                totalGameItemCount: 0,
+                type: entity.type,
+                memberGameItemIds: [],
+                gameItem
+            }
+            return useGameItem
+        })
+
+        ret.items = useGameItems;
+
+
         const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity);
 
         const memberGameItemEntities = await memberGameItemRepository.find({
@@ -32,29 +74,62 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 remainTimes: MoreThan(0),
                 enabled: true
             }
-        })
+        });
 
-        const ret = new ListResult<MemberGameItemVM>(true);
 
-        ret.items = memberGameItemEntities.map(memberGameItem => {
-            const item: MemberGameItemVM = {
-                haveItem: true,
-                haveItemCount: 1,
-                dateCreated: memberGameItem.dateCreated,
-                id: memberGameItem.id,
-                imageUrl: memberGameItem.gameItem.imageUrl,
-                gamePoint: memberGameItem.gameItem.gamePoint,
-                type: memberGameItem.gameItem.type,
-                carPlusPoint: memberGameItem.gameItem.gamePoint,
-                description: memberGameItem.gameItem.description,
-                enableBuy: false,
-                name: memberGameItem.gameItem.name
+        for (const useGameItem of useGameItems) {
+
+            useGameItem.memberGameItemIds = memberGameItemEntities.filter(entity => entity.gameItemId === useGameItem.gameItemId).map(entity => entity.id);
+            useGameItem.totalGameItemCount = useGameItem.memberGameItemIds.length;
+
+            // 正在使用
+            const usingMemberGameItem = memberGameItemEntities.find(entity => entity.gameItem.type === GameItemType.tool && entity.gameItem.id === useGameItem.gameItemId && entity.isUsing)
+            useGameItem.isUsing = !checker.isNullOrUndefinedObject(usingMemberGameItem)
+            if (useGameItem.isUsing) {
+                useGameItem.usingMemberGameItemId = usingMemberGameItem.id
+                useGameItem.usingRemainTimes = usingMemberGameItem.remainTimes
             }
-            return item
-        })
-
+        }
 
         return ret;
+
+
+    }
+
+    // 使用者的 所擁有的物品列表
+    async getMemberGameItems(): Promise<ListResult<MemberGameItemVM>> {
+
+
+        // const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity);
+
+        // const memberGameItemEntities = await memberGameItemRepository.find({
+        //     relations: ['gameItem'],
+        //     where: {
+        //         memberId: this.memberId,
+        //         remainTimes: MoreThan(0),
+        //         enabled: true
+        //     }
+        // })
+
+        // const ret = new ListResult<MemberGameItemVM>(true);
+
+        // ret.items = memberGameItemEntities.map(memberGameItem => {
+        //     const item: MemberGameItemVM = {
+
+        //         id: memberGameItem.id,
+        //         imageUrl: memberGameItem.gameItem.imageUrl,
+        //         gamePoint: memberGameItem.gameItem.gamePoint,
+        //         type: memberGameItem.gameItem.type,
+        //         carPlusPoint: memberGameItem.gameItem.gamePoint,
+        //         description: memberGameItem.gameItem.description,
+        //         enableBuy: false,
+        //         name: memberGameItem.gameItem.name
+        //     }
+        //     return item
+        // })
+
+
+        return null;
     }
 
     async useGameItem(memberGameItemId: string): Promise<BaseResult> {
@@ -207,7 +282,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
                     }
                 })
 
-                if (findAndCountRet[1] >= maxCarPlusPointAmountRet.item) { 
+                if (findAndCountRet[1] >= maxCarPlusPointAmountRet.item) {
                     throw new AppError('今日已達購賣數量上限')
                 }
 

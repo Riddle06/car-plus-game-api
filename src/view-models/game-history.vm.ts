@@ -38,6 +38,6 @@ export interface StartGameHistoryVM {
     gameId: string
     gameParameters: {}
     usedItems: GameItemVM[]
-    dateCreated: string
+    dateCreated: Date
     dateFinish: Date
 }

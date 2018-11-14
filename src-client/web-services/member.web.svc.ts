@@ -1,6 +1,7 @@
-import { Result, BaseResult } from '@view-models/common.vm';
+import { Result, BaseResult, ListResult } from '@view-models/common.vm';
 import { BaseWebSvc } from "./base-web.svc";
 import { MemberInformationVM, MemberUpdateInformationParameterVM } from "@view-models/member.vm";
+import { UseGameItemVM } from '@view-models/game.vm';
 
 export class MemberWebSvc extends BaseWebSvc {
 
@@ -19,5 +20,9 @@ export class MemberWebSvc extends BaseWebSvc {
         return res.data;
     }
 
+    async getUsableGameItems(): Promise<ListResult<UseGameItemVM>> {
+        const res = await this.axiosInstance.get<ListResult<UseGameItemVM>>('/api/member/game-item/usable');
+        return res.data
+    }
 
 }

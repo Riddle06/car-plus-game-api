@@ -65,6 +65,40 @@ export abstract class BaseMemberGame extends BaseConnection {
 
         await this.memberGameHistoryRepository.insert(history);
 
+        const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity);
+
+        const memberGameItemEntities = await memberGameItemRepository.find({
+            relations: ['gameItem'],
+            where: {
+                memberId: this.memberId,
+                remainTimes: MoreThan(0),
+                enabled: true,
+                isUsing: true
+            }
+        });
+
+        ret.item = {
+            dateCreated: history.dateCreated,
+            dateFinish: null,
+            gameId: this.game.id,
+            gameParameters: this.game.parameters,
+            id: history.id,
+            usedItems: memberGameItemEntities.map(entity => {
+                const { id, description, name, imageUrl, gamePoint, carPlusPoint, type } = entity.gameItem
+                const gameItemVM: GameItemVM = {
+                    id,
+                    description,
+                    name,
+                    imageUrl,
+                    gamePoint,
+                    carPlusPoint,
+                    type,
+                    enableBuy: true
+                }
+                return gameItemVM;
+            })
+        }
+
         return ret.setResultValue(true)
     }
 

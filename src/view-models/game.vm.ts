@@ -41,9 +41,9 @@ export enum GameItemType {
 }
 
 export interface MemberGameItemVM extends GameItemVM {
-    haveItem: boolean
-    haveItemCount: number
-    dateCreated: Date
+    isUsing: boolean
+    memberGameItemIds: string[]
+
 }
 
 
@@ -52,7 +52,19 @@ export interface MemberBuyGameItemParameter {
     num: number
 }
 
-export enum GameCode { 
+export enum GameCode {
     catch = "catch",
     shot = "shot"
+}
+
+export interface UseGameItemVM {
+    type: GameItemType
+    gameItemId: string
+    isUsing: boolean
+    usingMemberGameItemId?: string
+    usingRemainTimes?: number
+    totalGameItemCount: number
+    memberGameItemIds: string[]
+    gameItem: GameItemVM
+
 }

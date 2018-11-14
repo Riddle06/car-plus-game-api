@@ -7,6 +7,27 @@
 </p>
 
 
+<h5>道具使用</h5>
+<ul id="block_game_items_container">
+
+</ul>
+
+<button id="btn_go">go</button>
+
+
+<div style="display: none;">
+    <li data-game-item-id={gameItem.id} id="item_template_game_item">
+        名稱：{gameItem.name}
+        持有數：{totalGameItemCount}
+        使用中：{isUsing}
+        剩餘次數：{usingRemainTimes}
+    </li>
+</div>
+
+
+
+
 <input type="hidden" name="game_code" id="hidden_game_code" value="{{game.code}}">
+<input type="hidden" name="game_id" id="hidden_game_id" value="{{game.id}}">
 
 <script src="/static/js/game.intro.bundle.js"></script>

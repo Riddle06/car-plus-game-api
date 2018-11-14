@@ -26,12 +26,13 @@ export class GameWebSvc extends BaseWebSvc {
     }
 
     async startGame(param: PlayGameParameterVM): Promise<Result<StartGameHistoryVM>> {
+        console.log(`params`, param)
         const res = await this.axiosInstance.post<Result<StartGameHistoryVM>>('/api/game/history', param);
         return res.data
     }
 
     async reportGame(historyId: string, param: ReportPlayGameParameterVM) {
-        const res = await this.axiosInstance.post<Result<StartGameHistoryVM>>(`/api/game/history/${historyId}`, param);
+        const res = await this.axiosInstance.put<Result<StartGameHistoryVM>>(`/api/game/history/${historyId}`, param);
         return res.data
     }
 
@@ -39,4 +40,6 @@ export class GameWebSvc extends BaseWebSvc {
         const res = await this.axiosInstance.post<BaseResult>(`/api/game/item`, param);
         return res.data
     }
+
+
 }

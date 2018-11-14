@@ -1,6 +1,6 @@
 import { MemberGameLibSvc } from './lib/member-game.lib.svc';
 import { ListResult, Result, BaseResult } from "@view-models/common.vm";
-import { GameItemVM, MemberBuyGameItemParameter } from '@view-models/game.vm';
+import { GameItemVM, MemberBuyGameItemParameter, UseGameItemVM } from '@view-models/game.vm';
 import { GameVM, MemberGameItemVM } from "@view-models/game.vm";
 import { GameLibSvc } from "./lib/game.lib.svc";
 import { dbProvider } from "@utilities";
@@ -110,6 +110,22 @@ class GameSvc {
             const memberGameItemLibSvc = new MemberGameItemLibSvc(memberId, queryRunner)
             const memberGamePointLibSvc = new MemberGamePointLibSvc(memberId, queryRunner);
             const ret = await memberGameItemLibSvc.memberBuyGameItem(param, memberGamePointLibSvc)
+            await queryRunner.commitTransaction();
+            return ret
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async memberGetUsableGameItems(memberToken: MemberToken): Promise<ListResult<UseGameItemVM>> { 
+        const memberId = memberToken.payload.mi;
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const memberGameItemLibSvc = new MemberGameItemLibSvc(memberId, queryRunner)
+            const ret = await memberGameItemLibSvc.getMemberUsableGameItems()
             await queryRunner.commitTransaction();
             return ret
         } catch (error) {
