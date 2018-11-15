@@ -8,9 +8,11 @@ import { memberTokenVerificationMiddleware, responseEndMiddleware, clientMiddlew
 import * as bodyParser from "body-parser";
 import * as path from "path";
 import * as hbs from "hbs";
+import * as cors from "cors";
 
 
 const app = express();
+app.use(cors());
 
 if (configurations.app.env === 'dev') {
     app.use(devMiddlewares);
