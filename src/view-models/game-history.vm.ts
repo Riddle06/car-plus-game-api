@@ -1,10 +1,31 @@
 import { GameItemVM } from "./game.vm";
 
 export enum PointHistoryType {
+    /**
+     * 遊戲獲得
+     */
     game = 1,
+    /**
+     * 格上轉承遊戲
+     */
     carPlusPointTransferToGamePoint = 2,
+    /**
+     * 遊戲轉格上紅利
+     */
     gamePointTransferToCarPlusPoint = 3,
-    gamePointTransferToGameItem = 4
+    /**
+     * 遊戲點數買道具
+     */
+    gamePointTransferToGameItem = 4,
+    /**
+     * 人工補點數
+     */
+    manual = 5,
+
+    /**
+     * 首次登入遊戲
+     */
+    memberInit = 6
 
 }
 
