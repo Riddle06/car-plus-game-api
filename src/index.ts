@@ -13,6 +13,7 @@ import * as hbs from "hbs";
 const app = express();
 
 if (configurations.app.env === 'dev') {
+    console.log(`webpack develop mode on`)
     app.use(devMiddlewares);
 }
 
