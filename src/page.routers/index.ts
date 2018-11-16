@@ -4,6 +4,7 @@ import CatchGameRouter from "./catch-game.router";
 import QuestionRouter from "./question.router";
 import ProfileRouter from "./profile.router";
 import ShopRouter from "./shop.router";
+import AdministrationRouter from "./administration.router";
 
 const router = Router();
 
@@ -19,5 +20,6 @@ router.use('/catch-game', CatchGameRouter);
 router.use('/question', QuestionRouter);
 router.use('/profile', ProfileRouter);
 router.use('/shop', ShopRouter);
+router.use('/administration', AdministrationRouter)
 
 export default router;

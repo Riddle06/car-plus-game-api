@@ -10,7 +10,7 @@ export abstract class BaseWebSvc {
         const token = this.getToken();
 
         this.axiosInstance = axios.create({
-            
+            // baseURL: 'https://033f54d9.ngrok.io',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 clientId,

@@ -4,6 +4,7 @@ import { BasePage } from "./base.page";
 class HomePage extends BasePage {
     async didMount() {
         const profileRet = await this.webSvc.member.getProfile()
+        console.log('[profile]', profileRet)
 
         if (this.$.trim(profileRet.item.nickName) === '') {
             const nickName = prompt('請輸入暱稱', '');

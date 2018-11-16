@@ -6,19 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>格上租車</title>
-    <style>
-        body {
-            margin: 0
-        }
-    </style>
 
+    <link rel="stylesheet" href="/static/css/normalize.css">
+    <link rel="stylesheet" href="/static/css/element-ui/index.css">
     <script src="/static/js/vendor.bundle.js"></script>
 
 </head>
 
 <body>
-    {{> menu}}
-    {{{body}}}
+    <div id="app">
+        {{> admin.menu }}
+        {{{body}}}
+    </div>
 </body>
 
 </html>

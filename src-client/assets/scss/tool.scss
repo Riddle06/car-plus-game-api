@@ -1,0 +1,98 @@
+.hidden{
+  display: none !important;
+}
+
+.clearfix {
+  @include clearfix;
+}
+
+.text-center{
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-success {
+  color: $success;
+}
+
+.text-warning {
+  color: $warning;
+}
+
+.text-error {
+  color: $error;
+}
+
+.text-re {
+  color: $re;
+}
+
+
+.text-html {
+  word-break: break-all;
+}
+
+.pull-left {
+  float: left
+}
+
+.pull-right {
+  float: right
+}
+
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+@for $i from 1 through 100 {
+  .space-#{$i} {
+    display: block;
+    height: 0px + $i;
+  }
+}
+
+
+.litile-tip {
+  font-size: 12px;
+  color: red;
+}
+
+.img-rwd {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+
+blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 0;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019"; // “  ”  ‘ ’
+  line-height: 1.8;
+  font-size: 1rem;
+
+  &::before {
+    color: #ccc;
+    content: open-quote;
+    font-size: 4em;
+    line-height: 0.1em;
+    margin-right: 0.25em;
+    vertical-align: -0.4em;
+  }
+
+}
+
+
+
