@@ -106,23 +106,7 @@ CREATE TABLE carPlusGame.dbo.member_game_item (
 )  ;
 
 
-CREATE TABLE carPlusGame.dbo.member_game_point_history (
-  [id] UNIQUEIDENTIFIER NOT NULL,
-  [member_id] UNIQUEIDENTIFIER NOT NULL,
-  [type] int NOT NULL DEFAULT '0',
-  [before_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
-  [after_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
-  [change_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
-  [before_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
-  [after_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
-  [change_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
-  [description] nvarchar(100) NOT NULL DEFAULT '',
-  [game_item_id] UNIQUEIDENTIFIER DEFAULT NULL,
-  [member_game_item_id] UNIQUEIDENTIFIER DEFAULT NULL,
-  [member_game_history_id] UNIQUEIDENTIFIER DEFAULT NULL,
-  PRIMARY KEY ([id])
-)  ;
+
 
 
 CREATE TABLE carPlusGame.dbo.member_login (
@@ -151,6 +135,53 @@ CREATE TABLE carPlusGame.dbo.vars (
 )  ;
 
 
+CREATE TABLE carPlusGame.dbo.member_game_point_history (
+  [id] UNIQUEIDENTIFIER NOT NULL,
+  [member_id] UNIQUEIDENTIFIER NOT NULL,
+  [type] int NOT NULL DEFAULT '0',
+  [before_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [after_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [change_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [before_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [after_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [change_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [description] nvarchar(100) NOT NULL DEFAULT '',
+  [game_item_id] UNIQUEIDENTIFIER DEFAULT NULL,
+  [member_game_item_id] UNIQUEIDENTIFIER DEFAULT NULL,
+  [member_game_history_id] UNIQUEIDENTIFIER DEFAULT NULL,
+  [admin_user_name] nvarchar(100) NULL DEFAULT NULL,
+  [admin_user_id] UNIQUEIDENTIFIER NULL DEFAULT NULL,
+  PRIMARY KEY ([id])
+)  ;
+
+
+CREATE TABLE carPlusGame.dbo.admin_user (
+  [id] UNIQUEIDENTIFIER NOT NULL,
+  [name] nvarchar(50) NOT NULL DEFAULT '',
+  [account] nvarchar(50) NOT NULL,
+  [password] nvarchar(500) NOT NULL,
+  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  PRIMARY KEY ([id])
+);
+
+
+CREATE TABLE carPlusGame.dbo.member_block_history (
+  [id] UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+  [member_id] UNIQUEIDENTIFIER NOT NULL,
+  [reason] nvarchar(500) NOT NULL DEFAULT '',
+  [is_deleted] bit NOT NULL DEFAULT '0',
+  [admin_user_name] nvarchar(100) NOT NULL DEFAULT '',
+  [admin_user_id] UNIQUEIDENTIFIER NOT NULL,
+  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  PRIMARY KEY ([id])
+);
+
+
+
+
 INSERT INTO game VALUES 
 ('08219c81-d446-11e8-9087-0242ac110002',N'超人接接樂','{}',N'天空中會落下氣球與炸彈，可透過點擊畫\n面改變左右方向，接到氣球可加分，接到\n炸彈會扣分或扣時間，限時3分鐘，接到越\n多氣球分數越高',''),('0821ce27-d446-11e8-9087-0242ac110002',N'射擊吧超人','{}',N'超人透過砲彈射擊壞人，按住螢幕瞄準，鬆手即\n發射，角度正確即可射擊成功，殺死越多壞人分\n數越高。','');
 
@@ -173,4 +204,7 @@ VALUES
 (NEWID(), ('超人隊長'), ('1'), (''), ('7500.00'),  ('0.00'), (getdate()), ('0'), ('0'), ('-1'), ('0'), ('0'), ((12)), '超人中的隊長，有著高超領導力與堅忍的意志力，所有超人都聽命於隊長，手臂上有著代表超人的C臂章，裝備也比隊員們更多更厲害。',1),
 (NEWID(), ('力霸超人'), ('1'), (''), ('12500.00'),  ('0.00'), (getdate()), ('0'), ('0'), ('-1'), ('0'), ('0'), ((12)), '超人中的隱藏角色，力量系的超人，是超人隊長遭遇困境時變身而來，全身肌肉發達，限等級12以上購買使用。',1)
 ;
+
+
+
 

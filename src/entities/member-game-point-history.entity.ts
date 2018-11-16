@@ -75,7 +75,7 @@ export class MemberGamePointHistoryEntity extends BaseEntity {
 
     @Column("uniqueidentifier", {
         nullable: true,
-        
+
         name: "member_game_item_id"
     })
     memberGameItemId: string | null;
@@ -98,5 +98,19 @@ export class MemberGamePointHistoryEntity extends BaseEntity {
         nullable: true,
         name: "member_game_history_id"
     })
-    memberGameHistoryId:string | null
+    memberGameHistoryId: string | null
+
+    @Column("nvarchar", {
+        nullable: true,
+        name: "admin_user_name",
+        length: 50
+    })
+    adminUserName: string | null
+
+    @Column("uniqueidentifier", {
+        nullable: true,
+        name: "admin_user_id"
+    })
+    adminUserId: string | null
+
 }
