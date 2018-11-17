@@ -10,7 +10,6 @@ const router = Router();
 
 router.get('/', async (req, res, next) => {
     res.render('pages/index', {
-        layout: 'layouts/index',
         item: 'testItem'
     })
 });
