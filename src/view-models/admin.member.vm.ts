@@ -12,3 +12,32 @@ export interface AdminMemberGameItemVM extends GameItemVM {
 
 export interface AdminMemberEntityQueryParameterVM {
 }
+
+export interface AdminMemberBlockParameter {
+    memberId: string
+    reason: string
+    adminUserName: string
+}
+
+export interface AdminMemberBlockHistoryVM {
+    id: string
+    memberId: string
+    adminUserId: string
+    reason: string
+    dateCreated: Date
+    dateUpdated: Date
+    adminUserName: string
+    isDeleted: boolean
+    deleteAdminUserName?: string
+    deleteAdminUserId?: string
+    memberNickName?: string
+
+}
+
+export interface AdminMemberBlockListQueryParameterVM {
+    memberId: string
+}
+
+export interface AdminMemberListQueryParameterVM {
+    memberId: string
+}

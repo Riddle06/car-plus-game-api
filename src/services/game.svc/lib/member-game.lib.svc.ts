@@ -1,3 +1,4 @@
+import { MemberEntity } from './../../../entities/member.entity';
 import { CatchGameType } from './game-types/catch.game.type';
 import { GameEntity } from '@entities/game.entity';
 import { BaseConnection } from "@services/base-connection";
@@ -55,6 +56,30 @@ export class MemberGameLibSvc extends BaseConnection {
         const score = memberGameType.getScoreByEncryptString(scoreEncryptString)
         const gamePoint = memberGameType.getPointByEncryptString(gamePintEncryptString)
         return memberGameType.reportGame(gameHistoryId, score, gamePoint, memberGamePointLibSvc)
+    }
+
+    async getGameHistory(id: string): Promise<Result<StartGameHistoryVM>> {
+
+        const memberGameHistoryRepository = await this.entityManager.getRepository(MemberGameHistoryEntity)
+
+        const memberGameHistoryEntity = await memberGameHistoryRepository.findOne({
+            relations: ['game'],
+            where: {
+                id
+            }
+        })
+
+        if (checker.isNullOrUndefinedObject(memberGameHistoryEntity)) {
+            throw new AppError('查無此紀錄')
+        }
+
+        if (checker.isNullOrUndefinedObject(memberGameHistoryEntity.game)) {
+            throw new AppError('查無此紀錄遊戲')
+        }
+
+        const memberGameType = await this.getMemberGame(memberGameHistoryEntity.game);
+
+        return await memberGameType.getGameHistory(memberGameHistoryEntity)
     }
 
     async getMemberGame(game: GameEntity): Promise<BaseMemberGame> {

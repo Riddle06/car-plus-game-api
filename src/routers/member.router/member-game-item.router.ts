@@ -24,6 +24,7 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
         res.result = null;
+        //TODO:
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }

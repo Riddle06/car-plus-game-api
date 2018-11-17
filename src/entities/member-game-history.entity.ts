@@ -1,5 +1,6 @@
+import { MemberGameHistoryGameItemEntity } from './member-game-history-game-item.entity';
 import { GameEntity } from '@entities/game.entity';
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany } from "typeorm";
 
 
 @Entity("member_game_history")
@@ -95,5 +96,12 @@ export class MemberGameHistoryEntity extends BaseEntity {
         name: "game_id",
     })
     game: GameEntity
+
+    @OneToMany(type => MemberGameHistoryGameItemEntity, MemberGameHistoryGameItemEntity => MemberGameHistoryGameItemEntity.memberGameHistoryId)
+    @JoinColumn({
+        name: "id",
+        referencedColumnName: 'member_game_history_id'
+    })
+    memberGameHistoryGameItems: MemberGameHistoryGameItemEntity[]
 
 }

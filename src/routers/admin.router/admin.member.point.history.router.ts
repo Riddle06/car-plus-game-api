@@ -5,19 +5,19 @@ const router = Router();
 
 // 紅包紀錄 type = 
 router.get('/history', async (req: RequestExtension, res: ResponseExtension, next) => {
-
+//TODO:
     next();
 })
 
 // 客訴補點
 router.get('/history/manual', async (req: RequestExtension, res: ResponseExtension, next) => {
-
+//TODO:
     next();
 })
 
 // 客訴補幣
 router.post('/', async (req: RequestExtension, res: ResponseExtension, next) => {
-
+//TODO:
     next();
 })
 

@@ -11,6 +11,7 @@ const router = Router();
 router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
+        //TODO:
         res.result = null
     } catch (error) {
         res.appError = AppError.getAppError(error)
@@ -37,7 +38,6 @@ router.post('/', async (req: RequestExtension, res: ResponseExtension, next) => 
 router.put('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
-
         const { memberToken } = req
         const param: ReportPlayGameParameterVM = req.body
         param.gameHistoryId = req.params.id

@@ -1,3 +1,4 @@
+import { MemberEntity } from './member.entity';
 import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId, BaseEntity } from "typeorm";
 
 
@@ -65,5 +66,11 @@ export class MemberBlockHistoryEntity extends BaseEntity {
         nullable: true,
         name: "delete_admin_user_id"
     })
-    deleteAdminUserId: string 
+    deleteAdminUserId: string
+
+    @ManyToOne(type => MemberEntity)
+    @JoinColumn({
+        name: "member_id"
+    })
+    member: MemberEntity
 }

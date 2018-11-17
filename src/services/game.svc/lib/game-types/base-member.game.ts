@@ -8,7 +8,7 @@ import { MemberGameItemEntity } from "@entities/member-game-item.entity";
 import { MemberGameHistoryGameItemEntity } from "@entities/member-game-history-game-item.entity";
 import { GameItemVM, GameItemType } from '@view-models/game.vm';
 import { MemberGameHistoryEntity } from "@entities/member-game-history.entity";
-import { uniqueId } from "@utilities";
+import { uniqueId, checker } from "@utilities";
 import { MemberEntity } from "@entities/member.entity";
 import { GameItemEntity } from '@entities/game-item.entity';
 import { MemberGamePointLibSvc } from "../member-game-point.lib.svc";
@@ -35,11 +35,8 @@ export abstract class BaseMemberGame extends BaseConnection {
     abstract getExperienceByScore(score: number): Promise<number>
 
     async getUseGameItemGamePoint(oriGamePoint: number, gameItemEntities: GameItemEntity[]): Promise<number> {
-
         return oriGamePoint;
     }
-
-
 
     async init(): Promise<this> {
         return this;
@@ -102,9 +99,7 @@ export abstract class BaseMemberGame extends BaseConnection {
         return ret.setResultValue(true)
     }
 
-    async validateReportGame(): Promise<void> {
-
-    }
+    async validateReportGame(): Promise<void> { }
 
     async reportGame(memberGameHistoryId: string, score: number,
         gamePoint: number,
@@ -257,6 +252,58 @@ export abstract class BaseMemberGame extends BaseConnection {
             changeLevel,
             newExperience
         };
+    }
+
+    async getGameHistory(memberGameHistoryEntity: MemberGameHistoryEntity): Promise<Result<StartGameHistoryVM>> {
+
+        if (checker.isNullOrUndefinedObject(memberGameHistoryEntity)) {
+            throw new AppError('查無此紀錄')
+        }
+
+        if (memberGameHistoryEntity.memberId !== this.memberId) {
+            throw new AppError('無權限查看此紀錄')
+        }
+
+        const memberGameHistoryMemberGameItemEntities = await this.memberGameHistoryMemberGameItemRepository.find({
+            relations: ['memberGameItem', 'memberGameItem.gameItem'],
+            where: {
+                memberGameHistoryId: memberGameHistoryEntity.id
+            }
+        })
+
+        const usedItems: GameItemVM[] = [];
+
+        for (const memberGameHistoryMemberGameItemEntity of memberGameHistoryMemberGameItemEntities) {
+
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type } = memberGameHistoryMemberGameItemEntity.memberGameItem.gameItem
+
+            const gameItemVM: GameItemVM = {
+                id,
+                description,
+                name,
+                imageUrl,
+                gamePoint,
+                carPlusPoint,
+                type,
+                enableBuy: true
+            }
+
+            usedItems.push(gameItemVM)
+        }
+
+
+        const ret = new Result<StartGameHistoryVM>(true);
+
+        ret.item = {
+            dateCreated: memberGameHistoryEntity.dateCreated,
+            dateFinish: memberGameHistoryEntity.dateFinished,
+            gameId: this.game.id,
+            gameParameters: this.game.parameters,
+            id: memberGameHistoryEntity.id,
+            usedItems
+        }
+
+        return ret;
     }
 
     getScoreByEncryptString(encryptString: string): number {

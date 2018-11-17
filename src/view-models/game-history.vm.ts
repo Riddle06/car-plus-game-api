@@ -55,10 +55,33 @@ export interface ReportPlayGameParameterVM {
 }
 
 export interface StartGameHistoryVM {
+
+    /**
+     * 遊戲紀錄的識別值
+     */
     id: string
     gameId: string
+    /**
+     * 遊戲參數
+     */
     gameParameters: {}
     usedItems: GameItemVM[]
     dateCreated: Date
     dateFinish: Date
+
+    beforeScore?: number
+    afterScore?: number
+    changeScore?: number
+
+    beforeExperience?: number
+    changeExperience?: number
+    afterExperience?: number
+
+    beforeLevel?: number
+    changeLevel?: number
+    afterLevel?: number
+    
+    gamePoint?: number
+
+
 }

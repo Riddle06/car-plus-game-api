@@ -120,7 +120,7 @@ class GameSvc {
         }
     }
 
-    async memberGetUsableGameItems(memberToken: MemberToken): Promise<ListResult<UseGameItemVM>> { 
+    async memberGetUsableGameItems(memberToken: MemberToken): Promise<ListResult<UseGameItemVM>> {
         const memberId = memberToken.payload.mi;
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
@@ -134,6 +134,10 @@ class GameSvc {
         } finally {
             await queryRunner.release();
         }
+    }
+
+    async memberGetGameHistory(memberToken: MemberToken, id: string): Promise<Result<StartGameHistoryVM>> {
+        return null;
     }
 
 }

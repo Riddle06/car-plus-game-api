@@ -5,7 +5,7 @@ const router = Router();
 
 // 查詢遊戲紀錄
 router.get('/history', async (req: RequestExtension, res: ResponseExtension, next) => {
-
+    //TODO:
     next();
 })
 
