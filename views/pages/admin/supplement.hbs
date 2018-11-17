@@ -1,0 +1,42 @@
+<div>
+  <h2>客訴補幣</h2>
+  <div style="max-width: 550px">
+    <el-form>
+      <el-form-item label="補點會員Id">
+        <el-input placeholder="請輸入會員Id"></el-input>
+      </el-form-item>
+      <el-form-item label="補入超人幣">
+        <el-input type="number" placeholder="請輸入超人幣"></el-input>
+      </el-form-item>
+      <el-form-item label="經手人">
+        <el-input placeholder="請輸入經手人"></el-input>
+      </el-form-item>
+      <el-form-item label=" ">
+        <el-button type="warning" size="small">送出</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+
+
+  <div class="text-right row-block">
+    <el-row type="flex" align="middle" justify="space-between">
+      <el-col class="text-left">
+
+      </el-col>
+      <el-col>
+        <el-pagination :currentPage.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
+          :total="page.dataAmount" @currentChange="handlePageChange">
+        </el-pagination>
+      </el-col>
+    </el-row>
+  </div>
+
+  <el-table :data="history" row-key="id" header-align="center" stripe border highlight-current-row>
+    <el-table-column label="id" prop="id"></el-table-column>
+    <el-table-column label="暱稱" prop="name"></el-table-column>
+    <el-table-column label="等級" prop="level"></el-table-column>
+    <el-table-column label="金幣" prop="coin"></el-table-column>
+  </el-table>
+</div>
+
+<script src="/static/js/admin.supplement.bundle.js"></script>

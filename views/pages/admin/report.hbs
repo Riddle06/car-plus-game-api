@@ -1,0 +1,40 @@
+<div>
+  <h2>營運報表</h2>
+  <div style="max-width: 550px">
+    <el-form>
+      <el-form-item label="日期">
+        <el-date-picker type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
+      </el-form-item>
+    </el-form>
+  </div>
+
+
+  <div class="text-right row-block">
+    <el-row type="flex" align="middle" justify="space-between">
+      <el-col class="text-left">
+        <el-button type="primary" icon="el-icon-search">搜尋</el-button>
+        <el-button type="info">匯出Excel</el-button>
+      </el-col>
+      <el-col>
+        <el-pagination :currentPage.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
+          :total="page.dataAmount" @currentChange="handlePageChange">
+        </el-pagination>
+      </el-col>
+    </el-row>
+  </div>
+
+  <el-table :data="reports" row-key="id" header-align="center" stripe border highlight-current-row>
+    <el-table-column label="id" prop="id"></el-table-column>
+    <el-table-column label="暱稱" prop="name"></el-table-column>
+    <el-table-column label="等級" prop="level"></el-table-column>
+    <el-table-column label="金幣" prop="coin"></el-table-column>
+    <el-table-column label="操作" align="center">
+      <template slot-scope="scope">
+        <el-button type="danger" size="mini">封鎖</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+</div>
+
+<script src="/static/js/admin.report.bundle.js"></script>

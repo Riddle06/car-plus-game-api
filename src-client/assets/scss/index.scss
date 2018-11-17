@@ -46,4 +46,12 @@ a:hover {
   text-decoration: none;
 }
 
+h2 {
+  margin: 0 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid black;
+}
+
+
 @import './tool.scss';
+@import './admin.scss';

@@ -2,22 +2,48 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>格上租車</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>格上租車</title>
 
-    <link rel="stylesheet" href="/static/css/normalize.css">
-    <link rel="stylesheet" href="/static/css/element-ui/index.css">
-    <script src="/static/js/vendor.bundle.js"></script>
+  <style>
+    #app {
+      opacity: 1;
+      -webkit-transition: all .5s;
+      transition: all .5s;
+    }
 
+    [v-cloak] {
+      opacity: 0 !important;
+    }
+  </style>
+  <link rel="stylesheet" href="/static/css/normalize.css">
+  <link rel="stylesheet" href="/static/css/element-ui/index.css">
+  <script src="/static/js/vendors~admin.blacklist~admin.game-history~admin.index~admin.login~admin.members~admin.point-history~7e3005c6.bundle.js"></script>
+  <script src="/static/js/vendors~admin.blacklist~admin.game-history~admin.index~admin.login~admin.members~admin.point-history~d7d4b2f5.bundle.js"></script>
 </head>
 
 <body>
-    <div id="app">
-        {{> admin.menu }}
-        {{{body}}}
-    </div>
+  <div id="app" v-cloak>
+    <el-container style="height: 100vh">
+      <el-header>
+        <a href="/administration">
+          <h1>格上會員小遊戲後台</h1>
+        </a>
+      </el-header>
+      <el-container>
+        {{#if showMenu}}
+        <el-aside width="200px">
+          {{> admin.menu }}
+        </el-aside>
+        {{/if }}
+        <el-container>
+          <el-main>{{{body}}}</el-main>
+        </el-container>
+      </el-container>
+    </el-container>
+  </div>
 </body>
 
 </html>

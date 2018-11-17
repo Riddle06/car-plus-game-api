@@ -10,6 +10,10 @@
   text-align: center;
 }
 
+.text-left {
+  text-align: left;
+}
+
 .text-right {
   text-align: right;
 }
@@ -62,6 +66,9 @@
   }
 }
 
+.row-block {
+  margin: 15px 0;
+}
 
 .litile-tip {
   font-size: 12px;

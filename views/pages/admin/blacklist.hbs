@@ -1,0 +1,32 @@
+<div>
+  <h2>黑名單</h2>
+
+
+
+  <div class="text-right row-block">
+    <el-row type="flex" align="middle" justify="space-between">
+      <el-col class="text-left">
+        <span>封鎖黑名單</span>
+      </el-col>
+      <el-col>
+        <el-pagination :currentPage.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
+          :total="page.dataAmount" @currentChange="handlePageChange">
+        </el-pagination>
+      </el-col>
+    </el-row>
+  </div>
+
+  <el-table :data="blacklist" row-key="id" header-align="center" stripe border highlight-current-row>
+    <el-table-column label="id" prop="id"></el-table-column>
+    <el-table-column label="暱稱" prop="name"></el-table-column>
+    <el-table-column label="等級" prop="level"></el-table-column>
+    <el-table-column label="金幣" prop="coin"></el-table-column>
+    <el-table-column label="操作" align="center">
+      <template slot-scope="scope">
+        <el-button type="danger" size="mini">封鎖</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+</div>
+
+<script src="/static/js/admin.blacklist.bundle.js"></script>
