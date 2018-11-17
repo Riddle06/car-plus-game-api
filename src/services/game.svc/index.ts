@@ -137,7 +137,19 @@ class GameSvc {
     }
 
     async memberGetGameHistory(memberToken: MemberToken, id: string): Promise<Result<StartGameHistoryVM>> {
-        return null;
+        const memberId = memberToken.payload.mi;
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const memberGameItemLibSvc = new MemberGameLibSvc(memberId, queryRunner)
+            const ret = await memberGameItemLibSvc.getGameHistory(id)
+            await queryRunner.commitTransaction();
+            return ret
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
     }
 
 }

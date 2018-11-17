@@ -1,3 +1,4 @@
+import { MemberGamePointHistoryEntity } from '@entities/member-game-point-history.entity';
 import { variableSvc } from '@services/variable.svc';
 import { GameEntity } from "@entities/game.entity";
 import { BaseConnection } from "@services/base-connection";
@@ -35,6 +36,8 @@ export abstract class BaseMemberGame extends BaseConnection {
     abstract getExperienceByScore(score: number): Promise<number>
 
     async getUseGameItemGamePoint(oriGamePoint: number, gameItemEntities: GameItemEntity[]): Promise<number> {
+
+        // TODO:
         return oriGamePoint;
     }
 
@@ -152,7 +155,9 @@ export abstract class BaseMemberGame extends BaseConnection {
         // 增加遊戲點數
         await memberGamePointLibSvc.addGamePointByGame(gamePointAfterAddBonus + levelUpGamePoint, memberGameHistoryId)
 
-        return;
+        const memberGameHistoryEntity = await this.memberGameHistoryRepository.findOne(memberGameHistoryId);
+
+        return await this.getGameHistory(memberGameHistoryEntity);
     }
 
     async getTotalScore(oriScore: number, gameItems: GameItemEntity[]): Promise<number> {
@@ -291,6 +296,17 @@ export abstract class BaseMemberGame extends BaseConnection {
             usedItems.push(gameItemVM)
         }
 
+        let gamePoint: number = 0
+        const memberGamePointHistoryRepository = this.entityManager.getRepository(MemberGamePointHistoryEntity)
+        const memberGamePointHistoryEntity = await memberGamePointHistoryRepository.findOne({
+            where: {
+                memberGameHistoryId: memberGameHistoryEntity.id
+            }
+        })
+
+        if (!checker.isNullOrUndefinedObject(memberGamePointHistoryEntity)) {
+            gamePoint = memberGamePointHistoryEntity.changeGamePoint;
+        }
 
         const ret = new Result<StartGameHistoryVM>(true);
 
@@ -300,6 +316,14 @@ export abstract class BaseMemberGame extends BaseConnection {
             gameId: this.game.id,
             gameParameters: this.game.parameters,
             id: memberGameHistoryEntity.id,
+            score: memberGameHistoryEntity.gameScore,
+            afterExperience: memberGameHistoryEntity.afterExperience,
+            beforeExperience: memberGameHistoryEntity.beforeExperience,
+            changeExperience: memberGameHistoryEntity.changeExperience,
+            beforeLevel: memberGameHistoryEntity.beforeLevel,
+            afterLevel: memberGameHistoryEntity.afterLevel,
+            changeLevel: memberGameHistoryEntity.changeLevel,
+            gamePoint,
             usedItems
         }
 

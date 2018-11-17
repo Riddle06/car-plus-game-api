@@ -24,7 +24,7 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
         res.result = null;
-        //TODO:
+        //TODO: 取得目前會員遊戲道具資訊
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }

@@ -11,8 +11,7 @@ const router = Router();
 router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
-        //TODO:
-        res.result = null
+        res.result = await gameSvc.memberGetGameHistory(req.memberToken, req.params.id)
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }

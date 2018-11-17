@@ -68,20 +68,43 @@ export interface StartGameHistoryVM {
     usedItems: GameItemVM[]
     dateCreated: Date
     dateFinish: Date
+    /**
+     * 活得分數（包含道具加成），遊戲後才會有值 
+     */
+    score?: number
 
-    beforeScore?: number
-    afterScore?: number
-    changeScore?: number
+    /**
+     * 超人幣（包含道具加成），遊戲後才會有值 
+     */
+    gamePoint?: number
 
+    /**
+     * 遊戲前經驗值，遊戲後才會有值 
+     */
     beforeExperience?: number
+    /**
+     * 遊戲獲得經驗值，遊戲後才會有值 
+     */
     changeExperience?: number
+    /**
+     * 遊戲後經驗值，遊戲後才會有值 
+     */
     afterExperience?: number
 
+    /**
+     * 遊戲前等級，遊戲後才會有值 
+     */
     beforeLevel?: number
+    /**
+     * 異動等級，遊戲後才會有值 
+     */
     changeLevel?: number
+    /**
+     * 遊戲後等級，遊戲後才會有值 
+     */
     afterLevel?: number
+
     
-    gamePoint?: number
 
 
 }
