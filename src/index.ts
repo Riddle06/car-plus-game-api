@@ -7,7 +7,7 @@ import pageRouter from "./page.routers";
 import { memberTokenVerificationMiddleware, responseEndMiddleware, clientMiddleware, devMiddlewares, adminTokenVerificationMiddleware, listQueryHandlerMiddleware } from "./middlewares";
 import * as bodyParser from "body-parser";
 import * as path from "path";
-import * as hbs from "hbs";
+import * as expressHandlebars from "express-handlebars";
 import * as cors from "cors";
 import AdminRouter from './routers/admin.router';
 
@@ -16,16 +16,30 @@ const app = express();
 
 app.use(cors());
 
+
+
+
 if (configurations.app.env === 'dev') {
-    console.log(`webpack develop mode on`)
     app.use(devMiddlewares);
 }
 
 
-app.set('view engine', 'hbs');
-app.set('views', path.resolve(__dirname, '../views'));
-app.engine('hbs', hbs.__express);
-hbs.registerPartials(path.resolve(__dirname, '../views/partials'));
+const hbsExtname = '.hbs';
+const hbs = expressHandlebars.create({
+  extname: hbsExtname,
+  defaultLayout: 'index',
+  helpers: {
+    section(name, block) {
+      if(!this._sections) this._sections = {};
+      this._sections[name] = block.fn(this);
+      return null;
+    },
+  },
+});
+app.engine(hbsExtname, hbs.engine);
+app.set('view engine', hbsExtname);
+
+
 app.use('/static', express.static(path.resolve(__dirname, '../client-dist')));
 
 // client side 的 middleware & page routers
