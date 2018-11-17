@@ -4,13 +4,23 @@ import * as cookie from "js-cookie";
 export abstract class BaseWebSvc {
 
     protected axiosInstance: AxiosInstance = null
+    protected axiosAdminInstance: AxiosInstance = null
+
     constructor() {
         const clientId = cookie.get('clientId');
-      
+
         const token = this.getToken();
 
+        // 
         this.axiosInstance = axios.create({
-            
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                clientId,
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        this.axiosAdminInstance = axios.create({
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 clientId,
@@ -19,7 +29,7 @@ export abstract class BaseWebSvc {
         })
     }
 
-    private getToken(): string { 
+    private getToken(): string {
         const tokenR = cookie.get('r');
         const tokenE = cookie.get('e');
         const tokenX = cookie.get('x');

@@ -59,6 +59,7 @@ CREATE TABLE carPlusGame.dbo.member (
   [nick_name] nvarchar(50) NOT NULL DEFAULT '',
   [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
   [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [is_block] bit NOT NULL DEFAULT 0,
   PRIMARY KEY ([id])
 )  ;
 
@@ -176,8 +177,26 @@ CREATE TABLE carPlusGame.dbo.member_block_history (
   [admin_user_id] UNIQUEIDENTIFIER NOT NULL,
   [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
   [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [delete_admin_user_name] nvarchar(100) NULL DEFAULT NULL,
+  [delete_admin_user_id] UNIQUEIDENTIFIER NULL DEFAULT NULL,
   PRIMARY KEY ([id])
 );
+
+
+CREATE TABLE carPlusGame.dbo.member_game_itme_order (
+  [id] UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+  [member_id] UNIQUEIDENTIFIER NOT NULL,
+  [game_item_id] UNIQUEIDENTIFIER NOT NULL,
+  [point_type] INT NOT NULL DEFAULT '0',
+  [game_item_count] INT NOT NULL DEFAULT '0',
+  [point_amount] decimal(18,2) NOT NULL DEFAULT '0.00' ,
+  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [member_game_point_history_id] UNIQUEIDENTIFIER NOT NULL,
+  [member_game_item_id] UNIQUEIDENTIFIER NOT NULL,
+  PRIMARY KEY ([id])
+);
+
+
 
 
 
@@ -204,6 +223,7 @@ VALUES
 (NEWID(), ('超人隊長'), ('1'), (''), ('7500.00'),  ('0.00'), (getdate()), ('0'), ('0'), ('-1'), ('0'), ('0'), ((12)), '超人中的隊長，有著高超領導力與堅忍的意志力，所有超人都聽命於隊長，手臂上有著代表超人的C臂章，裝備也比隊員們更多更厲害。',1),
 (NEWID(), ('力霸超人'), ('1'), (''), ('12500.00'),  ('0.00'), (getdate()), ('0'), ('0'), ('-1'), ('0'), ('0'), ((12)), '超人中的隱藏角色，力量系的超人，是超人隊長遭遇困境時變身而來，全身肌肉發達，限等級12以上購買使用。',1)
 ;
+
 
 
 

@@ -71,6 +71,13 @@ export class MemberEntity extends BaseEntity {
     })
     nickName: string = "";
 
+    @Column("bit", {
+        nullable: false,
+        default: "0",
+        name: "is_block"
+    })
+    isBlock: boolean
+
     @OneToMany(type => MemberGameItemEntity, MemberGameItemEntity => MemberGameItemEntity.member)
     @JoinColumn({
         referencedColumnName: "member_id",

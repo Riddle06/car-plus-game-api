@@ -1,11 +1,16 @@
+import { AdminUserToken } from '@view-models/admin.auth.vm';
 import { Request, Response } from "express";
 import { MemberToken } from "./verification.vm";
-import { AppError, BaseResult } from "./common.vm";
+import { AppError, BaseResult, ListQueryParameter } from "./common.vm";
 
 export interface RequestExtension extends Request {
     query: {
-        page: number,
-        size: number,
+        pageIndex: string,
+        pageSize: string,
+        dateStart: string,
+        dateEnd: string,
+        desc: string
+        orderField: string,
         keyword: string | string[]
         mi: string
         [key: string]: string | number | Array<string | number>
@@ -18,8 +23,9 @@ export interface RequestExtension extends Request {
         x?: string
         [key: string]: any
     }
-
+    listQuery?: ListQueryParameter
     memberToken: MemberToken
+    adminUserToken: AdminUserToken
 }
 
 export interface ResponseExtension extends Response {

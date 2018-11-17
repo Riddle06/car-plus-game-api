@@ -40,7 +40,7 @@ export class MemberLoginLibSvc extends BaseConnection {
 
         // TODO: 黑名單
 
-        if (false) {
+        if (memberEntity.isBlock) {
             throw new AppError('無法進行遊戲，請洽客服人員');
         }
 

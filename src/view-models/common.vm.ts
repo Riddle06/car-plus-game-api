@@ -38,6 +38,11 @@ export class Result<T> extends BaseResult {
 
 export class ListResult<T> extends BaseResult {
     items: T[]
+
+    page?: {
+        dataAmount: number
+        pageAmount: number
+    }
 }
 
 
@@ -66,3 +71,21 @@ export class AppError extends Error {
 }
 
 
+export class PageQuery<T = any> {
+    listQueryParam: Partial<ListQueryParameter>
+    params: T
+    constructor(listQueryParam: Partial<ListQueryParameter>, params: T = null) {
+
+        this.params = params
+        this.listQueryParam = listQueryParam;
+    }
+}
+
+export interface ListQueryParameter {
+    pageIndex: number
+    pageSize: number
+    dateStart: Date
+    dateEnd: Date
+    desc: boolean
+    orderField: string
+}

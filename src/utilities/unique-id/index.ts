@@ -1,4 +1,5 @@
 import * as uuid from 'uuid'
+import * as shortid from "shortid";
 
 class UniqueId {
 
@@ -14,6 +15,10 @@ class UniqueId {
 
     generateV4UUID(): string {
         return uuid.v4();
+    }
+
+    generateShortId(): string {
+        return shortid.generate();
     }
 
 }

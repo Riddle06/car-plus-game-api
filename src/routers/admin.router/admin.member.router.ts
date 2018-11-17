@@ -23,7 +23,7 @@ router.get('/with-game-items', async (req: RequestExtension, res: ResponseExtens
 })
 
 // 取得封鎖列表
-router.get('/block', async (req: RequestExtension, res: ResponseExtension, next) => {
+router.get('/block-history', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     next();
 })

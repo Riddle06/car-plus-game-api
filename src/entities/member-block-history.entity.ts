@@ -52,4 +52,18 @@ export class MemberBlockHistoryEntity extends BaseEntity {
         name: "date_updated"
     })
     dateUpdated: Date
+
+    @Column("nvarchar", {
+        nullable: true,
+        name: "delete_admin_user_name",
+        default: null,
+        length: 100
+    })
+    deleteAdminUserName: string
+
+    @Column("uniqueidentifier", {
+        nullable: true,
+        name: "delete_admin_user_id"
+    })
+    deleteAdminUserId: string 
 }
