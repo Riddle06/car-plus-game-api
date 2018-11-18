@@ -31,6 +31,7 @@ export enum PointHistoryType {
 
 export interface PointHistoryVM {
     id: string
+    memberId: string
     type: PointHistoryType
     dateCreated: Date
     description: string
@@ -104,7 +105,7 @@ export interface StartGameHistoryVM {
      */
     afterLevel?: number
 
-    
+
 
 
 }

@@ -1,3 +1,5 @@
+import { GameItemEntity } from './game-item.entity';
+import { MemberEntity } from '@entities/member.entity';
 import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId, BaseEntity } from "typeorm";
 
 
@@ -112,5 +114,18 @@ export class MemberGamePointHistoryEntity extends BaseEntity {
         name: "admin_user_id"
     })
     adminUserId: string | null
+
+    @OneToOne(type => GameItemEntity)
+    @JoinColumn({
+        name: "game_item_id"
+    })
+    gameItem?: GameItemEntity
+
+    @OneToOne(type => MemberEntity)
+    @JoinColumn({
+        name: "member_id"
+    })
+    member?: MemberEntity
+
 
 }

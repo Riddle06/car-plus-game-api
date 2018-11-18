@@ -1,3 +1,5 @@
+import { QueryRunner } from 'typeorm';
+import { AdminUserEntity } from './../../entities/admin-user.entity';
 import { MemberGameLibSvc } from './lib/member-game.lib.svc';
 import { ListResult, Result, BaseResult } from "@view-models/common.vm";
 import { GameItemVM, MemberBuyGameItemParameter, UseGameItemVM } from '@view-models/game.vm';
@@ -5,9 +7,10 @@ import { GameVM, MemberGameItemVM } from "@view-models/game.vm";
 import { GameLibSvc } from "./lib/game.lib.svc";
 import { dbProvider } from "@utilities";
 import { MemberToken } from "@view-models/verification.vm";
-import { PlayGameParameterVM, StartGameHistoryVM, ReportPlayGameParameterVM } from "@view-models/game-history.vm";
+import { PlayGameParameterVM, StartGameHistoryVM, ReportPlayGameParameterVM, PointHistoryVM } from "@view-models/game-history.vm";
 import { MemberGameItemLibSvc } from "./lib/member-game-item.lib.svc";
 import { MemberGamePointLibSvc } from "./lib/member-game-point.lib.svc";
+import { CreateAdminMemberPointHistoryParameterVM } from '@view-models/admin.point.vm';
 
 class GameSvc {
     async getGameList(): Promise<ListResult<GameVM>> {
@@ -151,6 +154,27 @@ class GameSvc {
             await queryRunner.release();
         }
     }
+
+    async memberAddPointByManual(adminUserId: string, param: CreateAdminMemberPointHistoryParameterVM, queryRunner: QueryRunner): Promise<Result<PointHistoryVM>> {
+
+        const { memberId, gamePoint, adminUserName, reason } = param;
+        const memberGamePointLibSvc = new MemberGamePointLibSvc(memberId, queryRunner)
+        const ret = await memberGamePointLibSvc.addGamePointByManual(gamePoint, reason, {
+            adminUserId,
+            adminUserName
+        })
+
+        return ret
+
+    }
+
+    async memberAddInitGamePoint(memberId: string, gamePoint: number, queryRunner: QueryRunner): Promise<Result<PointHistoryVM>> {
+        const memberGamePointLibSvc = new MemberGamePointLibSvc(memberId, queryRunner)
+        const ret = await memberGamePointLibSvc.addGamePointByFirstRegisterMember(gamePoint)
+        return ret
+
+    }
+
 
 }
 

@@ -1,3 +1,5 @@
+import { MemberEntity } from '@entities/member.entity';
+import { GameItemEntity } from '@entities/game-item.entity';
 import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId, BaseEntity } from "typeorm";
 
 
@@ -56,4 +58,17 @@ export class MemberGameItemOrderEntity extends BaseEntity {
         name: "member_game_item_id"
     })
     memberGameItemId: string
+
+    @OneToOne(type => GameItemEntity)
+    @JoinColumn({
+        name: "game_item_id"
+    })
+    gameItem: GameItemEntity
+    
+
+    @OneToOne(type => MemberEntity)
+    @JoinColumn({
+        name: "member_id"
+    })
+    member: MemberEntity
 }

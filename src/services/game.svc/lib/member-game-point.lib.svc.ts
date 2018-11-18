@@ -11,6 +11,11 @@ type MemberGameItemParameter = {
     gameItemId: string
     memberGameItemId: string
 }
+
+type AdminParameter = {
+    adminUserId: string
+    adminUserName: string
+}
 export class MemberGamePointLibSvc extends BaseConnection {
 
     private memberId: string = null;
@@ -205,11 +210,95 @@ export class MemberGamePointLibSvc extends BaseConnection {
 
         return ret.setResultValue(true);
     }
+    /**
+     * 首次註冊送遊戲幣
+     */
+    async addGamePointByFirstRegisterMember(gamePoint: number): Promise<Result<PointHistoryVM>> {
+        const ret = new Result<PointHistoryVM>(false);
+
+        const memberEntity = await this.memberRepository.findOne(this.memberId)
+        const changeGamePoint = gamePoint;
+
+        const pointHistory = new MemberGamePointHistoryEntity();
+        pointHistory.id = uniqueId.generateV4UUID();
+        pointHistory.beforeCarPlusPoint = memberEntity.carPlusPoint;
+        pointHistory.changeCarPlusPoint = 0;
+        pointHistory.afterCarPlusPoint = memberEntity.carPlusPoint;
+        pointHistory.beforeGamePoint = memberEntity.gamePoint;
+        pointHistory.changeGamePoint = changeGamePoint;
+        pointHistory.afterGamePoint = memberEntity.gamePoint + changeGamePoint;
+        pointHistory.dateCreated = new Date();
+        pointHistory.description = '首次登入贈送100超人幣';
+        pointHistory.memberId = this.memberId;
+        pointHistory.type = PointHistoryType.memberInit;
+        pointHistory.gameItemId = null
+        pointHistory.memberGameItemId = null
+
+        await this.memberGamePointHistoryRepository.insert(pointHistory);
+
+        await this.entityManager.createQueryBuilder()
+            .update<MemberEntity>(MemberEntity)
+            .set({
+                gamePoint: () => "game_point + :gamePoint",
+            })
+            .where({
+                id: this.memberId
+            }).setParameters({
+                gamePoint,
+            }).execute();
+
+        ret.item = this.parseMemberGamePointHistoryToHistoryVM(pointHistory);
+
+        return ret.setResultValue(true);
+    }
+
+    /**
+     * 手動新增
+     */
+    async addGamePointByManual(gamePoint: number, reason: string,
+        adminParameter: AdminParameter): Promise<Result<PointHistoryVM>> {
+        const ret = new Result<PointHistoryVM>(false);
+
+        const memberEntity = await this.memberRepository.findOne(this.memberId)
+        const changeGamePoint = gamePoint;
+
+        const pointHistory = new MemberGamePointHistoryEntity();
+        pointHistory.id = uniqueId.generateV4UUID();
+        pointHistory.beforeCarPlusPoint = memberEntity.carPlusPoint;
+        pointHistory.changeCarPlusPoint = 0;
+        pointHistory.afterCarPlusPoint = memberEntity.carPlusPoint;
+        pointHistory.beforeGamePoint = memberEntity.gamePoint;
+        pointHistory.changeGamePoint = changeGamePoint;
+        pointHistory.afterGamePoint = memberEntity.gamePoint + changeGamePoint;
+        pointHistory.dateCreated = new Date();
+        pointHistory.description = `客訴補幣，原因：${reason}`;
+        pointHistory.memberId = this.memberId;
+        pointHistory.type = PointHistoryType.manual;
+        pointHistory.gameItemId = null
+        pointHistory.memberGameItemId = null
+
+        await this.memberGamePointHistoryRepository.insert(pointHistory);
+
+        await this.entityManager.createQueryBuilder()
+            .update<MemberEntity>(MemberEntity)
+            .set({
+                gamePoint: () => "game_point + :gamePoint",
+            })
+            .where({
+                id: this.memberId
+            }).setParameters({
+                gamePoint,
+            }).execute();
+
+        ret.item = this.parseMemberGamePointHistoryToHistoryVM(pointHistory);
+
+        return ret.setResultValue(true);
+    }
 
 
     private parseMemberGamePointHistoryToHistoryVM(memberGamePointHistoryEntity: MemberGamePointHistoryEntity): PointHistoryVM {
 
-        const { id, type, dateCreated, description, gameItemId, memberGameItemId, beforeGamePoint, afterGamePoint
+        const { id, memberId, type, dateCreated, description, gameItemId, memberGameItemId, beforeGamePoint, afterGamePoint
             , changeGamePoint, beforeCarPlusPoint, afterCarPlusPoint, changeCarPlusPoint } = memberGamePointHistoryEntity;
 
         const ret: PointHistoryVM = {
@@ -225,6 +314,7 @@ export class MemberGamePointLibSvc extends BaseConnection {
             beforeCarPlusPoint,
             afterCarPlusPoint,
             changeCarPlusPoint,
+            memberId
         }
 
         return ret;
