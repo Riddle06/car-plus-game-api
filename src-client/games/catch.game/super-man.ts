@@ -7,7 +7,7 @@ export class SuperMan {
     } = null
     private moveSpeed: number = 3
     private app: PIXI.Application = null
-    private currentDirection: SuperManDirection = SuperManDirection.right
+    private currentDirection: SuperManDirection = SuperManDirection.right;
     
     public sprite: PIXI.extras.AnimatedSprite = null;
     
@@ -24,18 +24,25 @@ export class SuperMan {
         this.sprite = new PIXI.extras.AnimatedSprite(superManTextures);
         this.sprite.scale.x = 2;
         this.sprite.scale.y = 2;
-        this.sprite.x = this.app.screen.width / 2;
+        this.sprite.x = this.app.screen.width / 2 - (this.sprite.width / 2);
         this.sprite.y = this.app.screen.height - this.sprite.height;
         this.sprite.animationSpeed = 0.1;
-        this.sprite.play();
+        
         
         this.app.stage.addChild(this.sprite)
-        this.app.ticker.add(this.movingHandler.bind(this))
-        this.app.ticker.add(this.flipDirectionHandler.bind(this))
+
         return this;
     }
 
     protected movingHandler(deltaTime: number): void {
+        if (this.sprite.x + this.sprite.width  > this.app.screen.width) {
+            this.currentDirection = SuperManDirection.left;
+            // this.sprite.scale.x *= -1;
+        } else if (this.sprite.x < 0) {
+            this.currentDirection = SuperManDirection.right;
+            // this.sprite.scale.x *= -1;
+        }
+
         switch (this.currentDirection) {
             case SuperManDirection.right:
                 this.goRight();
@@ -46,14 +53,15 @@ export class SuperMan {
         }
     }
 
-    protected flipDirectionHandler(): void {
-        if (this.sprite.x + this.sprite.width  > this.app.screen.width) {
-            this.currentDirection = SuperManDirection.left;
-            // this.sprite.scale.x *= -1;
-        } else if (this.sprite.x < 0) {
-            this.currentDirection = SuperManDirection.right;
-            // this.sprite.scale.x *= -1;
-        }
+
+    start() {
+        this.sprite.play();
+        this.app.ticker.add(this.movingHandler, this);
+    }
+
+    end() {
+        this.sprite.stop();
+        this.app.ticker.remove(this.movingHandler, this);
     }
 
     goRight(): void {
