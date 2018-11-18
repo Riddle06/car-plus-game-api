@@ -5,6 +5,7 @@ import { BaseConnection } from '../../base-connection';
 import { MemberInformationVM } from '@view-models/member.vm';
 import { MemberEntity } from '../../../entities/member.entity';
 import { uniqueId, checker } from '@utilities';
+import { gameSvc } from '@services';
 export class RegisterLibSvc extends BaseConnection {
 
     async createMemberByCarPlusId(carPlusMemberId: string): Promise<Result<MemberInformationVM>> {
@@ -31,7 +32,6 @@ export class RegisterLibSvc extends BaseConnection {
         }
 
         const newMemberInitPointRet = await variableSvc.getFirstLoginGiveGamePointAmount()
-        const newMemberInitPoint = newMemberInitPointRet.item;
         const newMemberEntity = new MemberEntity();
 
         newMemberEntity.id = uniqueId.generateV4UUID();
@@ -40,12 +40,14 @@ export class RegisterLibSvc extends BaseConnection {
         newMemberEntity.dateCreated = new Date();
         newMemberEntity.dateUpdated = new Date();
         newMemberEntity.experience = 0;
-        newMemberEntity.gamePoint = newMemberInitPoint
+        newMemberEntity.gamePoint = 0;
         newMemberEntity.level = 1
         newMemberEntity.nickName = ''
 
 
         await this.entityManager.getRepository(MemberEntity).insert(newMemberEntity);
+
+        await gameSvc.memberAddInitGamePoint(newMemberEntity.id, newMemberInitPointRet.item, this.queryRunner)
 
         ret.item = {
             carPlusMemberId: newMemberEntity.carPlusMemberId,

@@ -37,11 +37,7 @@ export class MemberLoginLibSvc extends BaseConnection {
         const memberRepository = this.entityManager.getRepository(MemberEntity)
 
         let memberEntity: MemberEntity = await memberRepository.findOne({ carPlusMemberId });
-
-        if (memberEntity.isBlock) {
-            throw new AppError('無法進行遊戲，請洽客服人員');
-        }
-
+      
         const isExistInMember: boolean = !checker.isNullOrUndefinedObject(memberEntity);
 
         // 若會員不存在則要幫他建立資料

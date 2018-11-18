@@ -10,7 +10,7 @@ import { NextFunction } from "express";
  * 如果沒有 client id client side 會自動生成 client id
  */
 export const clientMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
-    
+
     if (req.path.indexOf('no-token') > -1) {
         next();
         return;
@@ -36,11 +36,13 @@ export const clientMiddleware = async (req: RequestExtension, res: ResponseExten
         }
     } else {
         if (checker.isNullOrUndefinedOrWhiteSpace(token)) {
-            await getMemberLoginToken(clientId, req, res)
+            const success = await getMemberLoginToken(clientId, req, res)
+            if (!success) { res.redirect('/no-token'); return; }
         } else {
             const tokenVM = jwt.decode(token, { complete: true }) as MemberToken
             if (tokenVM.payload.mi !== req.query.mi) {
-                await getMemberLoginToken(clientId, req, res)
+                const success = await getMemberLoginToken(clientId, req, res)
+                if (!success) { res.redirect('/no-token'); return; }
             }
         }
     }
@@ -73,7 +75,7 @@ function getToken(req: RequestExtension): string {
     return "";
 }
 
-async function getMemberLoginToken(clientId: string, req: RequestExtension, res: ResponseExtension): Promise<void> {
+async function getMemberLoginToken(clientId: string, req: RequestExtension, res: ResponseExtension): Promise<boolean> {
     // 清空cookie
     res.clearCookie('r');
     res.clearCookie('e');
@@ -91,8 +93,11 @@ async function getMemberLoginToken(clientId: string, req: RequestExtension, res:
             res.cookie('e', tokens[1], { httpOnly: false, expires });
             res.cookie('x', tokens[2], { httpOnly: false, expires });
         }
+
+        return true
     } catch (error) {
-        res.redirect('/no-token')
+        console.dir(error)
+        return false
     }
 
 

@@ -107,10 +107,10 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
         const memberGameItemEntities = await memberGameItemRepository
             .createQueryBuilder("memberGameItem")
-            .innerJoin("memberGameItem.gameItem", "gameItem", "gameItem.type in (:types)")
-            .where("memberId = :memberId and remainTimes > 0 and enabled = 1")
+            .innerJoin("memberGameItem.gameItem", "gameItem", "gameItem.type in (:...types)")
+            .where("memberGameItem.memberId = :memberId and memberGameItem.remainTimes > 0 and memberGameItem.enabled = 1")
             .orderBy("gameItem.type", "ASC")
-            .orderBy("memberGameItem.is_using", "DESC")
+            .addOrderBy("memberGameItem.is_using", "DESC")
             .setParameters({
                 types: [GameItemType.tool, GameItemType.role],
                 memberId: this.memberId
@@ -141,6 +141,9 @@ export class MemberGameItemLibSvc extends BaseConnection {
             items.push(item)
 
         }
+
+        ret.items = items;
+
         return ret;
     }
 

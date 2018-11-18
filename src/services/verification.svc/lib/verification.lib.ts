@@ -28,8 +28,12 @@ export class VerificationLibSvc extends BaseConnection {
         const memberLoginRepository = await this.entityManager.getRepository(MemberLoginEntity);
 
         const memberLoginEntity = await memberLoginRepository.findOne({
-            memberId: tokenVM.payload.mi,
-            clientId: tokenVM.payload.ci
+            relations: ['member'],
+            where: {
+                memberId: tokenVM.payload.mi,
+                clientId: tokenVM.payload.ci
+            }
+
         })
 
         if (checker.isNullOrUndefinedObject(memberLoginEntity)) {
@@ -38,6 +42,10 @@ export class VerificationLibSvc extends BaseConnection {
 
         if (memberLoginEntity.isLogout) {
             throw new AppError(`此裝置已被登出`)
+        }
+
+        if (memberLoginEntity.member.isBlock) {
+            throw new AppError(`此裝置已被封鎖`)
         }
 
         ret.item = tokenVM;
