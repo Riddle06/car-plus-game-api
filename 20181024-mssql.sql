@@ -69,6 +69,7 @@ CREATE TABLE carPlusGame.dbo.member_game_history (
   [member_id] UNIQUEIDENTIFIER NOT NULL,
   [game_id] UNIQUEIDENTIFIER NOT NULL,
   [game_score] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
   [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
   [date_finished] datetime2(0) DEFAULT NULL,
   [before_experience] decimal(18,2) NOT NULL DEFAULT '0.00',

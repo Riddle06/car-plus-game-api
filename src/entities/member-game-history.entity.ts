@@ -1,3 +1,5 @@
+import { MemberEntity } from '@entities/member.entity';
+import { MemberGamePointHistoryEntity } from '@entities/member-game-point-history.entity';
 import { MemberGameHistoryGameItemEntity } from './member-game-history-game-item.entity';
 import { GameEntity } from '@entities/game.entity';
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany } from "typeorm";
@@ -85,6 +87,12 @@ export class MemberGameHistoryEntity extends BaseEntity {
     })
     gameScore: number;
 
+    @Column("decimal", {
+        default: 0,
+        name: "game_point"
+    })
+    gamePoint: number
+
     @Column("uniqueidentifier", {
         nullable: false,
         name: "member_id"
@@ -96,6 +104,13 @@ export class MemberGameHistoryEntity extends BaseEntity {
         name: "game_id",
     })
     game: GameEntity
+
+    @OneToOne(type => MemberEntity, MemberEntity => MemberEntity.id)
+    @JoinColumn({
+        name: "member_id",
+    })
+    member: MemberEntity
+
 
     @OneToMany(type => MemberGameHistoryGameItemEntity, MemberGameHistoryGameItemEntity => MemberGameHistoryGameItemEntity.memberGameHistoryId)
     @JoinColumn({

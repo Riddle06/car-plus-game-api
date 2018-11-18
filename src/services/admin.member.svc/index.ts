@@ -1,6 +1,6 @@
 import { AdminMemberBlockLibSvc } from './lib/admin.member.block.lib.svc';
 import { PageQuery } from './../../view-models/common.vm';
-import { AdminMemberBlockParameter, AdminMemberBlockHistoryVM, AdminMemberBlockListQueryParameterVM, AdminMemberListQueryParameterVM, AdminMemberGameItemVM } from '@view-models/admin.member.vm';
+import { AdminMemberBlockParameter, AdminMemberBlockHistoryVM, AdminMemberBlockListQueryParameterVM, AdminMemberListQueryParameterVM, AdminMemberGameItemVM, AdminMemberVM } from '@view-models/admin.member.vm';
 import { AdminUserToken } from '@view-models/admin.auth.vm';
 import { Result, ListResult } from '@view-models/common.vm';
 import { dbProvider } from '@utilities';
@@ -51,8 +51,8 @@ class AdminMemberSvc {
         }
     }
 
-    async getAdminMemberWidthGameItemsList(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<ListResult<AdminMemberGameItemVM>> {
-        // TODO:
+    async getAdminMemberWidthGameItemsList(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<ListResult<AdminMemberVM>> {
+        // TODO: 取得會員列表（包含道具
         return null
     }
 

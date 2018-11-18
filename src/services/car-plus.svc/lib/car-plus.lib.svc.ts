@@ -12,7 +12,7 @@ export class CarPlusLibSvc extends BaseConnection {
         const testRegex = variableSvc.getTesterRegExp();
 
         if (!testRegex.test(carPlusMemberId)) { 
-            // TODO: call procedure
+            // TODO: call procedure 串接會員功能
             throw new AppError('目前還尚未有串接會員功能')
         }
 
@@ -27,10 +27,13 @@ export class CarPlusLibSvc extends BaseConnection {
         return ret.setResultValue(true)
     }
 
+    /**
+     * 增加格上紅利
+     */
     async plusCarPlusPoint(carPlusMemberId: string, point: number): Promise<Result<CarPlusMemberInformation>> {
         const ret = new Result<CarPlusMemberInformation>();
 
-        // TODO: call procedure
+        // TODO: call procedure 增加格上紅利
 
         ret.item = {
             carPlusPoint: 0,

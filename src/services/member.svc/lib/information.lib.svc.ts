@@ -60,10 +60,7 @@ export class MemberInformationLibSvc extends BaseConnection {
         // call store procedure 同步格上紅利
         const carPlusMemberInformation = await carPlusSvc.getCarPlusMemberInformation(carPlusMemberId);
 
-
-        // TODO: 
-
-        return 0;
+        return carPlusMemberInformation.item.carPlusPoint;
     }
 
     async updateNickName(param: MemberUpdateInformationParameterVM): Promise<Result<MemberInformationVM>> {

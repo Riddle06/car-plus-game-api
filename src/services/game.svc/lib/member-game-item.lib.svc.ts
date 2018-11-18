@@ -1,3 +1,4 @@
+import { MemberGameItemOrderEntity } from './../../../entities/member-game-item-order.entity';
 import { MemberBuyGameItemParameter, UseGameItemVM, GameItemVM } from '@view-models/game.vm';
 import { BaseConnection } from '../../base-connection';
 import { QueryRunner, MoreThan, Between } from 'typeorm';
@@ -13,6 +14,7 @@ import { carPlusSvc } from '@services/car-plus.svc';
 import { MemberGamePointLibSvc } from './member-game-point.lib.svc';
 import { PointHistoryVM } from '@view-models/game-history.vm';
 import * as luxon from "luxon";
+import { PointType } from '@view-models/admin.point.vm';
 export class MemberGameItemLibSvc extends BaseConnection {
 
     private memberId: string = null
@@ -96,8 +98,9 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
     }
 
-    // 使用者的 所擁有的物品列表
+    //TODO: 使用者的 所擁有的物品列表
     async getMemberGameItems(): Promise<ListResult<MemberGameItemVM>> {
+
 
 
         // const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity);
@@ -236,13 +239,19 @@ export class MemberGameItemLibSvc extends BaseConnection {
         }
 
         const useGamePointItems = [GameItemType.tool, GameItemType.role, GameItemType.carPlusPoint]
+        let pointAmount = 0
+        let pointType: PointType = null
         // 金額驗證 
         if (useGamePointItems.some(item => item === gameItemEntity.type)) {
+            pointAmount = gameItemEntity.gamePoint * param.num
+            pointType=  PointType.gamePoint
             // 用超人幣購買的
             if ((gameItemEntity.gamePoint * param.num) > gamePoint) {
                 throw new AppError('超人幣不足，無法購買')
             }
         } else {
+            pointAmount = gameItemEntity.carPlusPoint * param.num
+            pointType=  PointType.carPlus
             // 用格上紅利購嗎
             if ((gameItemEntity.carPlusPoint * param.num) > carPlusPoint) {
                 throw new AppError('格上紅利不足，無法兌換超人幣')
@@ -256,7 +265,21 @@ export class MemberGameItemLibSvc extends BaseConnection {
             memberGameItemEntities.push(await this.addMemberGameItem(gameItemEntity, memberGamePointLibSvc))
         }
 
+        // 新增一筆兌換紀錄，後台會需要
+        const memberGameItemOrder = new MemberGameItemOrderEntity();
+        memberGameItemOrder.id = uniqueId.generateV4UUID();
+        memberGameItemOrder.memberId = this.memberId;
+        memberGameItemOrder.gameItemId = gameItemId;
+        memberGameItemOrder.pointType = pointType
+        memberGameItemOrder.gameItemCount = num
+        memberGameItemOrder.pointAmount = pointAmount;
+        memberGameItemOrder.dateCreated = new Date();
+        // 紀錄第一筆
+        memberGameItemOrder.memberGamePointHistoryId = memberGameItemEntities[0].memberGamePointHistoryId
+        memberGameItemOrder.memberGameItemId = memberGameItemEntities[0].id
+
         await this.entityManager.getRepository(MemberGameItemEntity).insert(memberGameItemEntities);
+        await this.entityManager.getRepository(MemberGameItemOrderEntity).insert(memberGameItemOrder);
 
         return new BaseResult(true);
     }

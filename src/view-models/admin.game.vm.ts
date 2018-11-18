@@ -1,12 +1,16 @@
-import { GameItemVM } from "./game.vm";
+import { GameVM } from '@view-models/game.vm';
+import { MemberInformationVM } from '@view-models/member.vm';
 
 export interface AdminMemberGameHistoryVM {
     id: string
     memberId: string
-    game: GameItemVM
+    game: GameVM
     dateCreated: Date
+    member: MemberInformationVM
     score: number
     point: number
+    isFinish: boolean
+    dateFinished: null | Date
 }
 
 

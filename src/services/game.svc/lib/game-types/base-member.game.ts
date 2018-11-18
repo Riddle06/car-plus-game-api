@@ -78,7 +78,7 @@ export abstract class BaseMemberGame extends BaseConnection {
         history.gameId = this.game.id;
         history.gameScore = -1
         history.memberId = this.memberId;
-        // history.changeGamePoint =null
+        history.gamePoint = -1
 
         await this.memberGameHistoryRepository.insert(history);
 
@@ -161,7 +161,8 @@ export abstract class BaseMemberGame extends BaseConnection {
                 changeLevel,
                 afterLevel: memberEntity.level + changeLevel,
                 beforeLevel: memberEntity.level,
-                gameScore: totalScore
+                gameScore: totalScore,
+                gamePoint: gamePointAfterAddBonus
             });
 
         // 更新會員紀錄

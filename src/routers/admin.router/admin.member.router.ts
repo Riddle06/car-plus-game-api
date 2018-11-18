@@ -1,4 +1,4 @@
-import { AdminMemberBlockListQueryParameterVM } from '@view-models/admin.member.vm';
+import { AdminMemberBlockListQueryParameterVM, AdminMemberListQueryParameterVM } from '@view-models/admin.member.vm';
 import { PageQuery } from '@view-models/common.vm';
 import { adminMemberSvc } from './../../services/admin.member.svc/index';
 import { Router } from "express";
@@ -14,14 +14,21 @@ router.use('/game', MemberGameHistoryRouter)
 router.use('/point', MemberPointHistoryRouter)
 
 // 會員列表
-router.use('/', async (req: RequestExtension, res: ResponseExtension, next) => {
-    //TODO:
+router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
+    //TODO:可能不需要
     next();
 })
 
 // 取得
 router.get('/with-game-items', async (req: RequestExtension, res: ResponseExtension, next) => {
-    //TODO:
+    try {
+        const param = new PageQuery<AdminMemberListQueryParameterVM>(req.listQuery, {
+            memberId: req.query.mi ? req.query.mi : ""
+        })
+        res.result = await adminMemberSvc.getAdminMemberWidthGameItemsList(param)
+    } catch (error) {
+        res.appError = error;
+    }
     next();
 })
 
