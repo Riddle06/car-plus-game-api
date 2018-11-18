@@ -15,6 +15,8 @@ interface BaseShape {
     centerY?: number
 }
 export abstract class BaseGame {
+    protected isPlaying: Boolean = false; // 遊戲正在進行
+    protected isGameEnd: Boolean = false; // 遊戲已結束
     protected application: Application = null
 
     protected screen: {
@@ -33,7 +35,6 @@ export abstract class BaseGame {
             transparent: true
         })
         this.application.stage.interactive = true;
-        this.application.stage.buttonMode = true;
 
         
         await this.initElements()
