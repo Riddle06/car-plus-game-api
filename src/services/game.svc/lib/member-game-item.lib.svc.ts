@@ -99,7 +99,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
     }
 
-    //TODO: 使用者的 所擁有的物品列表
+
     async getMemberGameItems(): Promise<ListResult<MemberGameItemVM>> {
 
         const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity);
