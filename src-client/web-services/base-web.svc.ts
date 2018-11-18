@@ -20,11 +20,12 @@ export abstract class BaseWebSvc {
             }
         });
 
+        const adminToken = this.getAdminToken();
         this.axiosAdminInstance = axios.create({
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 clientId,
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${adminToken}`
             }
         })
     }
@@ -49,6 +50,12 @@ export abstract class BaseWebSvc {
         }
 
         const token = tokens.length === 3 ? tokens.join('.') : ''
+
+        return token;
+    }
+
+    private getAdminToken(): string {
+        const token = cookie.get('admin');
 
         return token;
     }
