@@ -9,24 +9,25 @@ export class SuperMan {
     private app: PIXI.Application = null
     private currentDirection: SuperManDirection = SuperManDirection.right;
     
-    public sprite: PIXI.extras.AnimatedSprite = null;
+    public sprite: PIXI.Sprite = null;
     
     constructor(app: PIXI.Application) {
         this.app = app;
     }
 
     async init(): Promise<this> {
-        const loderRes = await loaderHandler('/static/images/llama/llama.json');
-        const superManTextures: PIXI.Texture[] =
-            ["llama1.png", "llama2.png", "llama3.png", "llama4.png", "llama5.png"]
-                .map(x => PIXI.Texture.fromFrame(x))
+        // const loderRes = await loaderHandler('/static/images/llama/llama.json');
+        // const superManTextures: PIXI.Texture[] =
+        //     ["llama1.png", "llama2.png", "llama3.png", "llama4.png", "llama5.png"]
+        //         .map(x => PIXI.Texture.fromFrame(x))
+        const loderRes = await loaderHandler('/static/images/img-superman01.png')
 
-        this.sprite = new PIXI.extras.AnimatedSprite(superManTextures);
-        this.sprite.scale.x = 2;
-        this.sprite.scale.y = 2;
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources['/static/images/img-superman01.png'].texture);
+        this.sprite.height = (this.sprite.height / this.sprite.width) * (this.app.screen.width / 4);
+        this.sprite.width = this.app.screen.width / 4;
         this.sprite.x = this.app.screen.width / 2 - (this.sprite.width / 2);
-        this.sprite.y = this.app.screen.height - this.sprite.height;
-        this.sprite.animationSpeed = 0.1;
+        this.sprite.y = this.app.screen.height - this.sprite.height - 30;
+        // this.sprite.animationSpeed = 0.1;
         
         
         this.app.stage.addChild(this.sprite)
@@ -55,12 +56,12 @@ export class SuperMan {
 
 
     start() {
-        this.sprite.play();
+        // this.sprite.play();
         this.app.ticker.add(this.movingHandler, this);
     }
 
     end() {
-        this.sprite.stop();
+        // this.sprite.stop();
         this.app.ticker.remove(this.movingHandler, this);
     }
 

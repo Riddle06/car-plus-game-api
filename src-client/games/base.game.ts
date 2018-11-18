@@ -1,4 +1,4 @@
-import { Application, Graphics, loader } from "pixi.js";
+import { Application, Texture, loader, Sprite } from "pixi.js";
 
 interface LoaderResponse {
     llama: PIXI.extras.AnimatedSprite
@@ -19,6 +19,7 @@ export abstract class BaseGame {
     protected isGameEnd: Boolean = false; // 遊戲已結束
     protected application: Application = null
 
+
     protected screen: {
         width: number
         height: number
@@ -36,7 +37,6 @@ export abstract class BaseGame {
         })
         this.application.stage.interactive = true;
 
-        
         await this.initElements()
         await this.initElementsEvents()
         await this.initElementsOffset()
@@ -46,6 +46,15 @@ export abstract class BaseGame {
     protected abstract async initElements(): Promise<boolean>
     protected abstract async initElementsOffset(): Promise<boolean>
     protected abstract async initElementsEvents(): Promise<boolean>
+
+    initBgImage(path) {
+        // 建立背景圖片
+        const bg = Texture.fromImage(path);
+        const background: Sprite = new Sprite(bg);
+        background.width = this.application.screen.width;
+        background.height = this.application.screen.height;
+        this.application.stage.addChild(background);
+    }
 }
 
 export function loaderHandler(path): Promise<LoaderResponse> {
