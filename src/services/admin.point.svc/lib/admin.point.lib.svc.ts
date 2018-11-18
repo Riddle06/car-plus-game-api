@@ -3,7 +3,7 @@ import { MemberGamePointHistoryEntity } from '@entities/member-game-point-histor
 import { AdminMemberPointHistoryVM, PointType } from './../../../view-models/admin.point.vm';
 import { MemberEntity } from '@entities/member.entity';
 import { AdminUserToken } from '@view-models/admin.auth.vm';
-import { QueryRunner } from 'typeorm';
+import { QueryRunner, Between, MoreThan, LessThan, FindConditions } from 'typeorm';
 import { BaseConnection } from '@services/base-connection';
 import { Result, AppError, ListResult } from '@view-models/common.vm';
 import { CreateAdminMemberPointHistoryParameterVM } from '@view-models/admin.point.vm';
@@ -26,6 +26,14 @@ export class AdminPointLibSvc extends BaseConnection {
 
         const skip = (param.listQueryParam.pageIndex - 1) * param.listQueryParam.pageSize
         const take = param.listQueryParam.pageSize
+        const conditions: FindConditions<MemberGamePointHistoryEntity> = {};
+        if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
+            conditions.dateCreated = Between<Date>(param.listQueryParam.dateStart, param.listQueryParam.dateEnd)
+        } else if (checker.isDate(param.listQueryParam.dateStart)) {
+            conditions.dateCreated = MoreThan(param.listQueryParam.dateStart)
+        } else if (checker.isDate(param.listQueryParam.dateEnd)) { 
+            conditions.dateCreated = LessThan(param.listQueryParam.dateEnd)
+        }
 
         const memberGamePointHistoryEntities = await memberGamePointHistoryRepository.find({
             order: {

@@ -13,5 +13,8 @@ export {
     verificationSvc,
     memberSvc,
     testSvc,
-    gameQuestionSvc
+    gameQuestionSvc,
+    adminGameSvc,
+    adminMemberSvc,
+    adminPointSvc
 }

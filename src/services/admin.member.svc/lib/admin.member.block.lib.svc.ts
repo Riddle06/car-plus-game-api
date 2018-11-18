@@ -1,7 +1,7 @@
 import { MemberBlockHistoryEntity } from './../../../entities/member-block-history.entity';
 import { MemberEntity } from './../../../entities/member.entity';
 import { AppError } from './../../../view-models/common.vm';
-import { QueryRunner, FindConditions } from 'typeorm';
+import { QueryRunner, FindConditions, Between, MoreThan, LessThan } from 'typeorm';
 import { BaseConnection } from '@services/base-connection';
 import { AdminMemberBlockParameter, AdminMemberBlockHistoryVM, AdminMemberBlockListQueryParameterVM } from '@view-models/admin.member.vm';
 import { ListResult, PageQuery, Result } from '@view-models/common.vm';
@@ -133,6 +133,14 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
             conditions.memberId = param.params.memberId
+        }
+
+        if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
+            conditions.dateCreated = Between<Date>(param.listQueryParam.dateStart, param.listQueryParam.dateEnd)
+        } else if (checker.isDate(param.listQueryParam.dateStart)) {
+            conditions.dateCreated = MoreThan(param.listQueryParam.dateStart)
+        } else if (checker.isDate(param.listQueryParam.dateEnd)) { 
+            conditions.dateCreated = LessThan(param.listQueryParam.dateEnd)
         }
 
         const skip = (param.listQueryParam.pageIndex - 1) * param.listQueryParam.pageSize

@@ -23,8 +23,7 @@ router.put('/:id', async (req: RequestExtension, res: ResponseExtension, next) =
 router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
-        res.result = null;
-        //TODO: 取得目前會員遊戲道具資訊
+        res.result = await gameSvc.getMemberItems(req.memberToken);
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }

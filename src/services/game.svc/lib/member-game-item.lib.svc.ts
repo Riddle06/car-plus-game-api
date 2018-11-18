@@ -15,6 +15,7 @@ import { MemberGamePointLibSvc } from './member-game-point.lib.svc';
 import { PointHistoryVM } from '@view-models/game-history.vm';
 import * as luxon from "luxon";
 import { PointType } from '@view-models/admin.point.vm';
+import * as _ from "lodash";
 export class MemberGameItemLibSvc extends BaseConnection {
 
     private memberId: string = null
@@ -101,38 +102,46 @@ export class MemberGameItemLibSvc extends BaseConnection {
     //TODO: 使用者的 所擁有的物品列表
     async getMemberGameItems(): Promise<ListResult<MemberGameItemVM>> {
 
+        const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity);
 
 
-        // const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity);
-
-        // const memberGameItemEntities = await memberGameItemRepository.find({
-        //     relations: ['gameItem'],
-        //     where: {
-        //         memberId: this.memberId,
-        //         remainTimes: MoreThan(0),
-        //         enabled: true
-        //     }
-        // })
-
-        // const ret = new ListResult<MemberGameItemVM>(true);
-
-        // ret.items = memberGameItemEntities.map(memberGameItem => {
-        //     const item: MemberGameItemVM = {
-
-        //         id: memberGameItem.id,
-        //         imageUrl: memberGameItem.gameItem.imageUrl,
-        //         gamePoint: memberGameItem.gameItem.gamePoint,
-        //         type: memberGameItem.gameItem.type,
-        //         carPlusPoint: memberGameItem.gameItem.gamePoint,
-        //         description: memberGameItem.gameItem.description,
-        //         enableBuy: false,
-        //         name: memberGameItem.gameItem.name
-        //     }
-        //     return item
-        // })
+        const memberGameItemEntities = await memberGameItemRepository
+            .createQueryBuilder("memberGameItem")
+            .innerJoin("memberGameItem.gameItem", "gameItem", "gameItem.type in (:types)")
+            .where("memberId = :memberId and remainTimes > 0 and enabled = 1")
+            .orderBy("gameItem.type", "ASC")
+            .orderBy("memberGameItem.is_using", "DESC")
+            .setParameters({
+                types: [GameItemType.tool, GameItemType.role],
+                memberId: this.memberId
+            })
+            .getMany();
 
 
-        return null;
+        const dic = _.groupBy<MemberGameItemEntity>(memberGameItemEntities, "gameItemId")
+
+        const ret = new ListResult<MemberGameItemVM>(true);
+        const items: MemberGameItemVM[] = []
+
+        for (const key in dic) {
+            const gameItem = dic[key][0].gameItem
+
+            const item: MemberGameItemVM = {
+                id: gameItem.id,
+                imageUrl: gameItem.imageUrl,
+                gamePoint: gameItem.gamePoint,
+                type: gameItem.type,
+                carPlusPoint: gameItem.gamePoint,
+                description: gameItem.description,
+                enableBuy: false,
+                name: gameItem.name,
+                isUsing: dic[key].some(entity => entity.isUsing),
+                memberGameItemIds: dic[key].map(entity => entity.id)
+            }
+            items.push(item)
+
+        }
+        return ret;
     }
 
     async useGameItem(memberGameItemId: string): Promise<BaseResult> {
@@ -244,14 +253,14 @@ export class MemberGameItemLibSvc extends BaseConnection {
         // 金額驗證 
         if (useGamePointItems.some(item => item === gameItemEntity.type)) {
             pointAmount = gameItemEntity.gamePoint * param.num
-            pointType=  PointType.gamePoint
+            pointType = PointType.gamePoint
             // 用超人幣購買的
             if ((gameItemEntity.gamePoint * param.num) > gamePoint) {
                 throw new AppError('超人幣不足，無法購買')
             }
         } else {
             pointAmount = gameItemEntity.carPlusPoint * param.num
-            pointType=  PointType.carPlus
+            pointType = PointType.carPlus
             // 用格上紅利購嗎
             if ((gameItemEntity.carPlusPoint * param.num) > carPlusPoint) {
                 throw new AppError('格上紅利不足，無法兌換超人幣')

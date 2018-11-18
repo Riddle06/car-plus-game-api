@@ -3,7 +3,7 @@ import { MemberGameHistoryEntity } from '@entities/member-game-history.entity';
 import { BaseConnection } from '@services/base-connection';
 import { PageQuery, ListResult } from '@view-models/common.vm';
 import { AdminMemberGameHistoryParameterVM, AdminMemberGameHistoryVM } from '@view-models/admin.game.vm';
-import { FindConditions } from 'typeorm';
+import { FindConditions, Between, MoreThan, LessThan } from 'typeorm';
 import { MemberBlockHistoryEntity } from '@entities/member-block-history.entity';
 import { checker } from '@utilities';
 export class AdminGameHistoryLibSvc extends BaseConnection {
@@ -16,6 +16,14 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
             conditions.memberId = param.params.memberId
+        }
+
+        if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
+            conditions.dateCreated = Between<Date>(param.listQueryParam.dateStart, param.listQueryParam.dateEnd)
+        } else if (checker.isDate(param.listQueryParam.dateStart)) {
+            conditions.dateCreated = MoreThan(param.listQueryParam.dateStart)
+        } else if (checker.isDate(param.listQueryParam.dateEnd)) { 
+            conditions.dateCreated = LessThan(param.listQueryParam.dateEnd)
         }
 
         const skip = (param.listQueryParam.pageIndex - 1) * param.listQueryParam.pageSize

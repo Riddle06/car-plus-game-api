@@ -2,7 +2,7 @@ import { MemberGameItemOrderEntity } from './../../../entities/member-game-item-
 import { BaseConnection } from '@services/base-connection';
 import { ListResult, PageQuery } from '@view-models/common.vm';
 import { AdminMemberGameItemOrderVM, AdminMemberGameItemQueryParameterVM } from '@view-models/admin.point.vm';
-import { FindConditions } from 'typeorm';
+import { FindConditions, Between, MoreThan, LessThan } from 'typeorm';
 import { checker } from '@utilities';
 import { PointHistoryType } from '@view-models/game-history.vm';
 export class AdminExchangeLibSvc extends BaseConnection {
@@ -12,6 +12,14 @@ export class AdminExchangeLibSvc extends BaseConnection {
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
             conditions.memberId = param.params.memberId
+        }
+
+        if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
+            conditions.dateCreated = Between<Date>(param.listQueryParam.dateStart, param.listQueryParam.dateEnd)
+        } else if (checker.isDate(param.listQueryParam.dateStart)) {
+            conditions.dateCreated = MoreThan(param.listQueryParam.dateStart)
+        } else if (checker.isDate(param.listQueryParam.dateEnd)) { 
+            conditions.dateCreated = LessThan(param.listQueryParam.dateEnd)
         }
 
         const skip = (param.listQueryParam.pageIndex - 1) * param.listQueryParam.pageSize
