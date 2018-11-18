@@ -54,7 +54,7 @@ export abstract class BaseMemberGame extends BaseConnection {
                     return point + levelInfo.levelUpGetGamePoint
                 }, 0)
         }
-        
+
         return gamePoint;
     }
 
@@ -143,10 +143,13 @@ export abstract class BaseMemberGame extends BaseConnection {
         // 取得經驗值（目前跟分數是 1 : 1)
         const changeExperience = await this.getExperienceByScore(totalScore);
 
-        // 因為遊戲道具加成後得到的金幣
-        const gamePointAfterAddBonus = await this.getUseGameItemGamePoint(gamePoint, enableAddGamePointGameItems);
-
         const { changeLevel, levelUpGamePoint, newExperience } = await this.getLevelUpInfoByExperience(memberEntity.level, memberEntity.experience, changeExperience);
+
+        // 因為遊戲道具加成後得到的金幣
+        const gamePointAfterAddBonus = await this.getUseGameItemGamePoint(memberEntity.level,
+            (memberEntity.level + changeLevel)
+            , gamePoint,
+            enableAddGamePointGameItems);
 
         // 更新遊戲紀錄
         await this.memberGameHistoryRepository.update(
