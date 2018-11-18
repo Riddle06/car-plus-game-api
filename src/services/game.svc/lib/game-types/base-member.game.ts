@@ -35,10 +35,27 @@ export abstract class BaseMemberGame extends BaseConnection {
 
     abstract getExperienceByScore(score: number): Promise<number>
 
-    async getUseGameItemGamePoint(oriGamePoint: number, gameItemEntities: GameItemEntity[]): Promise<number> {
+    async getUseGameItemGamePoint(beforeLevel: number, afterLevel: number, oriGamePoint: number, gameItemEntities: GameItemEntity[]): Promise<number> {
 
-        // TODO:
-        return oriGamePoint;
+        const levelInfoRet = await variableSvc.getLevelInformation();
+
+        let gamePoint: number = oriGamePoint;
+
+        // 道具加成
+        gamePoint = gameItemEntities.filter(entity => entity.enabledAddGamePointRate).reduce((gamePoint, entity) => {
+            return gamePoint * entity.addGamePointRate
+        }, gamePoint)
+
+        // 升等加成
+        if (beforeLevel < afterLevel) {
+            gamePoint += levelInfoRet.items
+                .filter(levelInfo => levelInfo.level >= beforeLevel && levelInfo.level < afterLevel)
+                .reduce((point, levelInfo) => {
+                    return point + levelInfo.levelUpGetGamePoint
+                }, 0)
+        }
+        
+        return gamePoint;
     }
 
     async init(): Promise<this> {
