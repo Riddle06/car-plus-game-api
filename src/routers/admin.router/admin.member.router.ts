@@ -37,7 +37,7 @@ router.get('/block-history', async (req: RequestExtension, res: ResponseExtensio
     try {
 
         const pageQuery = new PageQuery<AdminMemberBlockListQueryParameterVM>(req.listQuery, {
-            memberId: req.query.memberId as string
+            memberId: req.query.mi
         })
         res.result = await adminMemberSvc.getMemberBlockHistories(req.adminUserToken, pageQuery)
     } catch (error) {

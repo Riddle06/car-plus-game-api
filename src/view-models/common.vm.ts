@@ -1,3 +1,10 @@
+export interface PageInfo {
+    index: number
+    size: number
+    dateStart?: Date
+    dateEnd?: Date
+}
+
 export enum ResultCode {
     success = 200,
     clientError = 403,
