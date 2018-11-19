@@ -85,7 +85,7 @@ export abstract class BaseGame {
             strokeThickness: 4
         }
     
-        const text = new Text(`0000`, textConfig);
+        const text = new Text(`0`, textConfig);
         bg.addChild(text);
         text.position.set(x, y);
     

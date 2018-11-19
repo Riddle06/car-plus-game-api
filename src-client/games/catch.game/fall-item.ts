@@ -29,7 +29,7 @@ export class FallItem {
     ]
   }
 
-  async init() {
+  async init(index: number): Promise<this> {
 
     if (!PIXI.loader.resources['bomb']) await loaderHandler('bomb', '/static/images/item-bomb.png');
     if (!PIXI.loader.resources['gift01']) await loaderHandler('gift01', '/static/images/item-gift01.png');
@@ -42,7 +42,7 @@ export class FallItem {
     this.sprite = new PIXI.Sprite(PIXI.loader.resources[type.name].texture);
     this.sprite.height = (this.sprite.height / this.sprite.width) * (this.app.screen.width / 5);
     this.sprite.width = this.app.screen.width / 5;
-    this.sprite.x = (Math.floor(Math.random() * (this.app.screen.width - this.sprite.width)));
+    this.sprite.x = (this.app.screen.width / 5) * index;
     this.sprite.y = -this.sprite.height;
 
     this.app.ticker.add(this.fallHandler, this);

@@ -54,13 +54,21 @@ export class CatchGame extends BaseGame {
     }
 
     private async generateFallItemHandler(): Promise<void> {
-
-        // 每次產生 0~3個掉落物
-        const generateItems = Math.floor(Math.random() * 3);
+        const posArr = [0, 0, 0 ,0, 0];
+        // 每次產生 0~3 個掉落物
+        const generateItems = Math.floor(Math.random() * 3) + 1;
         for (let i = 0; i < generateItems; i++) {
-            const fallitem = await new FallItem(this.application).init();
-            this.fallItems.push(fallitem);
-            this.fallItemsContainer.addChild(fallitem.sprite)
+            let index = Math.floor(Math.random() * 5);
+            while(posArr[index] === 1) {
+                index = Math.floor(Math.random() * 5);
+            }
+            posArr[index] = 1;
+
+            if ((Math.ceil((Math.random() * 1000)) % 2) === 1) {
+                const fallitem = await new FallItem(this.application).init(index);
+                this.fallItems.push(fallitem);
+                this.fallItemsContainer.addChild(fallitem.sprite)
+            }
         }
 
     }
@@ -77,9 +85,9 @@ export class CatchGame extends BaseGame {
 
             // 增加分數 & 星星數
             this.points += item.point;
-            this.pointsText.text = `${this.points}`['padStart'](4, 0);
+            this.pointsText.text = `${this.points}`;
             this.coins += item.point;
-            this.coinsText.text = `${this.coins}`['padStart'](4, 0);
+            this.coinsText.text = `${this.coins}`;
         })
         this.fallItems.filter(item => item.sprite.y > this.application.screen.height).forEach(item => {
             // 檢查掉落物是否掉出畫面了，是 -> 隱藏+移除
