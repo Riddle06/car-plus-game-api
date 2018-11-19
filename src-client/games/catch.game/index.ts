@@ -1,4 +1,4 @@
-import { BaseGame, hitTestRectangle, loaderHandler } from "../base.game";
+import { BaseGame, hitTestRectangle, loaderHandler, generateContainer } from "../base.game";
 import { Graphics, Text, Texture, Sprite, loader } from "pixi.js";
 import { SuperMan, SuperManDirection } from './super-man';
 import { FallItem } from './fall-item';
@@ -8,23 +8,28 @@ import * as moment from 'moment';
 
 export class CatchGame extends BaseGame {
     private superMan: SuperMan = null; // 超人
-    private fallItems: PIXI.Graphics[] = []; // 掉落物陣列
-    private gameTime: number = 10; // 遊戲時間
+    private fallItems: FallItem[] = []; // 掉落物陣列
+    private fallItemsContainer: PIXI.Container = null;
+    private gameTime: number = 30; // 遊戲時間
     private timeText: Text = null; // 時間顯示文字
     private now: moment.Moment = moment(); // 計算時間用
-    private score: number = 0; // 獲得分數
-    private star: number = 0; // 獲得的星星數
+
 
     protected async initElements(): Promise<boolean> {
 
         // 建立遊戲
         document.querySelector("#app-game").appendChild(this.application.view);
         // 建立背景圖片
-        this.initBgImage('/static/images/bg.jpg');
+        this.initBgImage('/static/images/bg.jpg'); 
+        // 建立掉落物用的舞台
+        this.fallItemsContainer = generateContainer(this.application.screen.width, this.application.screen.height);
+        this.application.stage.addChild(this.fallItemsContainer);
         // 建立超人
         this.superMan = await new SuperMan(this.application).init();
+        // 建立計數計時文字
+        await this.generatePointsAndCoinsCount();
         // 建立計時器
-        this.generateGameTimeItem();
+        await this.generateGameTimeItem();
         
 
         
@@ -44,26 +49,7 @@ export class CatchGame extends BaseGame {
 
     private async generateGameTimeItem() {
         // 初始化計時文字
-        await loaderHandler('/static/images/item-time.png')
-        const timeBg = new Sprite(loader.resources['/static/images/item-time.png'].texture);
-        const fullWidth = this.application.screen.width - 30;
-
-        
-        this.timeText = new Text('00:00', {
-            fill: 'white',
-            fontSize: 30,
-            dropShadow: true,
-        })
-        timeBg.addChild(this.timeText);
-        this.timeText.position.set(100, 28);
-
-        timeBg.height = (timeBg.height / timeBg.width) * (fullWidth / 3);
-        timeBg.width = (fullWidth / 3);
-        timeBg.x = (fullWidth / 3) * 2 + 15;
-        timeBg.y = 15;
-
-        this.application.stage.addChild(timeBg);
-
+        this.timeText = await this.generateText('/static/images/item-time.png', 2, 87, 28, 15);
         this.handleGameTimeText(); 
     }
 
@@ -72,9 +58,9 @@ export class CatchGame extends BaseGame {
         // 每次產生 0~3個掉落物
         const generateItems = Math.floor(Math.random() * 3);
         for (let i = 0; i < generateItems; i++) {
-            const shape = await new FallItem(this.application).init();
-            this.fallItems.push(shape);
-            this.application.stage.addChild(shape)
+            const fallitem = await new FallItem(this.application).init();
+            this.fallItems.push(fallitem);
+            this.fallItemsContainer.addChild(fallitem.sprite)
         }
 
     }
@@ -84,22 +70,24 @@ export class CatchGame extends BaseGame {
     }
 
     private checkHitItem() {
-        this.fallItems.filter(item => hitTestRectangle(this.superMan.sprite, item)).forEach(item => {
+        this.fallItems.filter(item => hitTestRectangle(this.superMan.sprite, item.sprite)).forEach(item => {
             // 檢查掉落物與超人是否碰撞，是 -> 隱藏+移除
-            item.visible = false
-            item.removeChild(item);
+            item.sprite.visible = false
+            item.sprite.removeChild(item.sprite);
 
             // 增加分數 & 星星數
-            this.score+=1;
-            this.star+=1;
+            this.points += item.point;
+            this.pointsText.text = `${this.points}`['padStart'](4, 0);
+            this.coins += item.point;
+            this.coinsText.text = `${this.coins}`['padStart'](4, 0);
         })
-        this.fallItems.filter(item => item.y > this.application.screen.height).forEach(item => {
+        this.fallItems.filter(item => item.sprite.y > this.application.screen.height).forEach(item => {
             // 檢查掉落物是否掉出畫面了，是 -> 隱藏+移除
-            item.visible = false
-            item.removeChild(item);
+            item.sprite.visible = false
+            item.sprite.removeChild(item.sprite);
         })
 
-        this.fallItems = this.fallItems.filter(item => item.visible)
+        this.fallItems = this.fallItems.filter(item => item.sprite.visible)
     }
 
     private handleGameTimeText() {
@@ -137,6 +125,7 @@ export class CatchGame extends BaseGame {
             this.superMan.turnDirection();
         });
         this.superMan.start(); // 超人開始移動
+        this.generateFallItemHandler(); // 建立第一批掉落物
         this.application.ticker.add(this.processing, this); // 開始處理遊戲
 
     }
@@ -146,8 +135,8 @@ export class CatchGame extends BaseGame {
         this.superMan.end();
         this.application.ticker.remove(this.processing, this);
         this.fallItems.forEach(item => {
-            item.visible = false;
-            item.removeChild(item);
+            item.sprite.visible = false;
+            item.sprite.removeChild(item.sprite);
         });
     }
 }

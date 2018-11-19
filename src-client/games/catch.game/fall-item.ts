@@ -1,38 +1,57 @@
 import * as PIXI from "pixi.js";
+import { loaderHandler } from '../base.game';
+
+interface Type {
+  point: number,
+  name: string
+}
 
 export class FallItem {
   private fallSpeed: number = 3
-  private sprite: PIXI.extras.AnimatedSprite = null;
+  // private sprite: PIXI.extras.AnimatedSprite = null;
   private app: PIXI.Application = null;
-  public shape: PIXI.Graphics = null;
+  private types: Type[] = [];
 
-  private initSize = {
-    width: 50,
-    height: 50,
-  }
+  public sprite: PIXI.Sprite = null;
+  public point: number = 0;
+
 
   constructor(app: PIXI.Application) {
     this.app = app;
+    this.types = [
+      { point: -1, name: 'bomb' },
+      { point: 1, name: 'gift01' },
+      { point: 1, name: 'gift02' },
+      { point: 1, name: 'gift03' },
+      { point: 1, name: 'gift01' },
+      { point: 1, name: 'gift02' },
+      { point: 1, name: 'gift03' },
+    ]
   }
 
   async init() {
-    this.shape = new PIXI.Graphics();
 
-    const startOffsetX = (Math.floor(Math.random() * (this.app.screen.width - this.initSize.width)));
-    if ((Math.ceil((Math.random() * 1000)) % 2) === 1) {
-      this.shape.beginFill(0Xffa500);
-      this.shape.drawRect(0, 0, this.initSize.width, this.initSize.height)
-      this.shape.endFill();
-      this.shape.x = startOffsetX;
-      this.shape.y = -this.initSize.height;
-    }
+    if (!PIXI.loader.resources['bomb']) await loaderHandler('bomb', '/static/images/item-bomb.png');
+    if (!PIXI.loader.resources['gift01']) await loaderHandler('gift01', '/static/images/item-gift01.png');
+    if (!PIXI.loader.resources['gift02']) await loaderHandler('gift02', '/static/images/item-gift02.png');
+    if (!PIXI.loader.resources['gift03']) await loaderHandler('gift03', '/static/images/item-gift03.png');
 
-    this.app.ticker.add(this.fallHandler.bind(this));
 
-    return this.shape;
+    const type = this.types[Math.floor(Math.random() * this.types.length)];
+    this.point = type.point;
+    this.sprite = new PIXI.Sprite(PIXI.loader.resources[type.name].texture);
+    this.sprite.height = (this.sprite.height / this.sprite.width) * (this.app.screen.width / 5);
+    this.sprite.width = this.app.screen.width / 5;
+    this.sprite.x = (Math.floor(Math.random() * (this.app.screen.width - this.sprite.width)));
+    this.sprite.y = -this.sprite.height;
+
+    this.app.ticker.add(this.fallHandler, this);
+
+    return this;
   }
 
   protected fallHandler(delta: number): void {
-    this.shape.y += this.fallSpeed;
+    if (!this.sprite.visible) return
+    this.sprite.y += this.fallSpeed;
   }
 }

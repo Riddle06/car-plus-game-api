@@ -1,4 +1,4 @@
-import { Application, Texture, loader, Sprite } from "pixi.js";
+import { Application, Texture, loader, Sprite, Text } from "pixi.js";
 
 interface LoaderResponse {
     llama: PIXI.extras.AnimatedSprite
@@ -18,7 +18,10 @@ export abstract class BaseGame {
     protected isPlaying: Boolean = false; // 遊戲正在進行
     protected isGameEnd: Boolean = false; // 遊戲已結束
     protected application: Application = null
-
+    protected points: number = 0; // 獲得分數
+    protected coins: number = 0; // 獲得的金幣
+    protected pointsText: Text = null; // 分數文字
+    protected coinsText: Text = null; // 金幣文字
 
     protected screen: {
         width: number
@@ -37,6 +40,11 @@ export abstract class BaseGame {
         })
         this.application.stage.interactive = true;
 
+        await loaderHandler('win', '/static/images/img-win.png');
+        await loaderHandler('wow', '/static/images/img-wow.png');
+        await loaderHandler('coin', '/static/images/item-coin.png');
+        await loaderHandler('point', '/static/images/item-point.png');
+        
         await this.initElements()
         await this.initElementsEvents()
         await this.initElementsOffset()
@@ -47,7 +55,7 @@ export abstract class BaseGame {
     protected abstract async initElementsOffset(): Promise<boolean>
     protected abstract async initElementsEvents(): Promise<boolean>
 
-    initBgImage(path) {
+    protected initBgImage(path) {
         // 建立背景圖片
         const bg = Texture.fromImage(path);
         const background: Sprite = new Sprite(bg);
@@ -55,11 +63,50 @@ export abstract class BaseGame {
         background.height = this.application.screen.height;
         this.application.stage.addChild(background);
     }
+
+    protected async generatePointsAndCoinsCount() {
+        // 初始化計時文字
+        this.pointsText = await this.generateText('/static/images/item-points.png', 0, 95, 28, 15);
+        this.coinsText = await this.generateText('/static/images/item-coins.png', 1, 95, 29, 13);
+
+    }
+
+    protected async generateText(path: string, index: number, x: number, y:number, bgY: number): Promise<Text> {
+        // 建立文字
+        await loaderHandler(path, path);
+        const bg = new Sprite(loader.resources[path].texture);
+        const fullWidth = this.application.screen.width - 30;
+        const textConfig = {
+            fill: 'white',
+            fontSize: 32,
+            fontFamily: "Arial Black",
+            lineJoin: "bevel",
+            stroke: "black",
+            strokeThickness: 4
+        }
+    
+        const text = new Text(`0000`, textConfig);
+        bg.addChild(text);
+        text.position.set(x, y);
+    
+        bg.height = (bg.height / bg.width) * (fullWidth / 3);
+        bg.width = (fullWidth / 3);
+        bg.x = (fullWidth / 3) * index + 15;
+        bg.y = bgY;
+        
+        this.application.stage.addChild(bg);
+        return text;
+    }
+
+    protected handleEffect(): void {
+        // 特效處理
+
+    }
 }
 
-export function loaderHandler(path): Promise<LoaderResponse> {
+export function loaderHandler(name, path): Promise<LoaderResponse> {
     return new Promise<LoaderResponse>((resolve, reject) => {
-        loader.add(path).load(function (loader, res) {
+        loader.add(name, path).load(function (loader, res) {
             resolve(res)
         })
     })
@@ -115,3 +162,10 @@ export function hitTestRectangle(r1: BaseShape, r2: BaseShape): boolean {
     //Return the value of `collision` back to the main program
     return collision;
 };
+
+export function generateContainer(width, height): PIXI.Container {
+    const container = new PIXI.Container();
+    container.width = width;
+    container.height = height;
+    return container;
+} 
