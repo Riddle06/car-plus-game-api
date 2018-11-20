@@ -18,7 +18,7 @@ export class AdminPointLibSvc extends BaseConnection {
         super(queryRunner)
         this.adminUserToken = adminUserToken
     }
-    
+
 
 
     async getManualGamePointHistory(param: PageQuery): Promise<ListResult<AdminMemberPointHistoryVM>> {
@@ -31,11 +31,11 @@ export class AdminPointLibSvc extends BaseConnection {
             conditions.dateCreated = Between<Date>(param.listQueryParam.dateStart, param.listQueryParam.dateEnd)
         } else if (checker.isDate(param.listQueryParam.dateStart)) {
             conditions.dateCreated = MoreThan(param.listQueryParam.dateStart)
-        } else if (checker.isDate(param.listQueryParam.dateEnd)) { 
+        } else if (checker.isDate(param.listQueryParam.dateEnd)) {
             conditions.dateCreated = LessThan(param.listQueryParam.dateEnd)
         }
 
-        const memberGamePointHistoryEntities = await memberGamePointHistoryRepository.find({
+        const findAndCountRet = await memberGamePointHistoryRepository.findAndCount({
             order: {
                 dateCreated: "DESC"
             },
@@ -54,10 +54,17 @@ export class AdminPointLibSvc extends BaseConnection {
             skip,
             take
         })
-
+        const memberGamePointHistoryEntities = findAndCountRet[0]
+        const dataAmount = findAndCountRet[1]
 
         const ret = new ListResult<AdminMemberPointHistoryVM>(true);
         ret.items = memberGamePointHistoryEntities.map(entity => this.parseAdminMemberPointHistoryVMFromPointHistoryVM(entity))
+
+        ret.page = {
+            pageAmount: Math.ceil(dataAmount / param.listQueryParam.pageSize),
+            dataAmount
+        }
+
 
         return ret;
     }

@@ -27,7 +27,7 @@ export class AdminExchangeLibSvc extends BaseConnection {
 
         const memberGameItemOrderRepository = await this.entityManager.getRepository(MemberGameItemOrderEntity)
 
-        const memberGameItemOrderEntities = await memberGameItemOrderRepository.find({
+         const findAndCountRet = await memberGameItemOrderRepository.findAndCount({
             relations: ['member', 'gameItem'],
             where: {
                 ...conditions
@@ -38,6 +38,9 @@ export class AdminExchangeLibSvc extends BaseConnection {
             skip,
             take
         })
+
+        const memberGameItemOrderEntities = findAndCountRet[0]
+        const dataAmount = findAndCountRet[1]
 
         const ret = new ListResult<AdminMemberGameItemOrderVM>(true);
 
@@ -72,6 +75,11 @@ export class AdminExchangeLibSvc extends BaseConnection {
             }
             return item
         })
+
+        ret.page = {
+            pageAmount: Math.ceil(dataAmount / param.listQueryParam.pageSize),
+            dataAmount
+        }
 
 
         return ret;

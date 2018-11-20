@@ -22,14 +22,14 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
             conditions.dateCreated = Between<Date>(param.listQueryParam.dateStart, param.listQueryParam.dateEnd)
         } else if (checker.isDate(param.listQueryParam.dateStart)) {
             conditions.dateCreated = MoreThan(param.listQueryParam.dateStart)
-        } else if (checker.isDate(param.listQueryParam.dateEnd)) { 
+        } else if (checker.isDate(param.listQueryParam.dateEnd)) {
             conditions.dateCreated = LessThan(param.listQueryParam.dateEnd)
         }
 
         const skip = (param.listQueryParam.pageIndex - 1) * param.listQueryParam.pageSize
         const take = param.listQueryParam.pageSize
 
-        const memberGameHistoryEntities = await memberGameHistoryRepository.find({
+        const findAndCountRet = await memberGameHistoryRepository.findAndCount({
             relations: ['member', 'game'],
             where: {
                 ...conditions
@@ -41,6 +41,9 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
             take
 
         })
+
+        const memberGameHistoryEntities = findAndCountRet[0]
+        const dataAmount = findAndCountRet[1]
         const ret = new ListResult<AdminMemberGameHistoryVM>();
 
         ret.items = memberGameHistoryEntities.map(entity => {
@@ -74,6 +77,12 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
 
             return item
         })
+
+        ret.page = {
+            pageAmount: Math.ceil(dataAmount / param.listQueryParam.pageSize),
+            dataAmount
+        }
+
         return ret;
     }
 
