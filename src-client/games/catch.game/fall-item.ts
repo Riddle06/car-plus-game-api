@@ -23,9 +23,6 @@ export class FallItem {
       { point: 1, name: 'gift01' },
       { point: 1, name: 'gift02' },
       { point: 1, name: 'gift03' },
-      { point: 1, name: 'gift01' },
-      { point: 1, name: 'gift02' },
-      { point: 1, name: 'gift03' },
     ]
   }
 

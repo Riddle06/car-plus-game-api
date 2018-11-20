@@ -14,6 +14,9 @@ interface BaseShape {
     centerX?: number
     centerY?: number
 }
+
+
+
 export abstract class BaseGame {
     protected isPlaying: Boolean = false; // 遊戲正在進行
     protected isGameEnd: Boolean = false; // 遊戲已結束
@@ -22,6 +25,8 @@ export abstract class BaseGame {
     protected coins: number = 0; // 獲得的金幣
     protected pointsText: Text = null; // 分數文字
     protected coinsText: Text = null; // 金幣文字
+
+    private effectContainer: PIXI.Container = null; // 特效使用的容器
 
     protected screen: {
         width: number
@@ -39,39 +44,39 @@ export abstract class BaseGame {
             transparent: true
         })
         this.application.stage.interactive = true;
+        this.effectContainer = generateContainer(this.screen.width, this.screen.height); // 置放特效用的佈景容器
 
-        await loaderHandler('win', '/static/images/img-win.png');
-        await loaderHandler('wow', '/static/images/img-wow.png');
-        await loaderHandler('coin', '/static/images/item-coin.png');
-        await loaderHandler('point', '/static/images/item-point.png');
-        
+        await this.initImages(); // 載入圖片
         await this.initElements()
         await this.initElementsEvents()
         await this.initElementsOffset()
+        this.application.stage.addChild(this.effectContainer); // 最後放入特效容器
+
         return this;
     }
-
+    
+    protected abstract async initImages(): Promise<void>
     protected abstract async initElements(): Promise<boolean>
     protected abstract async initElementsOffset(): Promise<boolean>
     protected abstract async initElementsEvents(): Promise<boolean>
 
-    protected initBgImage(path) {
+
+    protected initBg(): void {
         // 建立背景圖片
-        const bg = Texture.fromImage(path);
-        const background: Sprite = new Sprite(bg);
+        const background = new Sprite(loader.resources['bg'].texture);
         background.width = this.application.screen.width;
         background.height = this.application.screen.height;
         this.application.stage.addChild(background);
     }
 
-    protected async generatePointsAndCoinsCount() {
-        // 初始化計時文字
+    protected async generatePointsAndCoinsCount(): Promise<void> {
+        // 初始化點數跟金幣計數
         this.pointsText = await this.generateText('/static/images/item-points.png', 0, 95, 28, 15);
         this.coinsText = await this.generateText('/static/images/item-coins.png', 1, 95, 29, 13);
 
     }
 
-    protected async generateText(path: string, index: number, x: number, y:number, bgY: number): Promise<Text> {
+    protected async generateText(path: string, index: number, x: number, y: number, bgY: number): Promise<Text> {
         // 建立文字
         await loaderHandler(path, path);
         const bg = new Sprite(loader.resources[path].texture);
@@ -84,23 +89,80 @@ export abstract class BaseGame {
             stroke: "black",
             strokeThickness: 4
         }
-    
+
         const text = new Text(`0`, textConfig);
         bg.addChild(text);
         text.position.set(x, y);
-    
+
         bg.height = (bg.height / bg.width) * (fullWidth / 3);
         bg.width = (fullWidth / 3);
         bg.x = (fullWidth / 3) * index + 15;
         bg.y = bgY;
-        
+
         this.application.stage.addChild(bg);
         return text;
     }
 
-    protected handleEffect(): void {
+    protected handleEffect(x: number, y: number, point: number = 0, coin: number = 0): void {
         // 特效處理
+        let pointEffect: PIXI.Container = null;
+        let coinEffect: PIXI.Container = null;
+        
+        if (point !== 0) {
+            // 獲得的點數不等於 0 (加或減)
+            pointEffect = this.generatePlusOrMinusEffect('point', x, y, point);
+            this.effectContainer.addChild(pointEffect);
+            this.application.ticker.add(this.effectTransition(pointEffect), this);
 
+            if(coin !== 0) {
+                // 獲得的硬幣不等於0
+                coinEffect = this.generatePlusOrMinusEffect('coin', x, y, coin);
+                this.effectContainer.addChild(coinEffect);
+                coinEffect.y = coinEffect.y + pointEffect.height; // 硬幣顯示在點數下方
+                this.application.ticker.add(this.effectTransition(coinEffect), this);
+            }
+        }
+        
+    }
+
+    private generatePlusOrMinusEffect(name: string, x: number, y: number, num: number): PIXI.Container {
+        const effect = new PIXI.Container(); // 特效容器
+        const sprite = new PIXI.Sprite(PIXI.loader.resources[name].texture) // Icon
+        const text = new PIXI.Text(`${num > 0 ? '+' : '-'}${Math.abs(num)}`, { // 加減數字
+            fill: 'white',
+            fontSize: 32,
+            fontFamily: "Arial Black",
+            lineJoin: "bevel",
+            stroke: "black",
+            strokeThickness: 4
+        });
+        effect.addChild(sprite);
+        effect.addChild(text);
+        text.x = sprite.width; // 文字的位置在Icon旁邊
+        text.y = sprite.height / 2 - text.height / 2;
+        effect.scale.x = .5;
+        effect.scale.y = .5;
+        effect.x = x;
+        effect.y = y;
+
+        return effect;
+    }
+
+    private effectTransition(effect: PIXI.Container): () => void {
+        // 特效動畫 往上漂淡出
+        function fun (): void {
+            if(effect.alpha <= 0) {
+                // 透明到看不到後就刪除ticker
+                effect.visible = false;
+                this.effectContainer.removeChild(effect);
+                this.application.ticker.remove(fun, this)
+                return;
+            }
+            // 漸漸變淡跟往上飄
+            effect.alpha -= 0.01;
+            effect.y -= 1;
+        }
+        return fun;
     }
 }
 

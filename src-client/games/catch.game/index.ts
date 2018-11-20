@@ -15,13 +15,20 @@ export class CatchGame extends BaseGame {
     private now: moment.Moment = moment(); // 計算時間用
 
 
-    protected async initElements(): Promise<boolean> {
+    protected async initImages(): Promise<void> {
+        await loaderHandler('bg', '/static/images/bg.jpg');
+        await loaderHandler('win', '/static/images/img-win.png');
+        await loaderHandler('wow', '/static/images/img-wow.png');
+        await loaderHandler('coin', '/static/images/item-coin.png');
+        await loaderHandler('point', '/static/images/item-point.png');
 
+        this.initBg();  // 放上背景
+    } 
+
+    protected async initElements(): Promise<boolean> {
         // 建立遊戲
         document.querySelector("#app-game").appendChild(this.application.view);
-        // 建立背景圖片
-        this.initBgImage('/static/images/bg.jpg'); 
-        // 建立掉落物用的舞台
+        // 建立掉落物用的容器
         this.fallItemsContainer = generateContainer(this.application.screen.width, this.application.screen.height);
         this.application.stage.addChild(this.fallItemsContainer);
         // 建立超人
@@ -29,10 +36,7 @@ export class CatchGame extends BaseGame {
         // 建立計數計時文字
         await this.generatePointsAndCoinsCount();
         // 建立計時器
-        await this.generateGameTimeItem();
-        
-
-        
+        await this.generateGameTimeCount();    
 
         return Promise.resolve(true);
     }
@@ -47,7 +51,7 @@ export class CatchGame extends BaseGame {
         return Promise.resolve(true);
     }
 
-    private async generateGameTimeItem() {
+    private async generateGameTimeCount() {
         // 初始化計時文字
         this.timeText = await this.generateText('/static/images/item-time.png', 2, 87, 28, 15);
         this.handleGameTimeText(); 
@@ -83,11 +87,15 @@ export class CatchGame extends BaseGame {
             item.sprite.visible = false
             item.sprite.removeChild(item.sprite);
 
-            // 增加分數 & 星星數
+            // 增加點數 & 金幣
+            const { x, y } = this.superMan.sprite;
+            // 有獲得點數才有機會獲得硬幣
+            const coin = item.point > 0 ? Math.floor(Math.random() * 3) : 0;
             this.points += item.point;
             this.pointsText.text = `${this.points}`;
-            this.coins += item.point;
+            this.coins += coin;
             this.coinsText.text = `${this.coins}`;
+            this.handleEffect(x, y, item.point, coin);
         })
         this.fallItems.filter(item => item.sprite.y > this.application.screen.height).forEach(item => {
             // 檢查掉落物是否掉出畫面了，是 -> 隱藏+移除
