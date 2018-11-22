@@ -39,7 +39,7 @@
     "cors": "^2.8.5",
     "dat.gui": "^0.7.3",
     "dotenv": "^6.1.0",
-    "element-ui": "2.4.9",
+    "element-ui": "^2.4.11",
     "expose-loader": "^0.7.5",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.0",

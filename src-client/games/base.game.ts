@@ -1,4 +1,5 @@
 import { Application, Texture, loader, Sprite, Text } from "pixi.js";
+import * as pad from "pad-left";
 
 interface LoaderResponse {
     llama: PIXI.extras.AnimatedSprite
@@ -15,17 +16,16 @@ interface BaseShape {
     centerY?: number
 }
 
-
-
 export abstract class BaseGame {
     protected isPlaying: Boolean = false; // 遊戲正在進行
     protected isGameEnd: Boolean = false; // 遊戲已結束
-    protected application: Application = null
     protected points: number = 0; // 獲得分數
     protected coins: number = 0; // 獲得的金幣
     protected pointsText: Text = null; // 分數文字
     protected coinsText: Text = null; // 金幣文字
-
+    
+    protected application: Application = null 
+    protected stage: PIXI.Container = null; // 遊戲舞台
     private effectContainer: PIXI.Container = null; // 特效使用的容器
 
     protected screen: {
@@ -40,14 +40,12 @@ export abstract class BaseGame {
         }
     }
     async init(): Promise<this> {
-        this.application = new Application(this.screen.width, this.screen.height, {
-            transparent: true
-        })
-        this.application.stage.interactive = true;
-        this.effectContainer = generateContainer(this.screen.width, this.screen.height); // 置放特效用的佈景容器
+        this.setApplication();
+        this.setStage();
 
         await this.initImages(); // 載入圖片
         await this.initElements()
+        await this.setPointAndCoin(); // 建立計數計時文字
         await this.initElementsEvents()
         await this.initElementsOffset()
         this.application.stage.addChild(this.effectContainer); // 最後放入特效容器
@@ -60,20 +58,38 @@ export abstract class BaseGame {
     protected abstract async initElementsOffset(): Promise<boolean>
     protected abstract async initElementsEvents(): Promise<boolean>
 
+    private setApplication() {
+        this.application = new Application(this.screen.width, this.screen.height, {
+            transparent: true
+        })
+        this.effectContainer = generateContainer(this.screen.width, this.screen.height); // 置放特效用的佈景容器
+        document.body.appendChild(this.application.view)
+    }
+    private setStage() {
+        const stage = new PIXI.Container()
+        stage.width = this.screen.width;
+        stage.height = this.screen.height;
+        stage.x = 0;
+        stage.y = 0;
 
-    protected initBg(): void {
-        // 建立背景圖片
-        const background = new Sprite(loader.resources['bg'].texture);
-        background.width = this.application.screen.width;
-        background.height = this.application.screen.height;
-        this.application.stage.addChild(background);
+        this.stage = stage
+
+        this.application.stage.addChild(this.stage)
     }
 
-    protected async generatePointsAndCoinsCount(): Promise<void> {
+    
+    private async setPointAndCoin(): Promise<void> {
         // 初始化點數跟金幣計數
         this.pointsText = await this.generateText('/static/images/item-points.png', 0, 95, 28, 15);
         this.coinsText = await this.generateText('/static/images/item-coins.png', 1, 95, 29, 13);
+    }
 
+    protected setBackground(): void {
+        // 建立背景圖片
+        const background = new Sprite(loader.resources['bg'].texture);
+        background.width = this.screen.width;
+        background.height = this.screen.height;
+        this.stage.addChild(background);
     }
 
     protected async generateText(path: string, index: number, x: number, y: number, bgY: number): Promise<Text> {
@@ -82,15 +98,15 @@ export abstract class BaseGame {
         const bg = new Sprite(loader.resources[path].texture);
         const fullWidth = this.application.screen.width - 30;
         const textConfig = {
-            fill: 'white',
             fontSize: 32,
             fontFamily: "Arial Black",
             lineJoin: "bevel",
-            stroke: "black",
-            strokeThickness: 4
+            fill: ['#ffffff'],
+            stroke: '#000000',
+            strokeThickness: 5,
         }
 
-        const text = new Text(`0`, textConfig);
+        const text = new Text(`0000`, textConfig);
         bg.addChild(text);
         text.position.set(x, y);
 
@@ -99,7 +115,7 @@ export abstract class BaseGame {
         bg.x = (fullWidth / 3) * index + 15;
         bg.y = bgY;
 
-        this.application.stage.addChild(bg);
+        this.stage.addChild(bg);
         return text;
     }
 
@@ -125,16 +141,26 @@ export abstract class BaseGame {
         
     }
 
+    protected addPoint(point: number) {
+        this.points += point;
+        this.pointsText.text = pad(this.points, 4, '0')
+    }
+
+    protected addCoins(coin: number) {
+        this.coins += coin;
+        this.coinsText.text = pad(this.coins, 4, '0')
+    }
+
     private generatePlusOrMinusEffect(name: string, x: number, y: number, num: number): PIXI.Container {
         const effect = new PIXI.Container(); // 特效容器
         const sprite = new PIXI.Sprite(PIXI.loader.resources[name].texture) // Icon
         const text = new PIXI.Text(`${num > 0 ? '+' : '-'}${Math.abs(num)}`, { // 加減數字
-            fill: 'white',
             fontSize: 32,
             fontFamily: "Arial Black",
             lineJoin: "bevel",
-            stroke: "black",
-            strokeThickness: 4
+            fill: ['#ffffff'],
+            stroke: '#000000',
+            strokeThickness: 5,
         });
         effect.addChild(sprite);
         effect.addChild(text);

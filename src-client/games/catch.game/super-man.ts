@@ -46,7 +46,6 @@ export class SuperMan {
         this.sprite.x = this.app.screen.width / 2 - (this.sprite.width / 2);
         this.sprite.y = this.app.screen.height - this.sprite.height - 30;
         
-        this.app.stage.addChild(this.sprite)
 
         return this;
     }

@@ -3,6 +3,7 @@ import { Graphics, Text, Texture, Sprite, loader } from "pixi.js";
 import { SuperMan, SuperManDirection } from './super-man';
 import { FallItem } from './fall-item';
 import * as moment from 'moment';
+
 // import * as dat from "dat.gui";
 // const gui = new dat.GUI();
 
@@ -16,27 +17,24 @@ export class CatchGame extends BaseGame {
 
 
     protected async initImages(): Promise<void> {
-        await loaderHandler('bg', '/static/images/bg.jpg');
+        await loaderHandler('bg', '/static/images/bg.catch.jpg');
         await loaderHandler('win', '/static/images/img-win.png');
         await loaderHandler('wow', '/static/images/img-wow.png');
         await loaderHandler('coin', '/static/images/item-coin.png');
         await loaderHandler('point', '/static/images/item-point.png');
 
-        this.initBg();  // 放上背景
+        this.setBackground();  // 放上背景
     } 
 
     protected async initElements(): Promise<boolean> {
-        // 建立遊戲
-        document.querySelector("#app-game").appendChild(this.application.view);
         // 建立掉落物用的容器
         this.fallItemsContainer = generateContainer(this.application.screen.width, this.application.screen.height);
-        this.application.stage.addChild(this.fallItemsContainer);
+        this.stage.addChild(this.fallItemsContainer);
         // 建立超人
         this.superMan = await new SuperMan(this.application).init();
-        // 建立計數計時文字
-        await this.generatePointsAndCoinsCount();
+        this.stage.addChild(this.superMan.sprite);
         // 建立計時器
-        await this.generateGameTimeCount();    
+        await this.setGameTime();    
 
         return Promise.resolve(true);
     }
@@ -51,7 +49,7 @@ export class CatchGame extends BaseGame {
         return Promise.resolve(true);
     }
 
-    private async generateGameTimeCount() {
+    private async setGameTime() {
         // 初始化計時文字
         this.timeText = await this.generateText('/static/images/item-time.png', 2, 87, 28, 15);
         this.handleGameTimeText(); 
@@ -91,10 +89,9 @@ export class CatchGame extends BaseGame {
             const { x, y } = this.superMan.sprite;
             // 有獲得點數才有機會獲得硬幣
             const coin = item.point > 0 ? Math.floor(Math.random() * 3) : 0;
-            this.points += item.point;
-            this.pointsText.text = `${this.points}`;
-            this.coins += coin;
-            this.coinsText.text = `${this.coins}`;
+
+            this.addPoint(item.point);
+            this.addCoins(coin);
             this.handleEffect(x, y, item.point, coin);
         })
         this.fallItems.filter(item => item.sprite.y > this.application.screen.height).forEach(item => {
