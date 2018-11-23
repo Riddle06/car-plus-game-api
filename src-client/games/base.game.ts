@@ -27,6 +27,7 @@ export abstract class BaseGame {
     protected application: Application = null 
     protected stage: PIXI.Container = null; // 遊戲舞台
     private effectContainer: PIXI.Container = null; // 特效使用的容器
+    private dashboardContainer: PIXI.Container = null; // 儀表板用舞台
 
     protected screen: {
         width: number
@@ -42,13 +43,14 @@ export abstract class BaseGame {
     async init(): Promise<this> {
         this.setApplication();
         this.setStage();
-
+        
         await this.initImages(); // 載入圖片
+        await this.setDashboard(); // 建立計數計時文字
         await this.initElements()
-        await this.setPointAndCoin(); // 建立計數計時文字
         await this.initElementsEvents()
         await this.initElementsOffset()
-        this.application.stage.addChild(this.effectContainer); // 最後放入特效容器
+        this.application.stage.addChild(this.effectContainer); // 放入特效容器
+        this.application.stage.addChild(this.dashboardContainer); // 放入儀表板容器
 
         return this;
     }
@@ -65,6 +67,7 @@ export abstract class BaseGame {
         this.effectContainer = generateContainer(this.screen.width, this.screen.height); // 置放特效用的佈景容器
         document.body.appendChild(this.application.view)
     }
+    
     private setStage() {
         const stage = new PIXI.Container()
         stage.width = this.screen.width;
@@ -78,7 +81,12 @@ export abstract class BaseGame {
     }
 
     
-    private async setPointAndCoin(): Promise<void> {
+    private async setDashboard(): Promise<void> {
+        this.dashboardContainer = new PIXI.Container();
+        this.dashboardContainer.width = this.screen.width;
+        this.dashboardContainer.height = this.screen.height;
+        this.dashboardContainer.x = 0;
+        this.dashboardContainer.y = 0;
         // 初始化點數跟金幣計數
         this.pointsText = await this.generateText('/static/images/item-points.png', 0, 95, 28, 15);
         this.coinsText = await this.generateText('/static/images/item-coins.png', 1, 95, 29, 13);
@@ -115,7 +123,7 @@ export abstract class BaseGame {
         bg.x = (fullWidth / 3) * index + 15;
         bg.y = bgY;
 
-        this.stage.addChild(bg);
+        this.dashboardContainer.addChild(bg);
         return text;
     }
 
