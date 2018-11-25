@@ -5,6 +5,7 @@ export class Cannon {
   private app: PIXI.Application = null;
   private car: PIXI.Sprite = null; // 砲座
   private cannon: PIXI.Sprite = null; // 砲管
+  private cannonContainer: PIXI.Container = null; // 砲管
   // 是否為順時針
   private isClockwiseDirection: boolean = false
 
@@ -21,52 +22,53 @@ export class Cannon {
     this.app = app;
   }
 
-  get width(): number {
-    return this.sprite.width;
-  }
-
-  get height(): number {
-    return this.sprite.height;
-  }
-
   get rotation(): number {
-    return this.cannon.rotation;
-  }
-
-  get cannonPosition(): PIXI.Point {
-    return this.cannon.getGlobalPosition();
+    return this.cannonContainer.rotation;
   }
 
   get carHeight(): number {
     return this.car.height;
   }
 
+  get spriteY(): number {
+    return this.sprite.y;
+  }
+
   async init(): Promise<this> {
     await loaderHandler('car', '/static/images/img-car.png');
     await loaderHandler('cannon', '/static/images/img-cannon.png');
+    await loaderHandler('smog', '/static/images/img-smog.png');
 
     this.sprite = new PIXI.Graphics();
     this.car = new PIXI.Sprite(PIXI.loader.resources['car'].texture);
     this.cannon = new PIXI.Sprite(PIXI.loader.resources['cannon'].texture);
-
-    this.sprite.addChild(this.cannon);
+    this.cannonContainer = new PIXI.Container();
+    this.cannonContainer.addChild(this.cannon);
+    
+    this.sprite.addChild(this.cannonContainer);
     this.sprite.addChild(this.car);
-
-    this.car.anchor.x = 0;
-    this.car.anchor.y = 0;
-    this.car.position.set(0, 0);
+    
+    this.car.position.set(0, this.sprite.height - this.car.height);
+    window['cannon'] = this.cannon;
+    window['car'] = this.car;
+    window['sprite'] = this.sprite;
+    window['cannonContainer'] = this.cannonContainer;
 
     this.cannon.anchor.x = .5;
-    this.cannon.anchor.y = .6; // 重心移動到中間
-    this.cannon.position.set(this.car.width / 2, 150);
+    this.cannon.anchor.y = .6;
+    this.cannonContainer.pivot.x = .5;
+    this.cannonContainer.pivot.y = .6; // 重心移動到中間
+    this.cannonContainer.position.set(this.car.width / 1.6, this.car.height / 9);
 
 
     this.sprite.height = (this.sprite.height / this.sprite.width) * (this.app.screen.width / 3);
     this.sprite.width = this.app.screen.width / 3;
-    this.sprite.x = 15;
-    this.sprite.y = this.app.screen.height - (this.sprite.height + 70);
 
-    this.cannon.rotation = -90 * (Math.PI / 180);
+  
+    this.sprite.x = 15;
+    this.sprite.y = this.app.screen.height - ((this.app.screen.width / this.app.screen.height) * (this.app.screen.height/ 2.7));
+
+    // this.cannonContainer.rotation = -45 * (Math.PI / 180);
 
     this.app.ticker.add(this.rotationHandler, this);
 
@@ -74,10 +76,12 @@ export class Cannon {
   }
 
   addChild(sprite: PIXI.Sprite) {
-    this.cannon.addChild(sprite);
+    this.cannonContainer.addChild(sprite);
+    this.cannonContainer.children.sort(() => -1);
   }
+
   removeChild(sprite: PIXI.Sprite) {
-    this.cannon.removeChild(sprite);
+    this.cannonContainer.removeChild(sprite);
   }
 
   async rotationHandler() {
@@ -92,12 +96,12 @@ export class Cannon {
 
     if (this.isClockwiseDirection) {
 
-      this.cannon.rotation += 0.01
+      this.cannonContainer.rotation += 0.01
     } else {
-      this.cannon.rotation -= 0.01
+      this.cannonContainer.rotation -= 0.01
     }
 
-    this.currentDegree = Math.abs(this.cannon.rotation / (Math.PI / 180))
+    this.currentDegree = Math.abs(this.cannonContainer.rotation / (Math.PI / 180))
 
     // console.log("this.currentDegree", this.currentDegree)
 
@@ -125,5 +129,26 @@ export class Cannon {
 
     // this.shell.y = this.x
 
+  }
+
+  fire() {
+    const smog = new PIXI.Sprite(PIXI.loader.resources['smog'].texture)
+    window['smog'] = smog;
+    this.cannon.addChild(smog);
+    smog.anchor.x = .5;
+    smog.anchor.y = .5;
+    smog.rotation = 1;
+    smog.x = this.cannon.width / 1.5;
+    smog.y = -this.cannon.height / 5;
+    
+
+    this.app.ticker.add(() => {
+      if(smog.alpha <= 0) {
+        this.cannon.removeChild(smog)
+        return;
+      }
+      smog.x += 1;
+      smog.alpha -= 0.01;
+    })
   }
 }

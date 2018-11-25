@@ -26,7 +26,7 @@ export abstract class BaseGame {
     
     protected application: Application = null 
     protected stage: PIXI.Container = null; // 遊戲舞台
-    private effectContainer: PIXI.Container = null; // 特效使用的容器
+    protected effectContainer: PIXI.Container = null; // 特效使用的容器
     private dashboardContainer: PIXI.Container = null; // 儀表板用舞台
 
     protected screen: {
