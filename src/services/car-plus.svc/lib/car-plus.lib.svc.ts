@@ -11,17 +11,30 @@ export class CarPlusLibSvc extends BaseConnection {
 
         const testRegex = variableSvc.getTesterRegExp();
 
-        if (!testRegex.test(carPlusMemberId)) { 
-            // TODO: call procedure 串接會員功能
-            throw new AppError('目前還尚未有串接會員功能')
-        }
+        if (!testRegex.test(carPlusMemberId)) {
+            const queryRet: { msg: string, id: string, bonus: number }[] = await this.entityManager.query('execute s_customer_R2 ?', [carPlusMemberId]);
 
-        
+            if (queryRet.length === 0) {
+                throw new AppError(`查無資料 carPlusMemberId: ${carPlusMemberId}`)
+            }
 
-        ret.item = {
-            carPlusPoint: 0,
-            dateCreated: luxon.DateTime.fromFormat("2017-01-10 10:00:00", "YYYY-MM-DD HH:mm:ss").toJSDate(),
-            id: carPlusMemberId
+            if (queryRet[0].msg === "error") {
+                throw new AppError(`此ID無效，並無此會員 carPlusMemberId: ${carPlusMemberId}`)
+            }
+
+            ret.item = {
+                carPlusPoint: queryRet[0].bonus,
+                dateCreated: luxon.DateTime.fromFormat("2017-01-10 10:00:00", "YYYY-MM-DD HH:mm:ss").toJSDate(),
+                id: carPlusMemberId
+            }
+
+        } else {
+
+            ret.item = {
+                carPlusPoint: 0,
+                dateCreated: luxon.DateTime.fromFormat("2017-01-10 10:00:00", "YYYY-MM-DD HH:mm:ss").toJSDate(),
+                id: carPlusMemberId
+            }
         }
 
         return ret.setResultValue(true)
@@ -35,12 +48,22 @@ export class CarPlusLibSvc extends BaseConnection {
 
         // TODO: call procedure 增加格上紅利
 
-        ret.item = {
-            carPlusPoint: 0,
-            dateCreated: luxon.DateTime.fromFormat("2017-01-10 10:00:00", "YYYY-MM-DD HH:mm:ss").toJSDate(),
-            id: carPlusMemberId
-        }
+        const queryRet: { msg: string }[] = await this.entityManager.query(`call s_Customer_I1`, [carPlusMemberId, point, '會員小遊戲'])
 
-        return ret.setResultValue(true)
+
+        return this.getCarPlusMemberInformation(carPlusMemberId)
+    }
+
+    /**
+     * 使用格上紅利
+     */
+    async minusCarPlusPoint(carPlusMemberId: string, point: number): Promise<Result<CarPlusMemberInformation>> {
+        const ret = new Result<CarPlusMemberInformation>();
+        //TODO: call procedure 使用格上紅利
+
+        const queryRet: { msg: string }[] = await this.entityManager.query(`call s_Customer_I2`, [carPlusMemberId, point, '會員小遊戲'])
+
+        return this.getCarPlusMemberInformation(carPlusMemberId)
+
     }
 }
