@@ -30,8 +30,8 @@ export class Cannon {
     return this.car.height;
   }
 
-  get spriteY(): number {
-    return this.sprite.y;
+  get carY(): number {
+    return this.car.y;
   }
 
   async init(): Promise<this> {
@@ -64,11 +64,10 @@ export class Cannon {
     this.sprite.height = (this.sprite.height / this.sprite.width) * (this.app.screen.width / 3);
     this.sprite.width = this.app.screen.width / 3;
 
-  
     this.sprite.x = 15;
     this.sprite.y = this.app.screen.height - ((this.app.screen.width / this.app.screen.height) * (this.app.screen.height/ 2.7));
 
-    // this.cannonContainer.rotation = -45 * (Math.PI / 180);
+    this.cannonContainer.rotation = -45 * (Math.PI / 180);
 
     this.app.ticker.add(this.rotationHandler, this);
 

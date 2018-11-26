@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { BaseGame, loaderHandler } from '../base.game';
 import { Cannon } from './cannon';
 import { SuperMan } from './super-man';
+import { Monster } from './monster';
 // import * as dat from "dat.gui";
 // const gui = new dat.GUI();
 
@@ -13,10 +14,12 @@ interface LifeVM {
 }
 
 export class ShotGame extends BaseGame {
-  private superMan: SuperMan = null
+  private superMan: SuperMan = null; // 超人
   private cannon: Cannon = null // 大砲
+  private monster: Monster = null; // 怪物
   private life: LifeVM[] = []// 生命
   private lifeStep: number = 0; // 現在使用的命
+  private level: number = 1; // 等級
 
   private readonly shellInitPower = 10
   private shellInitWeightSpeed = 0.1
@@ -39,13 +42,21 @@ export class ShotGame extends BaseGame {
 
   protected async initElements(): Promise<boolean> {
     this.cannon = await new Cannon(this.application).init();
-    await this.setCannon();
+    this.superMan = new SuperMan(this.application, this.cannon);
+    this.superMan.man = await this.superMan.initMan();
+    this.monster = await new Monster(this.application).init();
+    this.cannon.sprite.addChild(this.superMan.man);
     this.stage.addChild(this.cannon.sprite);
+    this.stage.addChild(this.monster.sprite);
 
     this.application.stage.interactive = true;
     this.application.ticker.add(this.shottingHandler, this)
 
     this.setLife();
+    
+    setTimeout(() => {
+      this.setCannon();
+    }, 1000)
 
     return Promise.resolve(true);
   }
@@ -58,13 +69,15 @@ export class ShotGame extends BaseGame {
 
     this.application.stage.on('touchstart', () => {
       // console.log(`touchstart`)
-      if (this.shotting || this.lifeStep >= 2) return;
+
+      if (this.shotting || this.lifeStep >= 2 || !this.superMan.isReady) return;
       this.cannon.isRotating = true;
     })
 
     this.application.stage.on('touchend', () => {
       // console.log(`touchend`)
-      if (this.shotting || this.lifeStep >= 2) return;
+
+      if (this.shotting || this.lifeStep >= 2 || !this.superMan.isReady) return;
       this.cannon.isRotating = false
       this.fire();
       this.cannon.fire();
@@ -116,8 +129,11 @@ export class ShotGame extends BaseGame {
 
   async setCannon(): Promise<void> {
     if (this.lifeStep >= 2) return;
-    this.superMan = await new SuperMan(this.application, this.cannon).init();
+    this.superMan.ball = await this.superMan.initBall();
     this.cannon.addChild(this.superMan.ball);
+
+    this.application.ticker.add(this.superMan.ready, this.superMan);
+
   }
 
   async fire(): Promise<void> {
@@ -189,6 +205,7 @@ export class ShotGame extends BaseGame {
       this.superMan.ball.y >= this.application.screen.height + this.superMan.ball.height) {
       this.stage.removeChild(this.superMan.ball);
       this.shotting = false;
+      this.superMan.isReady = false;
       this.missed();
     }
   }
