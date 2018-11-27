@@ -10,7 +10,7 @@ export class Cannon {
   private isClockwiseDirection: boolean = false
 
   private readonly degreeConfig = {
-    max: 90,
+    max: 100,
     min: 1
   }
 

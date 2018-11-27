@@ -20,8 +20,6 @@ export class CatchGame extends BaseGame {
         await loaderHandler('bg', '/static/images/bg.catch.jpg');
         await loaderHandler('win', '/static/images/img-win.png');
         await loaderHandler('wow', '/static/images/img-wow.png');
-        await loaderHandler('coin', '/static/images/item-coin.png');
-        await loaderHandler('point', '/static/images/item-point.png');
 
         this.setBackground();  // 放上背景
     } 
@@ -43,7 +41,7 @@ export class CatchGame extends BaseGame {
     }
     protected initElementsEvents(): Promise<boolean> {
         // 點擊畫面開始遊戲
-        document.addEventListener('pointerdown', this.play.bind(this));
+        document.addEventListener('touchstart', this.play.bind(this), false);
         
 
         return Promise.resolve(true);
@@ -130,11 +128,11 @@ export class CatchGame extends BaseGame {
 
         this.isPlaying = true;
         this.now = moment();
-        document.removeEventListener('pointerdown', this.play.bind(this));
+        document.removeEventListener('touchstart', this.play.bind(this));
 
-        document.addEventListener('pointerdown', (e) => {
+        document.addEventListener('touchstart', (e) => {
             // 點擊畫面事件
-            console.log('[pointerdown]', e)
+            console.log('[touchstart]', e)
             this.superMan.turnDirection();
         });
         this.superMan.start(); // 超人開始移動

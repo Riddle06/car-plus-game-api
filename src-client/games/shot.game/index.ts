@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { BaseGame, loaderHandler } from '../base.game';
+import { BaseGame, loaderHandler, hitTestRectangle } from '../base.game';
 import { Cannon } from './cannon';
 import { SuperMan } from './super-man';
 import { Monster } from './monster';
@@ -53,7 +53,8 @@ export class ShotGame extends BaseGame {
     this.application.ticker.add(this.shottingHandler, this)
 
     this.setLife();
-    
+    this.monster.setMonster(this.level);
+
     setTimeout(() => {
       this.setCannon();
     }, 1000)
@@ -131,9 +132,7 @@ export class ShotGame extends BaseGame {
     if (this.lifeStep >= 2) return;
     this.superMan.ball = await this.superMan.initBall();
     this.cannon.addChild(this.superMan.ball);
-
     this.application.ticker.add(this.superMan.ready, this.superMan);
-
   }
 
   async fire(): Promise<void> {
@@ -153,6 +152,21 @@ export class ShotGame extends BaseGame {
     this.superMan.ball.y = globalPosition.y;
 
     // console.log(`globalPosition`, { x: globalPosition.x, y: globalPosition.y })
+  }
+
+  async hit() {
+    const { x, y } = this.superMan.ball;
+    const { point, coin } = this.monster;
+    this.addPoint(point);
+    this.addCoins(coin);
+    this.handleEffect(x, y, point, coin);
+
+    await this.monster.boom();
+
+    // 特效結束才重置怪物
+    this.level++;
+    this.monster.setMonster(this.level);
+    this.setCannon();
   }
 
   missed() {
@@ -201,12 +215,24 @@ export class ShotGame extends BaseGame {
     // console.log(this.superMan.ball.y)
     // console.log(this.superMan.ball.x)
 
+    if (hitTestRectangle(this.superMan.ball, this.monster.sprite)) {
+      // 擊中
+      this.hit();
+      this.stage.removeChild(this.superMan.ball);
+      this.shotting = false;
+      this.superMan.isReady = false;
+      return;
+    }
+
     if (this.superMan.ball.x >= this.application.screen.width + this.superMan.ball.width ||
-      this.superMan.ball.y >= this.application.screen.height + this.superMan.ball.height) {
+      this.superMan.ball.y >= this.application.screen.height + this.superMan.ball.height ||
+      this.superMan.ball.x < 0 - this.superMan.ball.width) {
+      // 脫靶
       this.stage.removeChild(this.superMan.ball);
       this.shotting = false;
       this.superMan.isReady = false;
       this.missed();
+      return;
     }
   }
 }

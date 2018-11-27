@@ -44,6 +44,7 @@ export abstract class BaseGame {
         this.setApplication();
         this.setStage();
         
+        await this.initCommonImages(); // 載入共用圖片
         await this.initImages(); // 載入圖片
         await this.setDashboard(); // 建立計數計時文字
         await this.initElements()
@@ -80,7 +81,11 @@ export abstract class BaseGame {
         this.application.stage.addChild(this.stage)
     }
 
-    
+    private async initCommonImages() {
+        await loaderHandler('coin', '/static/images/item-coin.png');
+        await loaderHandler('point', '/static/images/item-point.png');
+    }
+
     private async setDashboard(): Promise<void> {
         this.dashboardContainer = new PIXI.Container();
         this.dashboardContainer.width = this.screen.width;
