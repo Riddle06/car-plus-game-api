@@ -44,11 +44,25 @@ export class CarPlusLibSvc extends BaseConnection {
      * 增加格上紅利
      */
     async plusCarPlusPoint(carPlusMemberId: string, point: number): Promise<Result<CarPlusMemberInformation>> {
-        const ret = new Result<CarPlusMemberInformation>();
 
-        // TODO: call procedure 增加格上紅利
+        const testRegex = variableSvc.getTesterRegExp();
+        if (testRegex.test(carPlusMemberId)) { 
+            return this.getCarPlusMemberInformation(carPlusMemberId)
+        }
 
-        const queryRet: { msg: string }[] = await this.entityManager.query(`call s_Customer_I1`, [carPlusMemberId, point, '會員小遊戲'])
+        const queryRet: { msg: string }[] = await this.entityManager.query(`execute s_Customer_I1`, [carPlusMemberId, point, '會員小遊戲'])
+
+        if (queryRet.length === 0) {
+            throw new AppError('使用格上紅利 資料回傳錯誤')
+        }
+
+        if (queryRet[0].msg === "error") {
+            throw new AppError('使用格上紅利 此ID無效，並無此會員')
+        }
+
+        if (queryRet[0].msg === "noPoint") {
+            throw new AppError('使用的點數小於0')
+        }
 
 
         return this.getCarPlusMemberInformation(carPlusMemberId)
@@ -58,10 +72,29 @@ export class CarPlusLibSvc extends BaseConnection {
      * 使用格上紅利
      */
     async minusCarPlusPoint(carPlusMemberId: string, point: number): Promise<Result<CarPlusMemberInformation>> {
-        const ret = new Result<CarPlusMemberInformation>();
-        //TODO: call procedure 使用格上紅利
 
-        const queryRet: { msg: string }[] = await this.entityManager.query(`call s_Customer_I2`, [carPlusMemberId, point, '會員小遊戲'])
+        const testRegex = variableSvc.getTesterRegExp();
+        if (testRegex.test(carPlusMemberId)) { 
+            return this.getCarPlusMemberInformation(carPlusMemberId)
+        }
+
+        const queryRet: { msg: string }[] = await this.entityManager.query(`execute s_Customer_I2`, [carPlusMemberId, point, '會員小遊戲'])
+
+        if (queryRet.length === 0) {
+            throw new AppError('使用格上紅利 資料回傳錯誤')
+        }
+
+        if (queryRet[0].msg === "error") {
+            throw new AppError('使用格上紅利 此ID無效，並無此會員')
+        }
+
+        if (queryRet[0].msg === "noPoint") {
+            throw new AppError('使用的點數小於0')
+        }
+
+        if (queryRet[0].msg === "紅利點數不足") {
+            throw new AppError('紅利點數不足')
+        }
 
         return this.getCarPlusMemberInformation(carPlusMemberId)
 
