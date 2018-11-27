@@ -19,6 +19,12 @@ router.get('/history/exchange', async (req: RequestExtension, res: ResponseExten
     next();
 })
 
+// 兌換紀錄excel
+router.get('/history/exchange/excel', async (req: RequestExtension, res: ResponseExtension, next) => {
+
+    //TODO: excel 匯出
+  })
+
 // 客訴補點紀錄
 router.get('/history/manual', async (req: RequestExtension, res: ResponseExtension, next) => {
     try {

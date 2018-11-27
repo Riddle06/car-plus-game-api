@@ -19,4 +19,10 @@ router.get('/dashboard', async (req: RequestExtension, res: ResponseExtension, n
     next();
 })
 
+// 營運報表 excel 匯出
+router.get('/dashboard/excel', async (req: RequestExtension, res: ResponseExtension, next) => {
+    //TODO:
+    next();
+})
+
 export default router;

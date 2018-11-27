@@ -22,4 +22,9 @@ router.get('/history', async (req: RequestExtension, res: ResponseExtension, nex
     next();
 })
 
+router.get('/history/excel', async (req: RequestExtension, res: ResponseExtension, next) => {
+
+  //TODO: excel 匯出
+})
+
 export default router;

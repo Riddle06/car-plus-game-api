@@ -32,6 +32,11 @@ router.get('/with-game-items', async (req: RequestExtension, res: ResponseExtens
     next();
 })
 
+router.get('/with-game-items/excel', async (req: RequestExtension, res: ResponseExtension, next) => {
+    //TODO: excel 匯出
+    next();
+})
+
 // 取得封鎖列表
 router.get('/block-history', async (req: RequestExtension, res: ResponseExtension, next) => {
     try {
