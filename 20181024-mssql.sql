@@ -229,3 +229,58 @@ VALUES
 
 
 
+
+-- select m.*,
+
+
+-- game_item_1.count as game_item_1_count 
+
+
+
+
+
+-- from [member] m 
+
+-- left join (
+-- select i.member_id, count(i.id) as [count] from member_game_item i 
+-- left join game_item gi on gi.id = i.game_item_id 
+-- where gi.name = '超人隊員'
+-- group by i.member_id ) as game_item_1 on game_item_1.member_id = m.id
+
+-- left join (
+-- select i.member_id, count(i.id) as [count] from member_game_item i 
+-- left join game_item gi on gi.id = i.game_item_id 
+-- where gi.name = '超人隊員'
+-- group by i.member_id ) as game_item_2 on game_item_2.member_id = m.id
+
+-- left join (
+-- select i.member_id, count(i.id) as [count] from member_game_item i 
+-- left join game_item gi on gi.id = i.game_item_id 
+-- where gi.name = '超人隊員'
+-- group by i.member_id ) as game_item_3 on game_item_3.member_id = m.id
+
+-- left join (
+-- select i.member_id, count(i.id) as [count] from member_game_item i 
+-- left join game_item gi on gi.id = i.game_item_id 
+-- where gi.name = '超人隊員'
+-- group by i.member_id ) as game_item_4 on game_item_4.member_id = m.id
+
+-- left join (
+-- select i.member_id, count(i.id) as [count] from member_game_item i 
+-- left join game_item gi on gi.id = i.game_item_id 
+-- where gi.name = '超人隊員'
+-- group by i.member_id ) as game_item_5 on game_item_5.member_id = m.id
+
+-- left join (
+-- select i.member_id, count(i.id) as [count] from member_game_item i 
+-- left join game_item gi on gi.id = i.game_item_id 
+-- where gi.name = '超人隊員'
+-- group by i.member_id ) as game_item_6 on game_item_6.member_id = m.id
+
+-- left join (
+-- select i.member_id, count(i.id) as [count] from member_game_item i 
+-- left join game_item gi on gi.id = i.game_item_id 
+-- where gi.name = '超人隊員'
+-- group by i.member_id ) as game_item_7 on game_item_7.member_id = m.id
+
+
