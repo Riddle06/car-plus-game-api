@@ -12,7 +12,7 @@ import { adminAuthSvc } from "@services/admin.auth.svc";
  * 
  */
 export const adminTokenVerificationMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
-    
+
     try {
         const tokenWithBearer = req.header('Authorization');
 

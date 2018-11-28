@@ -11,11 +11,12 @@ import { NextFunction } from "express";
  */
 export const clientMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
 
-    if (req.path.indexOf('no-token') > -1) {
+    const ignorePaths = ['no-token', '/admin/api', '/api'];
+
+    if (ignorePaths.some(ignorePath => req.path.indexOf(ignorePath) > -1)) { 
         next();
         return;
     }
-
 
     // 裝置
     let clientId = req.cookies.clientId;

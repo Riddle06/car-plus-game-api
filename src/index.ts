@@ -10,19 +10,15 @@ import * as path from "path";
 import * as expressHandlebars from "express-handlebars";
 import * as cors from "cors";
 import AdminRouter from './routers/admin.router';
-
+import { adminMemberSvc } from './services/admin.member.svc/index';
 
 const app = express();
 
 app.use(cors());
 
-
-
-
 if (configurations.app.env === 'dev') {
     app.use(devMiddlewares);
 }
-
 
 const hbsExtname = '.hbs';
 const hbs = expressHandlebars.create({

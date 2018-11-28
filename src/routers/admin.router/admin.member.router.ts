@@ -33,8 +33,15 @@ router.get('/with-game-items', async (req: RequestExtension, res: ResponseExtens
 })
 
 router.get('/with-game-items/excel', async (req: RequestExtension, res: ResponseExtension, next) => {
-    //TODO: excel 匯出
-    next();
+    try {
+        res.type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        await adminMemberSvc.exportAdminMemberWidthGameItemsListExcel(res)
+        
+    } catch (error) {
+        console.dir(error)
+        res.json(error)
+        res.end()
+    }
 })
 
 // 取得封鎖列表
