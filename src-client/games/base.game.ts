@@ -5,7 +5,7 @@ interface LoaderResponse {
     llama: PIXI.extras.AnimatedSprite
 }
 
-interface BaseShape {
+export interface BaseShape {
     x: number
     y: number
     width: number

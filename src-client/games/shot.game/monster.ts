@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { loaderHandler } from '../base.game';
+import { loaderHandler, BaseShape } from '../base.game';
 
 
 export class Monster {
@@ -8,6 +8,10 @@ export class Monster {
   private moveSpeed: number = 3;
   private boomEffect: PIXI.Sprite = null; // 炸裂特效
   private monster: PIXI.Sprite = null; // 怪物
+  private level: number = 1; // 等級
+  private roundSpeed: number = 0.05;
+  private roundX: number = 0;
+  private roundY: number = 0;
   // public sprite: PIXI.extras.AnimatedSprite = null;
   public sprite: PIXI.Graphics = null;
 
@@ -23,6 +27,16 @@ export class Monster {
     return 1;
   }
 
+  // get baseShape(): BaseShape {
+  //   const { x, y } = this.monster.getGlobalPosition();
+  //   return {
+  //     x,
+  //     y,
+  //     width: this.monster.width,
+  //     height: this.monster.height
+  //   };
+  // }
+
   async init(): Promise<this> {
     // if (!PIXI.loader.resources['man']) await loaderHandler('man', '/static/images/img-superman01/img-superman01.json');
     // const superManFrames: PIXI.Texture[] =
@@ -37,16 +51,37 @@ export class Monster {
     this.sprite.addChild(this.boomEffect);
     this.boomEffect.visible = false;
 
+    window['sprite'] = this.sprite
+
+    this.sprite.beginFill(0x1099bb)
+    this.sprite.drawRect(0, 0, 10, 10);
+    this.sprite.endFill();
+
     return this;
   }
 
   private move() {
-    if (this.sprite.x + this.sprite.width > this.app.screen.width) {
-      this.moveSpeed = Math.abs(this.moveSpeed) * -1;
-    } else if (this.sprite.x < 0) {
-      this.moveSpeed = Math.abs(this.moveSpeed);
-    }
-    this.sprite.x += this.moveSpeed;
+    // if (this.sprite.x + this.sprite.width > this.app.screen.width) {
+    //   this.moveSpeed = Math.abs(this.moveSpeed) * -1;
+    // } else if (this.sprite.x < 0) {
+    //   this.moveSpeed = Math.abs(this.moveSpeed);
+    // }
+    // this.sprite.x += this.moveSpeed;
+    
+    this.roundX += this.roundSpeed;
+    this.roundY += this.roundSpeed;
+
+    this.sprite.x = (Math.cos(this.roundX) * 50) - (this.sprite.width / 2) + 100;
+    this.sprite.y = (Math.sin(this.roundY) * 50) - (this.sprite.width / 2) + 100;
+
+    // if(this.sprite.x + this.monster.x  + this.monster.width / 2 > this.app.screen.width) {
+    //   // 不要飛出畫面
+    //   this.monster.x -= (this.sprite.x + this.monster.x  + this.monster.width / 2) -this.app.screen.width; 
+    // }
+    // if(this.monster.getGlobalPosition().x < 0) {
+    //   // 不要飛出畫面
+    //   this.monster.x = -(this.sprite.x);
+    // } 
   }
 
   private start() {
@@ -58,6 +93,7 @@ export class Monster {
   }
 
   setMonster(level: number): void {
+    this.level = level;
     this.sprite.addChild(this.monster);
     this.sprite.alpha = 1;
     this.boomEffect.visible = false;
@@ -72,6 +108,8 @@ export class Monster {
   boom(): Promise<void> {
     this.stop();
     this.boomEffect.visible = true;
+    this.boomEffect.x = this.monster.x;
+    this.boomEffect.y = this.monster.y;
     this.sprite.removeChild(this.monster);
     // 炸裂
     return new Promise((reslove) => {
