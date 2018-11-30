@@ -23,6 +23,10 @@ class AdminPointSvc {
         }
     }
 
+    async exportExchangeOrders(param: PageQuery<AdminMemberGameItemQueryParameterVM>): Promise<Buffer> { 
+        return null;
+    }
+
     /**
      * 客訴補點列表
      */

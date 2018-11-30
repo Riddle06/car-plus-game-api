@@ -34,6 +34,21 @@ class CarPlusSvc {
             await queryRunner.release();
         }
     }
+
+    async minusCarPlusPoint(carPlusMemberId: string, point: number):Promise<Result<CarPlusMemberInformation>> {
+        const queryRunner = await dbProvider.createCarPlusTransactionQueryRunner()
+        try {
+            const carPlusLibSvc = new CarPlusLibSvc(queryRunner)
+            const ret = await carPlusLibSvc.minusCarPlusPoint(carPlusMemberId, point)
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
+    }
 }
 
 

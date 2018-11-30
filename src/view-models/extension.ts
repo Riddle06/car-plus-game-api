@@ -31,4 +31,5 @@ export interface RequestExtension extends Request {
 export interface ResponseExtension extends Response {
     result?: BaseResult
     appError?: AppError
+    exportResult?: Buffer
 }

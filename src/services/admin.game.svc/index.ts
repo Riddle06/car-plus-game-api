@@ -24,9 +24,19 @@ class AdminGameSvc {
         }
     }
 
+    async exportGameHistory(param: PageQuery<AdminMemberGameHistoryParameterVM>): Promise<Buffer> { 
+        // TODO: 遊戲紀錄
+        return null;
+    }
+
     async getGameDashboard(params: PageQuery): Promise<Result<AdminGameDashboardVM>> {
         // TODO: 遊戲營運總表
         return null
+    }
+
+    async exportGameDashboard(params: PageQuery): Promise<Buffer> {
+        // TODO: 匯出遊戲營運總表
+        return null;
     }
 
 }

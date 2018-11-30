@@ -58,12 +58,13 @@ class AdminMemberSvc {
         return null
     }
 
-    async exportAdminMemberWidthGameItemsListExcel(res: ResponseExtension): Promise<void> {
+    async exportAdminMemberWidthGameItemsListExcel(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<Buffer> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const adminMembersLibSvc = new AdminMembersLibSvc(queryRunner)
-            const ret = await adminMembersLibSvc.exportMembersWithGameItemsExcel(res)
+            const ret = await adminMembersLibSvc.exportMembersWithGameItemsExcel(param)
             await queryRunner.commitTransaction();
+            return ret;
         } catch (error) {
             await queryRunner.rollbackTransaction();
             throw error

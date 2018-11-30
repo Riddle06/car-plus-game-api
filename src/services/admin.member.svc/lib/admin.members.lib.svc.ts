@@ -17,7 +17,7 @@ export class AdminMembersLibSvc extends BaseConnection {
         return null;
     }
 
-    async exportMembersWithGameItemsExcel(res: ResponseExtension) {
+    async exportMembersWithGameItemsExcel(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<Buffer> {
 
         const queryRet = await this.entityManager.query(`
 select 
@@ -94,9 +94,9 @@ isnull(game_item_7.count,0) as gameItem7Count
             type: 'buffer'
         })
 
-        res.end(buffer);
-
+        
         console.log(`queryRet`, queryRet)
+        return buffer;
     }
 
 }
