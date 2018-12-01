@@ -2,6 +2,7 @@ import { AdminUserToken } from '@view-models/admin.auth.vm';
 import { Request, Response } from "express";
 import { MemberToken } from "./verification.vm";
 import { AppError, BaseResult, ListQueryParameter } from "./common.vm";
+import { ExportResult } from '@utilities/exporter';
 
 export interface RequestExtension extends Request {
     query: {
@@ -31,5 +32,5 @@ export interface RequestExtension extends Request {
 export interface ResponseExtension extends Response {
     result?: BaseResult
     appError?: AppError
-    exportResult?: Buffer
+    exportResult?: ExportResult
 }

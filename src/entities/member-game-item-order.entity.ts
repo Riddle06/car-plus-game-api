@@ -3,7 +3,7 @@ import { GameItemEntity } from '@entities/game-item.entity';
 import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable, RelationId, BaseEntity } from "typeorm";
 
 
-@Entity("member_game_point_history")
+@Entity("member_game_item_order")
 export class MemberGameItemOrderEntity extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string

@@ -10,7 +10,6 @@ import * as path from "path";
 import * as expressHandlebars from "express-handlebars";
 import * as cors from "cors";
 import AdminRouter from './routers/admin.router';
-import { adminMemberSvc } from './services/admin.member.svc/index';
 
 const app = express();
 

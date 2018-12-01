@@ -1,8 +1,8 @@
 import { AdminGameHistoryLibSvc } from './lib/admin.game.history.lib.svc';
 import { AdminMemberGameHistoryParameterVM, AdminMemberGameHistoryVM, AdminGameDashboardVM } from '@view-models/admin.game.vm';
 import { PageQuery, ListResult, Result } from './../../view-models/common.vm';
-import { ListQueryParameter } from "@view-models/common.vm";
 import { dbProvider } from '@utilities';
+import { ExportResult } from '@utilities/exporter';
 
 class AdminGameSvc {
 
@@ -24,9 +24,19 @@ class AdminGameSvc {
         }
     }
 
-    async exportGameHistory(param: PageQuery<AdminMemberGameHistoryParameterVM>): Promise<Buffer> { 
-        // TODO: 遊戲紀錄
-        return null;
+    async exportGameHistory(param: PageQuery<AdminMemberGameHistoryParameterVM>): Promise<ExportResult> { 
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const adminGameHistoryLibSvc = new AdminGameHistoryLibSvc(queryRunner)
+            const ret = await adminGameHistoryLibSvc.exportGameHistory(param)
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     async getGameDashboard(params: PageQuery): Promise<Result<AdminGameDashboardVM>> {
@@ -34,7 +44,7 @@ class AdminGameSvc {
         return null
     }
 
-    async exportGameDashboard(params: PageQuery): Promise<Buffer> {
+    async exportGameDashboard(params: PageQuery): Promise<ExportResult> {
         // TODO: 匯出遊戲營運總表
         return null;
     }

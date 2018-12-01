@@ -184,7 +184,7 @@ CREATE TABLE carPlusGame.dbo.member_block_history (
 );
 
 
-CREATE TABLE carPlusGame.dbo.member_game_itme_order (
+CREATE TABLE carPlusGame.dbo.member_game_item_order (
   [id] UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
   [member_id] UNIQUEIDENTIFIER NOT NULL,
   [game_item_id] UNIQUEIDENTIFIER NOT NULL,
@@ -225,6 +225,46 @@ VALUES
 (NEWID(), ('力霸超人'), ('1'), (''), ('12500.00'),  ('0.00'), (getdate()), ('0'), ('0'), ('-1'), ('0'), ('0'), ((12)), '超人中的隱藏角色，力量系的超人，是超人隊長遭遇困境時變身而來，全身肌肉發達，限等級12以上購買使用。',1)
 ;
 
+
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'超人大挑戰是一款什麼樣的遊戲？', N'超人大挑戰是格上會員專屬的一款遊戲，會員化身為超人，於城市中進行大挑戰。
+透過遊戲中可獲得分數與超人幣，累積分數可提升等級，獲得的超人幣可購買遊戲中道具。
+除了這些之外，平常於格上消費所產生的紅利也可於小遊戲當中使用喔！
+', '1');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'超人大挑戰限定為格上會員才可進行遊戲嗎？', N'進入超人大挑戰遊戲限定需有格上會員身分方可進入喔！', '2');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'如何進入遊戲？', N'經由格上租車行動官網中，登入會員後即可於會員專區中看到超人大挑戰的連結喔，點擊後即可進入喔！
+之後還會開放更多格上的行動服務，也可進入超人大挑戰遊戲喔！', '3');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'超人幣與格上紅利如何在遊戲中使用？', N'超人幣與格上紅利可於「購物商城」中使用，超人幣可直接購買道具與超人角色。
+格上紅利則需先將其換成超人幣，方可於商城中使用。
+
+特別注意：格上紅利一經轉換為超人幣後目前是無法復原成格上紅利的喔！
+', '4');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'如何才能升級？', N'透過不斷進行遊戲，與提升遊戲中的表現，累積分數到達一定的數量後就可以提升等級囉！', '5');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'如何購買角色？', N'進入遊戲中的「購物商城」，就可以挑選您想購買的角色，角色購買過後即可永久使用。
+角色有設定等級限制，達到的等級越高，才可解鎖購買定更厲害的角色，所以要多多進行遊戲挑戰提升等級喔！
+', '6');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'如何購買道具？', N'進入遊戲中的「購物商城」，就可以挑選您想購買的道具喔~', '7');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'如何更換角色？', N'進入個人設定後，下方有之角色與道具列表，點擊想要更換的角色，點下使用即可更換！
+', '8');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'道具的功能為何？', N'道具共有兩種果實
+能量果實：該場遊戲分數+10% (效果持續兩場)
+富翁果實：該場遊戲超人幣+10% (效果持續兩場)
+
+透過道具的使用，可以加快超人幣的累積與等級的提升，
+這兩樣道具都可透過遊戲商城進行購買喔！
+', '9');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'超人大挑戰超人幣與格上紅利可以互相轉換嗎？
+是一款什麼樣的遊戲？', N'目前開放格上紅利可轉換為遊戲中可使用之超人幣，
+可透過遊戲商城中以格上紅利購買超人幣方式進行轉換
+
+目前尚未開放遊戲累積之超人幣可轉換為格上紅利。
+', '10');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'如何使用道具？', N'購買道具後可於個人設定中點擊道具進行使用，或於遊戲開始前於遊戲說明頁點擊使用即可。', '11');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'
+道具可中途停止使用嗎？
+', N'能量果實與富翁果實都會持續兩場遊戲的效力，無法中途停止喔', '12');
+INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEWID(), N'若進行遊戲中跳離遊戲，遊戲的分數和超人幣會計算嗎？', N'遊戲開始進行後，若在遊戲結束前跳離遊戲，則分數和超人幣皆不列入計算。
+且已使用之道具也無法復原喔！
+', '13');
 
 
 

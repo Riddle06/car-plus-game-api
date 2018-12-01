@@ -5,7 +5,7 @@ import { AdminMemberBlockParameter, AdminMemberBlockHistoryVM, AdminMemberBlockL
 import { AdminUserToken } from '@view-models/admin.auth.vm';
 import { Result, ListResult } from '@view-models/common.vm';
 import { dbProvider } from '@utilities';
-import { ResponseExtension } from '@view-models/extension';
+import { ExportResult } from '@utilities/exporter';
 class AdminMemberSvc {
 
     async addMemberBlockHistory(adminUserToken: AdminUserToken, param: AdminMemberBlockParameter): Promise<Result<AdminMemberBlockHistoryVM>> {
@@ -58,7 +58,7 @@ class AdminMemberSvc {
         return null
     }
 
-    async exportAdminMemberWidthGameItemsListExcel(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<Buffer> {
+    async exportAdminMemberWidthGameItemsListExcel(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<ExportResult> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const adminMembersLibSvc = new AdminMembersLibSvc(queryRunner)

@@ -6,13 +6,14 @@ import { CreateAdminMemberPointHistoryParameterVM, AdminMemberPointHistoryVM } f
 import { AdminUserToken } from '@view-models/admin.auth.vm';
 import { Result, PageQuery } from '@view-models/common.vm';
 import { dbProvider } from '@utilities';
+import { ExportResult } from '@utilities/exporter';
 class AdminPointSvc {
 
     async getExchangeOrders(param: PageQuery<AdminMemberGameItemQueryParameterVM>): Promise<ListResult<AdminMemberGameItemOrderVM>> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const adminExchangeLibSvc = new AdminExchangeLibSvc(queryRunner);
-            const ret = adminExchangeLibSvc.getExchangeOrders(param)
+            const ret = await adminExchangeLibSvc.getExchangeOrders(param)
             await queryRunner.commitTransaction();
             return ret
         } catch (error) {
@@ -23,8 +24,19 @@ class AdminPointSvc {
         }
     }
 
-    async exportExchangeOrders(param: PageQuery<AdminMemberGameItemQueryParameterVM>): Promise<Buffer> { 
-        return null;
+    async exportExchangeOrders(param: PageQuery<AdminMemberGameItemQueryParameterVM>): Promise<ExportResult> { 
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const adminExchangeLibSvc = new AdminExchangeLibSvc(queryRunner);
+            const ret = await adminExchangeLibSvc.exportExchangeOrders(param)
+            await queryRunner.commitTransaction();
+            return ret
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     /**

@@ -14,6 +14,13 @@ import { adminAuthSvc } from "@services/admin.auth.svc";
 export const adminTokenVerificationMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
 
     try {
+        const ignorePathRegex = [/^\/export\/\S+/]
+
+        if (ignorePathRegex.some(regex => regex.test(req.path))) { 
+            next();
+            return;
+        }
+
         const tokenWithBearer = req.header('Authorization');
 
         const token = tokenWithBearer.replace('Bearer', '').trim();
@@ -29,9 +36,10 @@ export const adminTokenVerificationMiddleware = async (req: RequestExtension, re
         if (error instanceof AppError) {
             res.json(error.getResult())
         } else {
-            res.json(new AppError(error.toString(), ResultCode.serverError))
+            res.json(AppError.getAppError(error).getResult())
         }
         res.end();
+        return;
     }
 
     next();
