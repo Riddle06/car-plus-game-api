@@ -130,7 +130,7 @@ export abstract class BaseMemberGame extends BaseConnection {
             throw new AppError('查無此紀錄')
         }
 
-        if (!checker.isNullOrUndefinedObject(memberGameHistoryEntity.dateFinished)) { 
+        if (!checker.isNullOrUndefinedObject(memberGameHistoryEntity.dateFinished)) {
             throw new AppError('此遊戲已完成')
         }
     }
@@ -208,8 +208,9 @@ export abstract class BaseMemberGame extends BaseConnection {
 
     async getUsingItemToUse(memberGameItemHistoryId: string): Promise<GameItemVM[]> {
         const gameItems: GameItemVM[] = [];
-
-        const memberGameItemEntities = await this.entityManager.getRepository(MemberGameItemEntity).find({
+        
+        const memberGameItemRepository = this.entityManager.getRepository(MemberGameItemEntity)
+        const memberGameItemEntities = await memberGameItemRepository.find({
             relations: ['gameItem'],
             where: {
                 isUsing: true,
@@ -217,20 +218,28 @@ export abstract class BaseMemberGame extends BaseConnection {
                 memberId: this.memberId
             }
         });
-
+        
         const memberGameHistoryGameItemRepository = this.entityManager.getRepository(MemberGameHistoryGameItemEntity);
-
+        
         for (const entity of memberGameItemEntities) {
-            entity.remainTimes -= - 1;
-            entity.dateLastUsed = new Date();
-            entity.dateUpdated = new Date();
+            const dic: Partial<MemberGameItemEntity> = {
+                remainTimes: entity.remainTimes - 1,
+                dateLastUsed: new Date(),
+                dateUpdated: new Date()
+            }
+
+            entity.remainTimes -= 1;
+            entity.dateLastUsed = dic.dateLastUsed;
+            entity.dateUpdated = dic.dateUpdated;
 
             if (entity.remainTimes === 0) {
+                dic.isUsing = false;
+                dic.enabled = false;
                 entity.isUsing = false;
                 entity.enabled = false;
             }
 
-            entity.save();
+            await memberGameItemRepository.update({ id: entity.id }, dic)
 
             const memberGameHistoryGameItemEntity = new MemberGameHistoryGameItemEntity();
             memberGameHistoryGameItemEntity.memberGameItemId = entity.id
