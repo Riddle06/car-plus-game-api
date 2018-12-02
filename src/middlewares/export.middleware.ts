@@ -28,7 +28,7 @@ export const exportEndMiddleware = async (req: RequestExtension, res: ResponseEx
         res.setHeader("Content-Disposition", `attachment; filename= ${encodeURIComponent(res.exportResult.fileName)}.xlsx`);
         res.end(res.exportResult.buffer)
     } else if (res.appError) {
-        console.dir(res.appError)
+        console.dir(`exportEndMiddleware error catch`, res.appError)
         if (res.appError instanceof AppError) {
             res.json(res.appError.getResult());
         } else {

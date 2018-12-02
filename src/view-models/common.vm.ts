@@ -1,3 +1,7 @@
+export type QueryCountDbModel = {
+    count: number
+}[]
+
 export interface PageInfo {
     index: number
     size: number

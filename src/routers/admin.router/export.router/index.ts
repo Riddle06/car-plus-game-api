@@ -51,7 +51,8 @@ router.get('/member/with-game-items', async (req: RequestExtension, res: Respons
 
     try {
         const param = new PageQuery<AdminMemberListQueryParameterVM>(req.listQuery, {
-            memberId: req.query.mi ? req.query.mi : ""
+            memberId: req.query.mi ? req.query.mi : "",
+            keyword: req.query.keyword
         })
         res.exportResult = await adminMemberSvc.exportAdminMemberWidthGameItemsListExcel(param)
 

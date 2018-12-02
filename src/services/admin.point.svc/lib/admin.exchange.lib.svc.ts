@@ -1,3 +1,4 @@
+import { QueryCountDbModel } from './../../../view-models/common.vm';
 import { MemberGameItemOrderEntity } from './../../../entities/member-game-item-order.entity';
 import { BaseConnection } from '@services/base-connection';
 import { ListResult, PageQuery } from '@view-models/common.vm';
@@ -6,6 +7,39 @@ import { FindConditions, Between, MoreThan, LessThan } from 'typeorm';
 import { checker } from '@utilities';
 import { PointHistoryType } from '@view-models/game-history.vm';
 import { ExportResult, exporter } from '@utilities/exporter';
+
+const baseSql = `
+select o.id as id,
+o.game_item_id as gameItemId,
+o.point_type as pointType,
+o.point_amount as pointAmount,
+o.game_item_count as gameItemCount,
+o.member_id as memberId,
+m.nick_name  as memberNickName,
+m.car_plus_point as memberCarPlusPoint,
+m.car_plus_member_id as memberCarPlusMemberId,
+gi.name  as gameItemName,
+gi.type  as gameItemType,
+o.date_created as dateCreated,
+ROW_NUMBER () OVER ( order by o.date_created desc) as row
+from  member_game_item_order as o
+join member as m on m.id=  o.member_id
+join game_item as gi on gi.id = o.game_item_id`
+
+type MemberGameItemOrderViewDbModel = {
+    id: string
+    gameItemId: string
+    pointType: number
+    pointAmount: number
+    gameItemCount: number
+    memberId: string
+    memberNickName: string
+    memberCarPlusPoint: number
+    memberCarPlusMemberId: number
+    gameItemName: string
+    gameItemType: number
+    dateCreated: Date
+}
 
 type ExportExchangeOrderItem = {
     memberId: string
@@ -19,69 +53,62 @@ type ExportExchangeOrderItem = {
 export class AdminExchangeLibSvc extends BaseConnection {
     async getExchangeOrders(param: PageQuery<AdminMemberGameItemQueryParameterVM>): Promise<ListResult<AdminMemberGameItemOrderVM>> {
 
-        const conditions: FindConditions<MemberGameItemOrderEntity> = {};
+        const conditions: string[] = ['1 = 1'];
+        const parameters: any = {};
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
-            conditions.memberId = param.params.memberId
+            conditions.push(`m.id = :memberId`);
+            parameters.memberId = param.params.memberId
         }
 
         if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
-            conditions.dateCreated = Between<Date>(param.listQueryParam.dateStart, param.listQueryParam.dateEnd)
+            conditions.push(`o.date_created between :dateStart and :dateEnd`);
+            parameters.dateStart = param.listQueryParam.dateStart
+            parameters.dateEnd = param.listQueryParam.dateEnd
         } else if (checker.isDate(param.listQueryParam.dateStart)) {
-            conditions.dateCreated = MoreThan(param.listQueryParam.dateStart)
+            conditions.push(`o.date_created >= :dateStart`);
+            parameters.dateStart = param.listQueryParam.dateStart;
         } else if (checker.isDate(param.listQueryParam.dateEnd)) {
-            conditions.dateCreated = LessThan(param.listQueryParam.dateEnd)
+            conditions.push(`o.date_created >= :dateEnd`);
+            parameters.dateEnd = param.listQueryParam.dateEnd
         }
 
-        const skip = (param.listQueryParam.pageIndex - 1) * param.listQueryParam.pageSize
-        const take = param.listQueryParam.pageSize
+        const sqlWithConditions = `${baseSql} where ${conditions.join(' and ')}`
 
-        const memberGameItemOrderRepository = await this.entityManager.getRepository(MemberGameItemOrderEntity)
+        const paginationSql = this.getPaginationSql(sqlWithConditions);
+        const countSql = this.getCountSql(sqlWithConditions);
 
-        const findAndCountRet = await memberGameItemOrderRepository.findAndCount({
-            relations: ['member', 'gameItem'],
-            where: {
-                ...conditions
-            },
-            order: {
-                dateCreated: 'DESC'
-            },
-            skip,
-            take
-        })
+        const rowStart: number = ((param.listQueryParam.pageIndex - 1) * param.listQueryParam.pageSize) + 1;
+        const rowEnd: number = rowStart + param.listQueryParam.pageSize - 1;
+        parameters.rowStart = rowStart;
+        parameters.rowEnd = rowEnd;
 
-        const memberGameItemOrderEntities = findAndCountRet[0]
-        const dataAmount = findAndCountRet[1]
+        const paginationQueryParam = this.parseSql(paginationSql, parameters)
+        const countQueryParam = this.parseSql(countSql, parameters)
+
+        const listRet: MemberGameItemOrderViewDbModel[] = await this.entityManager.query(paginationQueryParam.sql, paginationQueryParam.parameters);
+        const countRet: QueryCountDbModel = await this.entityManager.query(countQueryParam.sql, countQueryParam.parameters);
+
+
+        const memberGameItemOrderEntities = listRet
+        const dataAmount = countRet[0].count
 
         const ret = new ListResult<AdminMemberGameItemOrderVM>(true);
 
         ret.items = memberGameItemOrderEntities.map(entity => {
             const item: AdminMemberGameItemOrderVM = {
                 id: entity.id,
-                memberId: entity.memberId,
-                gameItemId: entity.gameItemId,
                 pointType: entity.pointType,
                 pointAmount: entity.pointAmount,
                 gameItemCount: entity.gameItemCount,
                 dateCreated: entity.dateCreated,
                 member: {
-                    id: entity.member.id,
-                    nickName: entity.member.nickName,
-                    carPlusPoint: entity.member.carPlusPoint,
-                    gamePoint: entity.member.gamePoint,
-                    level: entity.member.level,
-                    experience: entity.member.experience,
-                    carPlusMemberId: entity.member.carPlusMemberId,
+                    id: entity.memberId,
+                    nickName: entity.memberNickName
                 },
                 gameItem: {
-                    id: entity.gameItem.id,
-                    description: entity.gameItem.description,
-                    name: entity.gameItem.name,
-                    imageUrl: entity.gameItem.imageUrl,
-                    gamePoint: entity.gameItem.gamePoint,
-                    carPlusPoint: entity.gameItem.carPlusPoint,
-                    type: entity.gameItem.type,
-                    enableBuy: entity.gameItem.enabled
+                    id: entity.gameItemId,
+                    name: entity.gameItemName
                 }
             }
             return item

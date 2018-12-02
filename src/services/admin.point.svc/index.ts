@@ -47,7 +47,7 @@ class AdminPointSvc {
         try {
             // const memberGameItemLibSvc = new MemberGameItemLibSvc(memberId, queryRunner)
             const adminPointLibSvc = new AdminPointLibSvc(adminUserToken, queryRunner);
-            const ret = adminPointLibSvc.getManualGamePointHistory(param)
+            const ret = await adminPointLibSvc.getManualGamePointHistory(param)
             await queryRunner.commitTransaction();
             return ret
         } catch (error) {

@@ -15,22 +15,38 @@ router.use('/point', MemberPointHistoryRouter)
 
 // 會員列表
 router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
-    //TODO:可能不需要
-    next();
-})
 
-// 取得
-router.get('/with-game-items', async (req: RequestExtension, res: ResponseExtension, next) => {
+    const pageQuery = new PageQuery<AdminMemberListQueryParameterVM>(req.listQuery, {
+        memberId: req.query.mi,
+        keyword: req.query.keyword
+    })
+
     try {
-        const param = new PageQuery<AdminMemberListQueryParameterVM>(req.listQuery, {
-            memberId: req.query.mi ? req.query.mi : ""
-        })
-        res.result = await adminMemberSvc.getAdminMemberWidthGameItemsList(param)
+        res.result = await adminMemberSvc.getAdminMemberList(pageQuery)
     } catch (error) {
         res.appError = error;
     }
     next();
 })
+
+// 會員詳細資訊
+router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
+
+    const ignorePaths = ['/with-game-items', '/block-history']
+
+    if (ignorePaths.indexOf(req.path) > -1) {
+        next();
+        return;
+    }
+    try {
+        res.result = await adminMemberSvc.getAdminMemberWithGameItemsDetail(req.params.id)
+    } catch (error) {
+        res.appError = error;
+    }
+    next();
+})
+
+
 // 取得封鎖列表
 router.get('/block-history', async (req: RequestExtension, res: ResponseExtension, next) => {
     try {

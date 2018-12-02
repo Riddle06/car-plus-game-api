@@ -53,9 +53,34 @@ class AdminMemberSvc {
         }
     }
 
-    async getAdminMemberWidthGameItemsList(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<ListResult<AdminMemberVM>> {
-        // TODO: 取得會員列表（包含道具
-        return null
+    async getAdminMemberList(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<ListResult<AdminMemberVM>> {
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const adminMemberLibSvc = new AdminMembersLibSvc(queryRunner)
+            const ret = await adminMemberLibSvc.getMembers(param)
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async getAdminMemberWithGameItemsDetail(id: string): Promise<Result<AdminMemberVM>> {
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const adminMemberLibSvc = new AdminMembersLibSvc(queryRunner)
+            const ret = await adminMemberLibSvc.getMemberDetail(id)
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     async exportAdminMemberWidthGameItemsListExcel(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<ExportResult> {

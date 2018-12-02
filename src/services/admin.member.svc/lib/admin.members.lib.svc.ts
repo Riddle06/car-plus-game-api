@@ -1,9 +1,16 @@
-import { ListResult, PageQuery } from '@view-models/common.vm';
-import { AdminMemberVM, AdminMemberListQueryParameterVM } from '@view-models/admin.member.vm';
+import { MemberGameItemEntity } from '@entities/member-game-item.entity';
+import { AppError } from '@view-models/common.vm';
+import { MemberEntity } from '@entities/member.entity';
+import { ListResult, PageQuery, Result } from '@view-models/common.vm';
+import { AdminMemberVM, AdminMemberListQueryParameterVM, AdminMemberGameItemVM } from '@view-models/admin.member.vm';
 import * as xlsx from "xlsx";
 import { BaseConnection } from '@services/base-connection';
 import { ResponseExtension } from '@view-models/extension';
 import { ExportResult, exporter } from '@utilities/exporter';
+import { checker } from '@utilities';
+import { FindConditions, Like, Any, FindOperator } from 'typeorm';
+import { GameItemVM } from '@view-models/game.vm';
+import { GameItemEntity } from '@entities/game-item.entity';
 
 type MemberWithGameItem = {
     id: string
@@ -28,10 +35,117 @@ export class AdminMembersLibSvc extends BaseConnection {
 
     async getMembers(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<ListResult<AdminMemberVM>> {
 
+        const MemberRepository = this.entityManager.getRepository(MemberEntity)
 
+        const parameters: any = {};
+        const conditions: string[] = ['1 = 1'];
 
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
+            conditions.push(`member.id = :memberId`)
+            parameters.memberId = param.params.memberId
+        }
 
-        return null;
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.keyword)) {
+            conditions.push(`(member.nick_name like :keyword or car_plus_member_id like :keyword)`)
+            parameters.keyword = `%${param.params.keyword}%`;
+        }
+        
+        const skip = (param.listQueryParam.pageIndex - 1) * param.listQueryParam.pageSize
+        const take = param.listQueryParam.pageSize
+
+        const findAndCountRet = await MemberRepository.createQueryBuilder('member')
+            .where(conditions.join(' and '))
+            .setParameters(parameters)
+            .skip(skip)
+            .take(take)
+            .orderBy("member.car_plus_member_id", "ASC")
+            .getManyAndCount()
+
+        const memberEntities = findAndCountRet[0]
+        const dataAmount = findAndCountRet[1]
+
+        const ret = new ListResult<AdminMemberVM>();
+
+        ret.items = memberEntities.map(entity => {
+            const { id, carPlusMemberId, dateCreated, level, gamePoint, nickName, experience, carPlusPoint } = entity
+            const item: AdminMemberVM = {
+                id,
+                nickName,
+                carPlusPoint,
+                gamePoint,
+                level,
+                experience,
+                carPlusMemberId,
+                gameItems: []
+            }
+            return item
+        })
+
+        ret.page = {
+            pageAmount: Math.ceil(dataAmount / param.listQueryParam.pageSize),
+            dataAmount
+        }
+
+        return ret;
+    }
+
+    async getMemberDetail(id: string): Promise<Result<AdminMemberVM>> {
+        const memberRepository = this.entityManager.getRepository(MemberEntity)
+        const memberEntity = await memberRepository.findOne(id);
+
+        if (checker.isNullOrUndefinedObject(memberEntity)) {
+            throw new AppError('查無此會員')
+        }
+
+        const ret = new Result<AdminMemberVM>(true);
+        const { carPlusMemberId, level, gamePoint, nickName, experience, carPlusPoint } = memberEntity
+
+        ret.item = {
+            id,
+            nickName,
+            carPlusPoint,
+            gamePoint,
+            level,
+            experience,
+            carPlusMemberId,
+            gameItems: []
+        }
+
+        const memberGameItemRepository = this.entityManager.getRepository(MemberGameItemEntity);
+
+        const gameItemAggregations: { gameItemId: string, count: number }[] = await memberGameItemRepository.createQueryBuilder(`memberGameItem`)
+            .select(`memberGameItem.game_item_id`, 'gameItemId')
+            .select(`sum(memberGameItem.remain_times)`, `count`)
+            .where(`memberGameItem.member_id = :memberId`)
+            .groupBy('memberGameItem.game_item_id')
+            .setParameters({ memberId: id })
+            .getRawMany()
+
+        const gameItems = await this.getGameItems();
+
+        ret.item.gameItems = gameItems.items.map(item => {
+            const { id, description, name, imageUrl, type, enableBuy, addScoreRate, addGamePointRate } = item
+            const memberGameItem: AdminMemberGameItemVM = {
+                id,
+                description,
+                name,
+                imageUrl,
+                gamePoint,
+                carPlusPoint,
+                type,
+                enableBuy,
+                addScoreRate,
+                addGamePointRate,
+                num: 0
+            }
+            const gameItemAggregation = gameItemAggregations.find(gameItemAggregation => gameItemAggregation.gameItemId === id)
+            if (!checker.isNullOrUndefinedObject(gameItemAggregation)) {
+                memberGameItem.num = gameItemAggregation.count
+            }
+            return memberGameItem;
+        });
+
+        return ret;
     }
 
     async exportMembersWithGameItemsExcel(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<ExportResult> {
@@ -56,43 +170,43 @@ export class AdminMembersLibSvc extends BaseConnection {
             isnull(game_item_7.count,0) as gameItem7Count
                 from [member] m 
                 left join (
-                select i.member_id, count(i.id) as [count] from member_game_item i 
+                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '一般上班族'
                 group by i.member_id ) as game_item_1 on game_item_1.member_id = m.id
                 
                 left join (
-                select i.member_id, count(i.id) as [count] from member_game_item i 
+                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '實習超人'
                 group by i.member_id ) as game_item_2 on game_item_2.member_id = m.id
                 
                 left join (
-                select i.member_id, count(i.id) as [count] from member_game_item i 
+                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '超人隊員'
                 group by i.member_id ) as game_item_3 on game_item_3.member_id = m.id
                 
                 left join (
-                select i.member_id, count(i.id) as [count] from member_game_item i 
+                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '超人隊長'
                 group by i.member_id ) as game_item_4 on game_item_4.member_id = m.id
                 
                 left join (
-                select i.member_id, count(i.id) as [count] from member_game_item i 
+                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '力霸超人'
                 group by i.member_id ) as game_item_5 on game_item_5.member_id = m.id
                 
                 left join (
-                select i.member_id, count(i.id) as [count] from member_game_item i 
+                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '富翁果實'
                 group by i.member_id ) as game_item_6 on game_item_6.member_id = m.id
                 
                 left join (
-                select i.member_id, count(i.id) as [count] from member_game_item i 
+                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '能量果實'
             group by i.member_id ) as game_item_7 on game_item_7.member_id = m.id
@@ -123,6 +237,39 @@ export class AdminMembersLibSvc extends BaseConnection {
             fileName: '會員總覽',
             sheetName: 'sheet1'
         })
+    }
+
+    async getGameItems(): Promise<ListResult<GameItemVM>> {
+        const gameItemRepository = await this.entityManager.getRepository(GameItemEntity);
+
+        const gameItemEntities = await gameItemRepository.find({
+            where: {
+                
+            },
+            order: {
+                type: "ASC",
+                gamePoint: "ASC"
+            }
+        })
+
+        const ret = new ListResult<GameItemVM>();
+        ret.items = gameItemEntities.map(gameItemEntity => {
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type } = gameItemEntity
+            const gameItemVM: GameItemVM = {
+                id,
+                description,
+                name,
+                imageUrl,
+                gamePoint,
+                carPlusPoint,
+                type,
+                enableBuy: true
+            }
+
+            return gameItemVM;
+        })
+
+        return ret.setResultValue(true);
     }
 
 }

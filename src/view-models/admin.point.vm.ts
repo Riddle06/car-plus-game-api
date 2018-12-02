@@ -7,34 +7,48 @@ export interface AdminMemberGameItemQueryParameterVM {
 
 export interface AdminMemberGameItemOrderVM {
     id: string
-    memberId: string
-    gameItemId: string
+    member: {
+        id: string
+        nickName: string
+    }
+
+    gameItem: {
+        id: string
+        name: string
+    }
     pointType: PointType
     pointAmount: number
     gameItemCount: number
     dateCreated: Date
-    member: MemberInformationVM
-    gameItem: GameItemVM
+
 }
 
+
 /**
- * 會員兌換紀錄及客訴補幣紀錄
+ * 客訴補幣紀錄
  */
 export interface AdminMemberPointHistoryVM {
     id: string
     memberId: string
     gameItemId: string
-    member: MemberInformationVM
-    gameItem: GameItemVM
+    member: {
+        id: string
+        nickName: string
+    }
+    gameItem: {
+        id: string
+        name: string
+    }
     pointType: PointType
     beforeGamePoint: number
-    changePoint: number
+    changeGamePoint: number
     afterGamePoint: number
     beforeCarPlusPoint: number
-    afterCarPlusPoint: number
     changeCarPlusPoint: number
+    afterCarPlusPoint: number
     adminUserName: string
     adminUserId: string
+    dateCreated: Date
 }
 
 /**

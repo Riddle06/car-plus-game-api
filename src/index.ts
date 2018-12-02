@@ -15,21 +15,21 @@ const app = express();
 
 app.use(cors());
 
-if (configurations.app.env === 'dev') {
+if (configurations.app.env === 'dev' && process.env.BACKEND !== "1") {
     app.use(devMiddlewares);
 }
 
 const hbsExtname = '.hbs';
 const hbs = expressHandlebars.create({
-  extname: hbsExtname,
-  defaultLayout: 'index',
-  helpers: {
-    section(name, block) {
-      if(!this._sections) this._sections = {};
-      this._sections[name] = block.fn(this);
-      return null;
+    extname: hbsExtname,
+    defaultLayout: 'index',
+    helpers: {
+        section(name, block) {
+            if (!this._sections) this._sections = {};
+            this._sections[name] = block.fn(this);
+            return null;
+        },
     },
-  },
 });
 app.engine(hbsExtname, hbs.engine);
 app.set('view engine', hbsExtname);

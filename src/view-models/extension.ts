@@ -12,7 +12,7 @@ export interface RequestExtension extends Request {
         dateEnd: string,
         desc: string
         orderField: string,
-        keyword: string | string[]
+        keyword: string
         mi: string
         [key: string]: string | number | Array<string | number>
     }

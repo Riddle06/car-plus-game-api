@@ -2,7 +2,7 @@ import { GameItemVM } from './game.vm';
 import { MemberInformationVM } from "./member.vm";
 
 export interface AdminMemberVM extends MemberInformationVM {
-    gameItems: AdminMemberGameItemVM[]
+    gameItems?: AdminMemberGameItemVM[]
 
 }
 
@@ -40,4 +40,6 @@ export interface AdminMemberBlockListQueryParameterVM {
 
 export interface AdminMemberListQueryParameterVM {
     memberId: string
+    keyword: string
+
 }
