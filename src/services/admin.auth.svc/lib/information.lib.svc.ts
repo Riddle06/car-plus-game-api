@@ -7,7 +7,7 @@ import { checker } from '@utilities';
 export class AdminInformationLibSvc extends BaseConnection {
 
     async getProfile(adminUserId: string): Promise<Result<AdminUserVM>> {
-        const adminUserEntity = await this.entityManager.getMongoRepository(AdminUserEntity).findOne(adminUserId);
+        const adminUserEntity = await this.entityManager.getRepository(AdminUserEntity).findOne(adminUserId);
 
         if (checker.isNullOrUndefinedObject(adminUserEntity)) {
             throw new AppError('此帳號不存在')

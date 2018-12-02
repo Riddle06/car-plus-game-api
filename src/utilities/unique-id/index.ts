@@ -1,5 +1,6 @@
 import * as uuid from 'uuid'
 import * as shortid from "shortid";
+import * as validate from "uuid-validate";
 
 class UniqueId {
 
@@ -15,6 +16,10 @@ class UniqueId {
 
     generateV4UUID(): string {
         return uuid.v4();
+    }
+
+    isUUID(id: string): boolean {
+        return validate(id);
     }
 
     generateShortId(): string {

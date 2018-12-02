@@ -1,5 +1,5 @@
-import { ResultCode } from './../../../view-models/common.vm';
-import { AdminUserEntity } from './../../../entities/admin-user.entity';
+import { ResultCode } from '@view-models/common.vm';
+import { AdminUserEntity } from '@entities/admin-user.entity';
 import { AdminUserLoginParameterVM, AdminUserTokenPayload, AdminUserTokenHeader } from '@view-models/admin.auth.vm';
 import { BaseConnection } from '@services/base-connection';
 import { Result, AppError } from '@view-models/common.vm';
@@ -19,7 +19,7 @@ export class LoginLibSvc extends BaseConnection {
 
         const adminUserRepository = await this.entityManager.getRepository(AdminUserEntity);
 
-        const adminUser = await this.entityManager.getRepository(AdminUserEntity).findOne({
+        const adminUser = await adminUserRepository.findOne({
             where: {
                 account
             }
@@ -32,8 +32,7 @@ export class LoginLibSvc extends BaseConnection {
         if (adminUser.password !== encrypt.sha256Hash(password)) {
             throw new AppError('密碼驗證錯誤', ResultCode.clientError)
         }
-
-
+        
         const ret = new Result<string>(true);
 
         ret.item = this.generateToken(clientId, adminUser)

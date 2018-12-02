@@ -5,7 +5,7 @@ import { ListResult, PageQuery, Result } from '@view-models/common.vm';
 import { AdminMemberVM, AdminMemberListQueryParameterVM, AdminMemberGameItemVM } from '@view-models/admin.member.vm';
 import { BaseConnection } from '@services/base-connection';
 import { ExportResult, exporter } from '@utilities/exporter';
-import { checker } from '@utilities';
+import { checker, uniqueId } from '@utilities';
 import { GameItemVM } from '@view-models/game.vm';
 import { GameItemEntity } from '@entities/game-item.entity';
 
@@ -114,6 +114,11 @@ export class AdminMembersLibSvc extends BaseConnection {
 
     async getMemberDetail(id: string): Promise<Result<AdminMemberVM>> {
         const memberRepository = this.entityManager.getRepository(MemberEntity)
+
+        if (!uniqueId.isUUID(id)) {
+            throw new AppError('參數驗證錯誤 :id ')
+        }
+
         const memberEntity = await memberRepository.findOne(id);
 
         if (checker.isNullOrUndefinedObject(memberEntity)) {

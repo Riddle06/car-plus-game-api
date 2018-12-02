@@ -32,7 +32,7 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 // 會員詳細資訊
 router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
-    const ignorePaths = ['/with-game-items', '/block-history']
+    const ignorePaths = ['with-game-items', 'block-history']
 
     if (ignorePaths.indexOf(req.path) > -1) {
         next();
