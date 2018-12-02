@@ -1,16 +1,36 @@
 import { MemberGameItemEntity } from '@entities/member-game-item.entity';
-import { AppError } from '@view-models/common.vm';
+import { AppError, QueryCountDbModel } from '@view-models/common.vm';
 import { MemberEntity } from '@entities/member.entity';
 import { ListResult, PageQuery, Result } from '@view-models/common.vm';
 import { AdminMemberVM, AdminMemberListQueryParameterVM, AdminMemberGameItemVM } from '@view-models/admin.member.vm';
-import * as xlsx from "xlsx";
 import { BaseConnection } from '@services/base-connection';
-import { ResponseExtension } from '@view-models/extension';
 import { ExportResult, exporter } from '@utilities/exporter';
 import { checker } from '@utilities';
-import { FindConditions, Like, Any, FindOperator } from 'typeorm';
 import { GameItemVM } from '@view-models/game.vm';
 import { GameItemEntity } from '@entities/game-item.entity';
+
+const baseSql = `select 
+m.id as id,
+m.id as nickName,
+m.car_plus_point as carPlusPoint,
+m.game_point as gamePoint,
+m.level as level,
+m.experience as experience,
+m.car_plus_member_id as carPlusMemberId,
+ROW_NUMBER () OVER ( order by m.car_plus_member_id asc) as row
+from member as m`
+
+type MemberDbViewModel = {
+    id: string
+    nickName: string
+    gamePoint: number
+    carPlusPoint: number
+    dateCreated: Date
+    carPlusMemberId: string
+    experience: number
+    level: number
+    isBlock: boolean
+}
 
 type MemberWithGameItem = {
     id: string
@@ -34,37 +54,40 @@ type MemberWithGameItem = {
 export class AdminMembersLibSvc extends BaseConnection {
 
     async getMembers(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<ListResult<AdminMemberVM>> {
-
-        const MemberRepository = this.entityManager.getRepository(MemberEntity)
-
-        const parameters: any = {};
         const conditions: string[] = ['1 = 1'];
+        const parameters: any = {};
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
-            conditions.push(`member.id = :memberId`)
+            conditions.push(`m.id = :memberId`)
             parameters.memberId = param.params.memberId
         }
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.keyword)) {
-            conditions.push(`(member.nick_name like :keyword or car_plus_member_id like :keyword)`)
+            conditions.push(`(m.nick_name like :keyword or m.car_plus_member_id like :keyword)`)
             parameters.keyword = `%${param.params.keyword}%`;
         }
-        
-        const skip = (param.listQueryParam.pageIndex - 1) * param.listQueryParam.pageSize
-        const take = param.listQueryParam.pageSize
 
-        const findAndCountRet = await MemberRepository.createQueryBuilder('member')
-            .where(conditions.join(' and '))
-            .setParameters(parameters)
-            .skip(skip)
-            .take(take)
-            .orderBy("member.car_plus_member_id", "ASC")
-            .getManyAndCount()
+        const sqlWithConditions = `${baseSql} where ${conditions.join(' and ')}`
 
-        const memberEntities = findAndCountRet[0]
-        const dataAmount = findAndCountRet[1]
+        const paginationSql = this.getPaginationSql(sqlWithConditions);
+        const countSql = this.getCountSql(sqlWithConditions);
 
-        const ret = new ListResult<AdminMemberVM>();
+        const rowStart: number = ((param.listQueryParam.pageIndex - 1) * param.listQueryParam.pageSize) + 1;
+        const rowEnd: number = rowStart + param.listQueryParam.pageSize - 1;
+        parameters.rowStart = rowStart;
+        parameters.rowEnd = rowEnd;
+
+        const paginationQueryParam = this.parseSql(paginationSql, parameters)
+        const countQueryParam = this.parseSql(countSql, parameters)
+
+        const listRet: MemberDbViewModel[] = await this.entityManager.query(paginationQueryParam.sql, paginationQueryParam.parameters);
+        const countRet: QueryCountDbModel = await this.entityManager.query(countQueryParam.sql, countQueryParam.parameters);
+
+
+        const memberEntities = listRet
+        const dataAmount = countRet[0].count
+
+        const ret = new ListResult<AdminMemberVM>(true);
 
         ret.items = memberEntities.map(entity => {
             const { id, carPlusMemberId, dateCreated, level, gamePoint, nickName, experience, carPlusPoint } = entity
@@ -244,7 +267,7 @@ export class AdminMembersLibSvc extends BaseConnection {
 
         const gameItemEntities = await gameItemRepository.find({
             where: {
-                
+
             },
             order: {
                 type: "ASC",

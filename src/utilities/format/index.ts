@@ -55,7 +55,8 @@ class Format {
             return defaultValue;
         }
 
-        const m = luxon.DateTime.fromFormat(d, 'YYYY-MM-DD HH:mm:ss')
+        // const m = luxon.DateTime.fromFormat(d, 'YYYY-MM-DD HH:mm:ss')
+        const m = luxon.DateTime.fromISO(d);
         if (m.isValid) {
             return m.toJSDate();
         } else {
