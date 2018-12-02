@@ -1,3 +1,4 @@
+import { variableSvc } from '@services/variable.svc';
 import { Router } from "express";
 import { RequestExtension, ResponseExtension } from "@view-models/extension";
 import { AppError } from "@view-models/common.vm";
@@ -30,6 +31,17 @@ router.put('/nick-name', async (req: RequestExtension, res: ResponseExtension, n
         const { memberToken } = req
         const ret = await memberSvc.updateMemberNickName(memberToken, param);
         res.result = ret;
+    } catch (error) {
+        res.appError = AppError.getAppError(error)
+    }
+    next();
+})
+
+// 等級參數
+router.get('/level-info', async (req: RequestExtension, res: ResponseExtension, next) => {
+
+    try {
+        res.result = await variableSvc.getLevelInformation()
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }
