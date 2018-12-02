@@ -107,7 +107,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
         const memberGameItemEntities = await memberGameItemRepository
             .createQueryBuilder("memberGameItem")
-            .innerJoin("memberGameItem.gameItem", "gameItem", "gameItem.type in (:...types)")
+            .innerJoinAndSelect("memberGameItem.gameItem", "gameItem", "gameItem.type in (:...types)")
             .where("memberGameItem.memberId = :memberId and memberGameItem.remainTimes > 0 and memberGameItem.enabled = 1")
             .orderBy("gameItem.type", "ASC")
             .addOrderBy("memberGameItem.is_using", "DESC")
@@ -124,7 +124,9 @@ export class MemberGameItemLibSvc extends BaseConnection {
         const items: MemberGameItemVM[] = []
 
         for (const key in dic) {
+
             const gameItem = dic[key][0].gameItem
+
 
             const item: MemberGameItemVM = {
                 id: gameItem.id,
@@ -159,12 +161,18 @@ export class MemberGameItemLibSvc extends BaseConnection {
             }
         });
 
+
+
         if (checker.isNullOrUndefinedObject(useMemberGameItem)) {
             throw new AppError(`查無此道具可使用`);
         }
 
         if (checker.isNullOrUndefinedObject(useMemberGameItem.gameItem)) {
             throw new AppError(`查無此道具可使用`);
+        }
+
+        if (useMemberGameItem.isUsing) {
+            throw new AppError(`此道具正在使用中`);
         }
 
         const memberGameItems = await memberGameItemRepository.find({
@@ -290,7 +298,6 @@ export class MemberGameItemLibSvc extends BaseConnection {
         memberGameItemOrder.memberGamePointHistoryId = memberGameItemEntities[0].memberGamePointHistoryId
         memberGameItemOrder.memberGameItemId = memberGameItemEntities[0].id
 
-        await this.entityManager.getRepository(MemberGameItemEntity).insert(memberGameItemEntities);
         await this.entityManager.getRepository(MemberGameItemOrderEntity).insert(memberGameItemOrder);
 
         return new BaseResult(true);
@@ -310,14 +317,16 @@ export class MemberGameItemLibSvc extends BaseConnection {
                     where: {
                         gameItemId: gameItemEntity.id,
                         memberId: this.memberId,
-                        dateCreated: Between(luxon.DateTime.local().startOf('day').toJSDate(), luxon.DateTime.local().endOf('day').toJSDate()),
-                        gameItem: {
-                            type: GameItemType.carPlusPoint
-                        }
+                        dateCreated: Between(luxon.DateTime.local().startOf('day').toFormat('yyyy/MM/dd HH:mm:ss'), luxon.DateTime.local().endOf('day').toFormat('yyyy/MM/dd HH:mm:ss')),
+
                     }
                 })
 
-                if (findAndCountRet[1] >= maxCarPlusPointAmountRet.item) {
+                // gameItem: {
+                //     type: GameItemType.carPlusPoint
+                // }
+
+                if (findAndCountRet[0].filter(entity => entity.gameItem.type === GameItemType.carPlusPoint).length > maxCarPlusPointAmountRet.item) {
                     throw new AppError('今日已達購賣數量上限')
                 }
 

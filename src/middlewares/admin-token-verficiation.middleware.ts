@@ -1,9 +1,6 @@
 import { RequestExtension, ResponseExtension } from "@view-models/extension";
 import { checker, uniqueId } from "@utilities";
-import * as luxon from 'luxon'
-import * as jwt from "jsonwebtoken";
 import { MemberToken } from "@view-models/verification.vm";
-import { memberSvc } from "@services";
 import { NextFunction } from "express";
 import { AppError, ResultCode } from "@view-models/common.vm";
 import { adminAuthSvc } from "@services/admin.auth.svc";
@@ -15,8 +12,7 @@ export const adminTokenVerificationMiddleware = async (req: RequestExtension, re
 
     try {
         const ignorePathRegex = [/^\/export\/\S+/]
-        next();
-        return;
+
         if (ignorePathRegex.some(regex => regex.test(req.path))) { 
             next();
             return;

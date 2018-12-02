@@ -103,13 +103,14 @@ export class MemberGameHistoryEntity extends BaseEntity {
     @JoinColumn({
         name: "game_id",
     })
-    game: GameEntity
+    gameVM: GameEntity
+
 
     @OneToOne(type => MemberEntity, MemberEntity => MemberEntity.id)
     @JoinColumn({
         name: "member_id",
     })
-    member: MemberEntity
+    memberVM: MemberEntity
 
 
     @OneToMany(type => MemberGameHistoryGameItemEntity, MemberGameHistoryGameItemEntity => MemberGameHistoryGameItemEntity.memberGameHistoryId)

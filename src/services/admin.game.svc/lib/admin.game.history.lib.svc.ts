@@ -141,7 +141,7 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
         }
 
         const findAndCountRet = await memberGameHistoryRepository.findAndCount({
-            relations: ['member', 'game'],
+            relations: ['memberVM', 'gameVM'],
             where: {
                 ...conditions
             },
@@ -157,9 +157,9 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
             const { id, memberId, dateCreated, gameScore, gamePoint, dateFinished } = entity
 
             const item: ExportGameHistoryItem = {
-                id: entity.member.carPlusMemberId,
+                id: entity.memberVM.carPlusMemberId,
                 dateCreated: dateCreated,
-                gameName: entity.game.name,
+                gameName: entity.gameVM.name,
                 gameScore,
                 gamePoint
             }

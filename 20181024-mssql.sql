@@ -268,6 +268,16 @@ INSERT INTO carPlusGame.dbo.game_question(id, question, answer, sort) VALUES(NEW
 
 
 
+INSERT INTO admin_user
+(id, name, account, password, date_created, date_updated)
+VALUES(NEWID(), '管理者', 'carplus', '18f212262d45649813f7377823562bcfae72e59af97310851745e298f31566e2', getdate(), getdate());
+
+
+INSERT INTO admin_user
+(id, name, account, password, date_created, date_updated)
+VALUES(NEWID(), '管理者', 'service', '7420efe99e1a3a16ceae0d1fcfa082398f62d87948859940d5e7536903975906', getdate(), getdate());
+
+
 
 
 -- select m.*,

@@ -106,7 +106,7 @@ export class MemberGamePointLibSvc extends BaseConnection {
             .update<MemberEntity>(MemberEntity)
             .set({
                 gamePoint: () => "game_point + :gamePoint",
-                carPlusPoint: () => "car_pus_point - :carPlusPoint"
+                carPlusPoint: () => "car_plus_point - :carPlusPoint"
             })
             .where({
                 id: this.memberId
@@ -154,7 +154,7 @@ export class MemberGamePointLibSvc extends BaseConnection {
             .update<MemberEntity>(MemberEntity)
             .set({
                 gamePoint: () => "game_point - :gamePoint",
-                carPlusPoint: () => "car_pus_point + :carPlusPoint"
+                carPlusPoint: () => "car_plus_point + :carPlusPoint"
             })
             .where({
                 id: this.memberId

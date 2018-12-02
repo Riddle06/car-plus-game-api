@@ -119,7 +119,21 @@ export abstract class BaseMemberGame extends BaseConnection {
         return ret.setResultValue(true)
     }
 
-    async validateReportGame(): Promise<void> { }
+    async validateReportGame(memberGameHistoryId: string): Promise<void> {
+        const memberGameHistoryEntity = await this.memberGameHistoryRepository.findOne({
+            where: {
+                id: memberGameHistoryId
+            }
+        })
+
+        if (checker.isNullOrUndefinedObject(memberGameHistoryEntity)) {
+            throw new AppError('查無此紀錄')
+        }
+
+        if (!checker.isNullOrUndefinedObject(memberGameHistoryEntity.dateFinished)) { 
+            throw new AppError('此遊戲已完成')
+        }
+    }
 
     async reportGame(memberGameHistoryId: string, score: number,
         gamePoint: number,
@@ -162,7 +176,8 @@ export abstract class BaseMemberGame extends BaseConnection {
                 afterLevel: memberEntity.level + changeLevel,
                 beforeLevel: memberEntity.level,
                 gameScore: totalScore,
-                gamePoint: gamePointAfterAddBonus
+                gamePoint: gamePointAfterAddBonus,
+                dateFinished: new Date()
             });
 
         // 更新會員紀錄
@@ -330,7 +345,6 @@ export abstract class BaseMemberGame extends BaseConnection {
         }
 
         const ret = new Result<StartGameHistoryVM>(true);
-
         ret.item = {
             dateCreated: memberGameHistoryEntity.dateCreated,
             dateFinish: memberGameHistoryEntity.dateFinished,
@@ -354,20 +368,28 @@ export abstract class BaseMemberGame extends BaseConnection {
     getScoreByEncryptString(encryptString: string): number {
 
         try {
-            const ret = parseInt(atob(atob(encryptString)))
+            console.log(`encryptString`, encryptString)
+            const ret = parseInt(this.baee64Decode(this.baee64Decode(encryptString)))
             return ret;
         } catch (error) {
+            console.dir(error)
             throw new AppError('參數錯誤')
         }
     }
 
     getPointByEncryptString(encryptString): number {
+        console.log(`encryptString`, encryptString)
         try {
-            const ret = parseInt(atob(atob(encryptString)))
+            const ret = parseInt(this.baee64Decode(this.baee64Decode(encryptString)))
             return ret;
         } catch (error) {
+            console.dir(error)
             throw new AppError('參數錯誤')
         }
+    }
+
+    private baee64Decode(str): string {
+        return Buffer.from(str, 'base64').toString("utf-8"); // Ta-da
     }
 
 }

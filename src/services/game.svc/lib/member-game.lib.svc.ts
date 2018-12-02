@@ -43,7 +43,7 @@ export class MemberGameLibSvc extends BaseConnection {
 
         const memberGameHistoryRepository = await this.entityManager.getRepository(MemberGameHistoryEntity)
         const gameEntity = await memberGameHistoryRepository.findOne({
-            relations: ['game'],
+            relations: ['gameVM'],
             where: {
                 id: gameHistoryId
             }
@@ -51,8 +51,8 @@ export class MemberGameLibSvc extends BaseConnection {
         if (checker.isNullOrUndefinedObject(gameEntity)) {
             throw new AppError('查無此遊戲')
         }
-        const memberGameType = await this.getMemberGame(gameEntity.game);
-        await memberGameType.validateReportGame();
+        const memberGameType = await this.getMemberGame(gameEntity.gameVM);
+        await memberGameType.validateReportGame(gameHistoryId);
         const score = memberGameType.getScoreByEncryptString(scoreEncryptString)
         const gamePoint = memberGameType.getPointByEncryptString(gamePintEncryptString)
         return memberGameType.reportGame(gameHistoryId, score, gamePoint, memberGamePointLibSvc)
@@ -63,7 +63,7 @@ export class MemberGameLibSvc extends BaseConnection {
         const memberGameHistoryRepository = await this.entityManager.getRepository(MemberGameHistoryEntity)
 
         const memberGameHistoryEntity = await memberGameHistoryRepository.findOne({
-            relations: ['game'],
+            relations: ['gameVM'],
             where: {
                 id
             }
@@ -73,16 +73,17 @@ export class MemberGameLibSvc extends BaseConnection {
             throw new AppError('查無此紀錄')
         }
 
-        if (checker.isNullOrUndefinedObject(memberGameHistoryEntity.game)) {
+        if (checker.isNullOrUndefinedObject(memberGameHistoryEntity.gameVM)) {
             throw new AppError('查無此紀錄遊戲')
         }
-
-        const memberGameType = await this.getMemberGame(memberGameHistoryEntity.game);
+        
+        const memberGameType = await this.getMemberGame(memberGameHistoryEntity.gameVM);
 
         return await memberGameType.getGameHistory(memberGameHistoryEntity)
     }
 
     async getMemberGame(game: GameEntity): Promise<BaseMemberGame> {
+        
         switch (game.code) {
             case "catch":
                 return await (new CatchGameType(this.memberId, game, this.queryRunner).init())

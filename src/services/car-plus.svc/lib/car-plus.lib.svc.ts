@@ -12,7 +12,7 @@ export class CarPlusLibSvc extends BaseConnection {
         const testRegex = variableSvc.getTesterRegExp();
 
         if (!testRegex.test(carPlusMemberId)) {
-            const queryRet: { msg: string, id: string, bonus: number }[] = await this.entityManager.query('execute s_customer_R2 ?', [carPlusMemberId]);
+            const queryRet: { msg: string, id: string, bonus: number }[] = await this.entityManager.query('execute s_customer_R2 @0', [carPlusMemberId]);
 
             if (queryRet.length === 0) {
                 throw new AppError(`查無資料 carPlusMemberId: ${carPlusMemberId}`)
@@ -50,7 +50,7 @@ export class CarPlusLibSvc extends BaseConnection {
             return this.getCarPlusMemberInformation(carPlusMemberId)
         }
 
-        const queryRet: { msg: string }[] = await this.entityManager.query(`execute s_Customer_I1 ?, ?, ?`, [carPlusMemberId, point, '會員小遊戲'])
+        const queryRet: { msg: string }[] = await this.entityManager.query(`execute s_Customer_I1 @0, @1, @2`, [carPlusMemberId, point, '會員小遊戲'])
 
         if (queryRet.length === 0) {
             throw new AppError('使用格上紅利 資料回傳錯誤')
@@ -78,7 +78,7 @@ export class CarPlusLibSvc extends BaseConnection {
             return this.getCarPlusMemberInformation(carPlusMemberId)
         }
 
-        const queryRet: { msg: string }[] = await this.entityManager.query(`execute s_Customer_I2  ?, ?, ?`, [carPlusMemberId, point, '會員小遊戲'])
+        const queryRet: { msg: string }[] = await this.entityManager.query(`execute s_Customer_I2  @0, @1, @2`, [carPlusMemberId, point, '會員小遊戲'])
 
         if (queryRet.length === 0) {
             throw new AppError('使用格上紅利 資料回傳錯誤')
