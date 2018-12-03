@@ -9,7 +9,7 @@ import { checker } from '@utilities';
 
 export class AdminGameDashboardLibSvc extends BaseConnection {
     async getGameDashboard(params: PageQuery): Promise<Result<AdminGameDashboardVM>> {
-        console.log(`params`, params)
+        
         const ret = new Result<AdminGameDashboardVM>(true);
         ret.item = {
             memberCount: await this.getMemberCount(params),
