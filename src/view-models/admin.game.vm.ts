@@ -25,6 +25,20 @@ export interface AdminMemberGameHistoryParameterVM {
 }
 
 export interface AdminGameDashboardVM {
-    loginCount: number
-    totalGameCount: number
+      
+      /**
+       * 登入人數
+       */
+      memberCount: number
+      
+      /**
+       * 遊戲場次
+       */
+      gameCount: number
+      
+      /**
+       * 總遊戲人次
+       */
+      memberHasPlayGameCount: number
+    
 }

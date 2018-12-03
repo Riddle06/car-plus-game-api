@@ -22,12 +22,14 @@ export { listQueryHandlerMiddleware };
 
 export const responseEndMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
     try {
-        
+
         if (res.result) {
 
             res.json(res.result)
         } else if (res.appError) {
             res.json(res.appError.getResult())
+        } else { 
+            res.json((new AppError(`path: ${req.path} error`, ResultCode.clientError)).getResult())
         }
 
     } catch (error) {

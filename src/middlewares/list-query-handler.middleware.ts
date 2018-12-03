@@ -9,7 +9,7 @@ import { formatter } from "@utilities/format";
  * 
  */
 export const listQueryHandlerMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
-
+    console.log(`req.query.dateStart`, req.query.dateStart)
     req.listQuery = {
         pageSize: formatter.tryToParseFloat(req.query.pageSize, 10),
         pageIndex: formatter.tryToParseFloat(req.query.pageIndex, 1),

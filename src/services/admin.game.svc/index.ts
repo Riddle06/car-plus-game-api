@@ -1,3 +1,4 @@
+import { AdminGameDashboardLibSvc } from './lib/admin.game.dashboard.lib.svc';
 import { AdminGameHistoryLibSvc } from './lib/admin.game.history.lib.svc';
 import { AdminMemberGameHistoryParameterVM, AdminMemberGameHistoryVM, AdminGameDashboardVM } from '@view-models/admin.game.vm';
 import { PageQuery, ListResult, Result } from './../../view-models/common.vm';
@@ -40,13 +41,33 @@ class AdminGameSvc {
     }
 
     async getGameDashboard(params: PageQuery): Promise<Result<AdminGameDashboardVM>> {
-        // TODO: 遊戲營運總表
-        return null
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const adminGameDashboardLibSvc = new AdminGameDashboardLibSvc(queryRunner)
+            const ret = await adminGameDashboardLibSvc.getGameDashboard(params)
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     async exportGameDashboard(params: PageQuery): Promise<ExportResult> {
-        // TODO: 匯出遊戲營運總表
-        return null;
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const adminGameDashboardLibSvc = new AdminGameDashboardLibSvc(queryRunner)
+            const ret = await adminGameDashboardLibSvc.exportGameDashboard(params)
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
     }
 
 }
