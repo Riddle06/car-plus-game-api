@@ -72,13 +72,13 @@ export class SuperMan {
     }
 
 
-    start() {
+    start(): void {
         this.rightSprite.play();
         this.leftSprite.play();
         this.app.ticker.add(this.movingHandler, this);
     }
 
-    end() {
+    end(): void {
         this.rightSprite.stop();
         this.leftSprite.stop();
         this.app.ticker.remove(this.movingHandler, this);

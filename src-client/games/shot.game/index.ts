@@ -21,8 +21,8 @@ export class ShotGame extends BaseGame {
   private lifeStep: number = 0; // 現在使用的命
   private level: number = 1; // 等級
 
-  private readonly shellInitPower = 10
-  private shellInitWeightSpeed = 0.1
+  private readonly shellInitPower = 13; // 射擊初速度
+  private shellInitWeightSpeed = 0.1;
   private shotting: boolean;
 
   private currentShellXPower: number = 0
@@ -156,10 +156,20 @@ export class ShotGame extends BaseGame {
 
   async hit() {
     const { x, y } = this.superMan.ball;
-    const { point, coin } = this.monster;
+    let { point, coin } = this.monster;
+
+    if(this.coins >= 35) {
+      // 一場最多不拿超過35個
+      coin = 0
+    }
+
     this.addPoint(point);
     this.addCoins(coin);
     this.handleEffect(x, y, point, coin);
+    
+    if(this.level % 6 === 0) {
+      this.cheer();
+    } 
 
     await this.monster.boom();
 

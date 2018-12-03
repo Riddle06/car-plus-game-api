@@ -11,18 +11,16 @@ export class CatchGame extends BaseGame {
     private superMan: SuperMan = null; // 超人
     private fallItems: FallItem[] = []; // 掉落物陣列
     private fallItemsContainer: PIXI.Container = null;
-    private gameTime: number = 30; // 遊戲時間
+    private gameTime: number = 60 * 3; // 遊戲時間
     private timeText: Text = null; // 時間顯示文字
     private now: moment.Moment = moment(); // 計算時間用
 
 
     protected async initImages(): Promise<void> {
         await loaderHandler('bg', '/static/images/bg.catch.jpg');
-        await loaderHandler('win', '/static/images/img-win.png');
-        await loaderHandler('wow', '/static/images/img-wow.png');
 
         this.setBackground();  // 放上背景
-    } 
+    }
 
     protected async initElements(): Promise<boolean> {
         // 建立掉落物用的容器
@@ -32,7 +30,7 @@ export class CatchGame extends BaseGame {
         this.superMan = await new SuperMan(this.application).init();
         this.stage.addChild(this.superMan.sprite);
         // 建立計時器
-        await this.setGameTime();    
+        await this.setGameTime();
 
         return Promise.resolve(true);
     }
@@ -42,24 +40,24 @@ export class CatchGame extends BaseGame {
     protected initElementsEvents(): Promise<boolean> {
         // 點擊畫面開始遊戲
         document.addEventListener('touchstart', this.play.bind(this), false);
-        
+
 
         return Promise.resolve(true);
     }
 
-    private async setGameTime() {
+    private async setGameTime(): Promise<void> {
         // 初始化計時文字
         this.timeText = await this.generateText('/static/images/item-time.png', 2, 87, 28, 15);
-        this.handleGameTimeText(); 
+        this.handleGameTimeText();
     }
 
     private async generateFallItemHandler(): Promise<void> {
-        const posArr = [0, 0, 0 ,0, 0];
+        const posArr = [0, 0, 0, 0, 0];
         // 每次產生 0~3 個掉落物
         const generateItems = Math.floor(Math.random() * 3) + 1;
         for (let i = 0; i < generateItems; i++) {
             let index = Math.floor(Math.random() * 5);
-            while(posArr[index] === 1) {
+            while (posArr[index] === 1) {
                 index = Math.floor(Math.random() * 5);
             }
             posArr[index] = 1;
@@ -73,11 +71,12 @@ export class CatchGame extends BaseGame {
 
     }
 
-    private checkGameTime() {
-        if(this.gameTime <= 0) this.end();
+    private checkGameTime(): void {
+        // 時間到，遊戲結束
+        if (this.gameTime <= 0) this.end();
     }
 
-    private checkHitItem() {
+    private checkHitItem(): void {
         this.fallItems.filter(item => hitTestRectangle(this.superMan.sprite, item.sprite)).forEach(item => {
             // 檢查掉落物與超人是否碰撞，是 -> 隱藏+移除
             item.sprite.visible = false
@@ -85,8 +84,17 @@ export class CatchGame extends BaseGame {
 
             // 增加點數 & 金幣
             const { x, y } = this.superMan.sprite;
-            // 有獲得點數才有機會獲得硬幣
-            const coin = item.point > 0 ? Math.floor(Math.random() * 3) : 0;
+            let coin = 0;
+            if (item.point > 0) {
+                // 有獲得點數才有機會獲得硬幣 & 一場最多不拿超過35個
+                if (this.coins < 35 && !Math.floor(Math.random() * 2)) {
+                    coin = Math.floor(Math.random() * 2);
+                }
+                if (Math.floor(Math.random() * 3) === 2) {
+                    this.cheer();
+                }
+            }
+
 
             this.addPoint(item.point);
             this.addCoins(coin);
@@ -101,29 +109,29 @@ export class CatchGame extends BaseGame {
         this.fallItems = this.fallItems.filter(item => item.sprite.visible)
     }
 
-    private handleGameTimeText() {
+    private handleGameTimeText(): void {
         // 顯示遊戲時間
         const mm: string = moment("1970-01-01T00:00").add(this.gameTime, "seconds").format("mm");
         const ss: string = moment("1970-01-01T00:00").add(this.gameTime, "seconds").format("ss");
         this.timeText.text = `${mm}:${ss}`;
     }
 
-    private processing() {
+    private processing(): void {
         // 處理進行中遊戲
         this.checkGameTime();
         this.checkHitItem();
         this.handleGameTimeText();
 
-        if(Math.abs(this.now.diff(moment())) >= 1000) {
+        if (Math.abs(this.now.diff(moment())) >= 1000) {
             // 每秒建立一次掉落物品
             this.generateFallItemHandler()
             this.gameTime -= 1; // 減少時間秒數
-            this.handleGameTimeText(); 
+            this.handleGameTimeText(); // 更新儀表板的時間
             this.now = moment();
         }
     }
 
-    play() {
+    play(): void {
         if (this.isPlaying || this.isGameEnd) return;
 
         this.isPlaying = true;
@@ -141,11 +149,12 @@ export class CatchGame extends BaseGame {
 
     }
 
-    end() {
-        this.isGameEnd = true;
-        this.superMan.end();
-        this.application.ticker.remove(this.processing, this);
+    end(): void {
+        this.isGameEnd = true; // 結束遊戲
+        this.superMan.end(); // 超人停止
+        this.application.ticker.remove(this.processing, this); // 移除處理ticker
         this.fallItems.forEach(item => {
+            // 移除所有落下物件
             item.sprite.visible = false;
             item.sprite.removeChild(item.sprite);
         });

@@ -74,16 +74,16 @@ export class Cannon {
     return this;
   }
 
-  addChild(sprite: PIXI.Sprite) {
+  addChild(sprite: PIXI.Sprite): void {
     this.cannonContainer.addChild(sprite);
     this.cannonContainer.children.sort(() => -1);
   }
 
-  removeChild(sprite: PIXI.Sprite) {
+  removeChild(sprite: PIXI.Sprite): void {
     this.cannonContainer.removeChild(sprite);
   }
 
-  async rotationHandler() {
+  async rotationHandler(): Promise<void> {
 
     if (!this.isRotating) return;
 
@@ -130,7 +130,7 @@ export class Cannon {
 
   }
 
-  fire() {
+  fire(): void {
     const smog = new PIXI.Sprite(PIXI.loader.resources['smog'].texture)
     window['smog'] = smog;
     this.cannon.addChild(smog);

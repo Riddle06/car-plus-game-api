@@ -23,8 +23,8 @@ export abstract class BaseGame {
     protected coins: number = 0; // 獲得的金幣
     protected pointsText: Text = null; // 分數文字
     protected coinsText: Text = null; // 金幣文字
-    
-    protected application: Application = null 
+
+    protected application: Application = null
     protected stage: PIXI.Container = null; // 遊戲舞台
     protected effectContainer: PIXI.Container = null; // 特效使用的容器
     private dashboardContainer: PIXI.Container = null; // 儀表板用舞台
@@ -43,7 +43,7 @@ export abstract class BaseGame {
     async init(): Promise<this> {
         this.setApplication();
         this.setStage();
-        
+
         await this.initCommonImages(); // 載入共用圖片
         await this.initImages(); // 載入圖片
         await this.setDashboard(); // 建立計數計時文字
@@ -55,7 +55,7 @@ export abstract class BaseGame {
 
         return this;
     }
-    
+
     protected abstract async initImages(): Promise<void>
     protected abstract async initElements(): Promise<boolean>
     protected abstract async initElementsOffset(): Promise<boolean>
@@ -68,7 +68,7 @@ export abstract class BaseGame {
         this.effectContainer = generateContainer(this.screen.width, this.screen.height); // 置放特效用的佈景容器
         document.body.appendChild(this.application.view)
     }
-    
+
     private setStage() {
         const stage = new PIXI.Container()
         stage.width = this.screen.width;
@@ -81,9 +81,11 @@ export abstract class BaseGame {
         this.application.stage.addChild(this.stage)
     }
 
-    private async initCommonImages() {
+    private async initCommonImages(): Promise<void> {
         await loaderHandler('coin', '/static/images/item-coin.png');
         await loaderHandler('point', '/static/images/item-point.png');
+        await loaderHandler('win', '/static/images/img-win.png');
+        await loaderHandler('wow', '/static/images/img-wow.png');
     }
 
     private async setDashboard(): Promise<void> {
@@ -136,14 +138,14 @@ export abstract class BaseGame {
         // 特效處理
         let pointEffect: PIXI.Container = null;
         let coinEffect: PIXI.Container = null;
-        
+
         if (point !== 0) {
             // 獲得的點數不等於 0 (加或減)
             pointEffect = this.generatePlusOrMinusEffect('point', x, y, point);
             this.effectContainer.addChild(pointEffect);
             this.application.ticker.add(this.effectTransition(pointEffect), this);
 
-            if(coin !== 0) {
+            if (coin !== 0) {
                 // 獲得的硬幣不等於0
                 coinEffect = this.generatePlusOrMinusEffect('coin', x, y, coin);
                 this.effectContainer.addChild(coinEffect);
@@ -151,15 +153,60 @@ export abstract class BaseGame {
                 this.application.ticker.add(this.effectTransition(coinEffect), this);
             }
         }
-        
     }
 
-    protected addPoint(point: number) {
+    protected cheer(): void {
+        const win = new PIXI.Sprite(PIXI.loader.resources['win'].texture);
+        const wow = new PIXI.Sprite(PIXI.loader.resources['wow'].texture);
+
+        win.scale = new PIXI.Point(.6, .6);
+        wow.scale = new PIXI.Point(.6, .6);
+
+        wow.x = 0 - wow.width;
+        wow.y = this.application.screen.height / 2 - wow.height / 2;
+        win.x = this.application.screen.width;
+        win.y = this.application.screen.height / 2 - win.height / 2;
+
+        this.effectContainer.addChild(win, wow);
+
+        const wowTransition = () => {
+            if (wow.alpha <= 0) {
+                this.effectContainer.removeChild(wow);
+                this.application.ticker.remove(wowTransition, this)
+                return;
+            }
+            if (wow.x > 0) {
+                wow.y -= 1;
+                wow.alpha -= 0.01;
+            } else {
+                wow.x += 12;
+            }
+        }
+
+        const winTransition = () => {
+            if (win.alpha <= 0) {
+                this.effectContainer.removeChild(win);
+                this.application.ticker.remove(winTransition, this)
+                return
+            }
+            if (win.x < this.application.screen.width - win.width) {
+                win.y -= 1;
+                win.alpha -= 0.01;
+            } else {
+                win.x -= 10;
+            }
+        }
+
+        this.application.ticker.add(winTransition, this);
+        this.application.ticker.add(wowTransition, this);
+    }
+
+    protected addPoint(point: number): void {
         this.points += point;
         this.pointsText.text = pad(this.points, 4, '0')
     }
 
-    protected addCoins(coin: number) {
+    protected addCoins(coin: number): void {
         this.coins += coin;
         this.coinsText.text = pad(this.coins, 4, '0')
     }
@@ -189,8 +236,8 @@ export abstract class BaseGame {
 
     private effectTransition(effect: PIXI.Container): () => void {
         // 特效動畫 往上漂淡出
-        function fun (): void {
-            if(effect.alpha <= 0) {
+        function fun(): void {
+            if (effect.alpha <= 0) {
                 // 透明到看不到後就刪除ticker
                 effect.visible = false;
                 this.effectContainer.removeChild(effect);
