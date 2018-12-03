@@ -198,7 +198,14 @@ CREATE TABLE carPlusGame.dbo.member_game_item_order (
 );
 
 
-
+CREATE TABLE carPlusGame.dbo.member_login_daily_history (
+  [member_id] UNIQUEIDENTIFIER NOT NULL,
+  [date_record] datetime2 NOT NULL,
+  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [login_times] INT NOT NULL DEFAULT '0',
+  PRIMARY KEY ([member_id],[date_record])
+);
 
 
 
