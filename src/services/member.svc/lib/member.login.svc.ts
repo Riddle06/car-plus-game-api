@@ -1,3 +1,4 @@
+import { MemberLoginDailyHistory } from './../../../entities/member-login-daily-history.entity';
 import { MemberToken, MemberTokenPayload, MemberTokenHeader } from 'view-models/verification.vm';
 import { MemberEntity } from './../../../entities/member.entity';
 import { RegisterLibSvc } from './register.lib.svc';
@@ -37,7 +38,7 @@ export class MemberLoginLibSvc extends BaseConnection {
         const memberRepository = this.entityManager.getRepository(MemberEntity)
 
         let memberEntity: MemberEntity = await memberRepository.findOne({ carPlusMemberId });
-      
+
         const isExistInMember: boolean = !checker.isNullOrUndefinedObject(memberEntity);
 
         // 若會員不存在則要幫他建立資料
@@ -76,10 +77,13 @@ export class MemberLoginLibSvc extends BaseConnection {
             memberId: Not(memberEntity.id)
         }, { isLogout: true, dateLastLogout: new Date() })
 
+        // 登入日結算
+        await this.recordDailyHistory(memberEntity.id)
+
         const tokenPayload: MemberTokenPayload = {
             ci: clientId,
             cpmi: carPlusMemberId,
-            exp: luxon.DateTime.local().plus({ years: 200 }).toMillis(),
+            exp: luxon.DateTime.local().endOf('day').toMillis(),
             iat: (new Date()).getTime(),
             iss: 'car-plus-game',
             mi: memberEntity.id
@@ -95,6 +99,41 @@ export class MemberLoginLibSvc extends BaseConnection {
         ret.item = signature;
 
         return ret.setResultValue(true)
+    }
+
+    private async recordDailyHistory(memberId: string): Promise<void> {
+        const memberLoginDailyHistoryRepository = this.entityManager.getRepository(MemberLoginDailyHistory);
+        const dateRecord = luxon.DateTime.local().startOf('day').toJSDate();
+
+        const memberDailyHistoryEntity = await memberLoginDailyHistoryRepository.findOne({
+            where: {
+                memberId,
+                dateRecord
+            }
+        })
+
+        if (checker.isNullOrUndefinedObject(memberDailyHistoryEntity)) {
+
+            await memberLoginDailyHistoryRepository.insert({
+                memberId,
+                dateRecord,
+                dateCreated: new Date(),
+                dateUpdated: new Date(),
+                loginTimes: 1
+            })
+
+        } else {
+            await this.entityManager.createQueryBuilder()
+                .update<MemberLoginDailyHistory>(MemberLoginDailyHistory)
+                .set({
+                    dateUpdated: new Date(),
+                    loginTimes: () => "login_times + 1"
+                })
+                .where({
+                    memberId,
+                    dateRecord
+                }).execute()
+        }
     }
 
 }

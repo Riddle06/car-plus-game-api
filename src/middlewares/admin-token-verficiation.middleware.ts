@@ -18,7 +18,7 @@ export const adminTokenVerificationMiddleware = async (req: RequestExtension, re
             return;
         }
 
-        const tokenWithBearer = req.header('Authorization');
+        const tokenWithBearer = req.header('Authorization') || "";
 
         const token = tokenWithBearer.replace('Bearer', '').trim();
 
@@ -40,5 +40,5 @@ export const adminTokenVerificationMiddleware = async (req: RequestExtension, re
         return;
     }
 
-    
+
 }

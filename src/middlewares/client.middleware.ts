@@ -13,7 +13,7 @@ export const clientMiddleware = async (req: RequestExtension, res: ResponseExten
 
     const ignorePaths = ['no-token', '/admin/api', '/api'];
 
-    if (ignorePaths.some(ignorePath => req.path.indexOf(ignorePath) > -1)) { 
+    if (ignorePaths.some(ignorePath => req.path.indexOf(ignorePath) > -1)) {
         next();
         return;
     }
@@ -28,8 +28,8 @@ export const clientMiddleware = async (req: RequestExtension, res: ResponseExten
             expires: luxon.DateTime.local().plus({ years: 200 }).toJSDate(),
         })
     }
-    // Token
     const token = getToken(req)
+    // 沒有 query string 的情況下會用 token 
     if (checker.isNullOrUndefinedOrWhiteSpace(req.query.mi)) {
         if (checker.isNullOrUndefinedOrWhiteSpace(token)) {
             res.redirect('/no-token')
@@ -38,9 +38,12 @@ export const clientMiddleware = async (req: RequestExtension, res: ResponseExten
     } else {
         if (checker.isNullOrUndefinedOrWhiteSpace(token)) {
             const success = await getMemberLoginToken(clientId, req, res)
-            if (!success) { res.redirect('/no-token'); return; }
+            if (!success) {
+                res.redirect('/no-token'); return;
+            }
         } else {
             const tokenVM = jwt.decode(token, { complete: true }) as MemberToken
+            // 如果 query string 跟 cookie 記得不一樣就會幫他註冊一筆
             if (tokenVM.payload.mi !== req.query.mi) {
                 const success = await getMemberLoginToken(clientId, req, res)
                 if (!success) { res.redirect('/no-token'); return; }
@@ -97,7 +100,7 @@ async function getMemberLoginToken(clientId: string, req: RequestExtension, res:
 
         return true
     } catch (error) {
-        console.dir(error)
+        console.dir(`getMemberLoginToken error`, error)
         return false
     }
 

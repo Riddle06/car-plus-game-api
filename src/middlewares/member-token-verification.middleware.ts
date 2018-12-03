@@ -5,10 +5,10 @@ import { AppError, ResultCode } from "@view-models/common.vm";
 
 
 export const memberTokenVerificationMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
-    // next()
-    // return;
+
     try {
-        const tokenWithBearer = req.header('Authorization');
+
+        const tokenWithBearer = req.header('Authorization') || "";
 
         const token = tokenWithBearer.replace('Bearer', '').trim();
 
