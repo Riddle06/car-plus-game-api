@@ -17,6 +17,11 @@ export interface GameItemVM {
     carPlusPoint: number
     type: GameItemType
     enableBuy: boolean
+    /**
+     * 動畫的路徑
+     */
+    spriteFolderPath: string
+
     addScoreRate?: number
     addGamePointRate?: number
 }

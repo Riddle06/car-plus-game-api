@@ -42,13 +42,17 @@ export class RegisterLibSvc extends BaseConnection {
         newMemberEntity.experience = 0;
         newMemberEntity.gamePoint = 0;
         newMemberEntity.level = 1
-        newMemberEntity.nickName = ''
-
+        newMemberEntity.nickName = '';
 
         await this.entityManager.getRepository(MemberEntity).insert(newMemberEntity);
 
+        // 初始化點數 100 點
         await gameSvc.memberAddInitGamePoint(newMemberEntity.id, newMemberInitPointRet.item, this.queryRunner)
 
+        // 新增一般上班族
+        await gameSvc.memberInitGameItem(newMemberEntity.id, this.queryRunner)
+
+        const currentRoleRet = await gameSvc.memberGetCurrentRole(newMemberEntity.id, this.queryRunner)
         ret.item = {
             carPlusMemberId: newMemberEntity.carPlusMemberId,
             carPlusPoint: newMemberEntity.carPlusPoint,
@@ -56,7 +60,8 @@ export class RegisterLibSvc extends BaseConnection {
             experience: newMemberEntity.experience,
             id: newMemberEntity.id,
             level: newMemberEntity.level,
-            nickName: newMemberEntity.nickName
+            nickName: newMemberEntity.nickName,
+            currentRoleGameItem: currentRoleRet.item
         }
 
         return ret.setResultValue(true);

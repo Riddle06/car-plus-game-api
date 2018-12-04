@@ -5,6 +5,7 @@ import { MemberInformationVM, MemberUpdateInformationParameterVM } from "@view-m
 import { MemberEntity } from "@entities/member.entity";
 import { checker } from "@utilities";
 import { carPlusSvc } from '../../car-plus.svc/index';
+import { gameSvc } from "@services";
 
 export class MemberInformationLibSvc extends BaseConnection {
 
@@ -41,7 +42,7 @@ export class MemberInformationLibSvc extends BaseConnection {
                 carPlusPoint = carPlusSystemPoint;
             }
         }
-
+        const currentRoleRet = await gameSvc.memberGetCurrentRole(this.memberId, this.queryRunner)
         ret.item = {
             id,
             nickName,
@@ -49,7 +50,8 @@ export class MemberInformationLibSvc extends BaseConnection {
             gamePoint,
             level,
             experience,
-            carPlusMemberId
+            carPlusMemberId,
+            currentRoleGameItem: currentRoleRet.item
         };
 
         return ret.setResultValue(true);
@@ -84,7 +86,4 @@ export class MemberInformationLibSvc extends BaseConnection {
 
         return this.getInformation();
     }
-
-
-
 }

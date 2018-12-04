@@ -1,3 +1,4 @@
+import { GameItemVM } from '@view-models/game.vm';
 export interface MemberInformationVM {
     id: string
     nickName: string
@@ -6,6 +7,7 @@ export interface MemberInformationVM {
     level: number
     experience: number
     carPlusMemberId: string
+    currentRoleGameItem: GameItemVM
 }
 
 export interface MemberUpdateInformationParameterVM {

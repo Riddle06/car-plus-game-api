@@ -106,6 +106,12 @@ class GameSvc {
         }
     }
 
+    async memberGetCurrentRole(memberId: string, queryRunner: QueryRunner): Promise<Result<GameItemVM>> {
+        const memberGameItemLibSvc = new MemberGameItemLibSvc(memberId, queryRunner)
+        const ret = await memberGameItemLibSvc.getCurrentGameItemRole()
+        return ret
+    }
+
     async memberBuyGameItem(memberToken: MemberToken, param: MemberBuyGameItemParameter): Promise<BaseResult> {
         const memberId = memberToken.payload.mi;
         const queryRunner = await dbProvider.createTransactionQueryRunner()
@@ -121,6 +127,11 @@ class GameSvc {
         } finally {
             await queryRunner.release();
         }
+    }
+
+    async memberInitGameItem(memberId: string, queryRunner: QueryRunner): Promise<BaseResult> {
+        const memberGameItemLibSvc = new MemberGameItemLibSvc(memberId, queryRunner)
+        return await memberGameItemLibSvc.getMemberInitGameItem()
     }
 
     async memberGetUsableGameItems(memberToken: MemberToken): Promise<ListResult<UseGameItemVM>> {

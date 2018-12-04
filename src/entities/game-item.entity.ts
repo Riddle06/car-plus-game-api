@@ -117,4 +117,10 @@ export class GameItemEntity extends BaseEntity {
         default: "1"
     })
     enabled: boolean = false;
+
+    @Column("nvarchar", {
+        name: "sprite_folder_path",
+        default: "500"
+    })
+    spriteFolderPath: string = ''
 }

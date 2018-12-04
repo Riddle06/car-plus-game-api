@@ -41,7 +41,7 @@ export class GameLibSvc extends BaseConnection {
 
         const ret = new ListResult<GameItemVM>();
         ret.items = gameItemEntities.map(gameItemEntity => {
-            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type } = gameItemEntity
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = gameItemEntity
             const gameItemVM: GameItemVM = {
                 id,
                 description,
@@ -50,7 +50,8 @@ export class GameLibSvc extends BaseConnection {
                 gamePoint,
                 carPlusPoint,
                 type,
-                enableBuy: true
+                enableBuy: true,
+                spriteFolderPath
             }
 
             return gameItemVM;

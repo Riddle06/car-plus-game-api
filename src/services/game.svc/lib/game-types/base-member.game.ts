@@ -101,7 +101,7 @@ export abstract class BaseMemberGame extends BaseConnection {
             gameParameters: this.game.parameters,
             id: history.id,
             usedItems: memberGameItemEntities.map(entity => {
-                const { id, description, name, imageUrl, gamePoint, carPlusPoint, type } = entity.gameItem
+                const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = entity.gameItem
                 const gameItemVM: GameItemVM = {
                     id,
                     description,
@@ -110,7 +110,8 @@ export abstract class BaseMemberGame extends BaseConnection {
                     gamePoint,
                     carPlusPoint,
                     type,
-                    enableBuy: true
+                    enableBuy: true,
+                    spriteFolderPath
                 }
                 return gameItemVM;
             })
@@ -208,7 +209,7 @@ export abstract class BaseMemberGame extends BaseConnection {
 
     async getUsingItemToUse(memberGameItemHistoryId: string): Promise<GameItemVM[]> {
         const gameItems: GameItemVM[] = [];
-        
+
         const memberGameItemRepository = this.entityManager.getRepository(MemberGameItemEntity)
         const memberGameItemEntities = await memberGameItemRepository.find({
             relations: ['gameItem'],
@@ -218,9 +219,9 @@ export abstract class BaseMemberGame extends BaseConnection {
                 memberId: this.memberId
             }
         });
-        
+
         const memberGameHistoryGameItemRepository = this.entityManager.getRepository(MemberGameHistoryGameItemEntity);
-        
+
         for (const entity of memberGameItemEntities) {
             const dic: Partial<MemberGameItemEntity> = {
                 remainTimes: entity.remainTimes - 1,
@@ -259,7 +260,8 @@ export abstract class BaseMemberGame extends BaseConnection {
                 gamePoint: entity.gameItem.gamePoint,
                 carPlusPoint: entity.gameItem.carPlusPoint,
                 type: entity.gameItem.type,
-                enableBuy: true
+                enableBuy: true,
+                spriteFolderPath: entity.gameItem.spriteFolderPath
             });
         }
 
@@ -325,7 +327,7 @@ export abstract class BaseMemberGame extends BaseConnection {
 
         for (const memberGameHistoryMemberGameItemEntity of memberGameHistoryMemberGameItemEntities) {
 
-            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type } = memberGameHistoryMemberGameItemEntity.memberGameItem.gameItem
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = memberGameHistoryMemberGameItemEntity.memberGameItem.gameItem
 
             const gameItemVM: GameItemVM = {
                 id,
@@ -335,7 +337,8 @@ export abstract class BaseMemberGame extends BaseConnection {
                 gamePoint,
                 carPlusPoint,
                 type,
-                enableBuy: true
+                enableBuy: true,
+                spriteFolderPath
             }
 
             usedItems.push(gameItemVM)

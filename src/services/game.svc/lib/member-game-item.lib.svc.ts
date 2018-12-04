@@ -5,7 +5,7 @@ import { QueryRunner, MoreThan, Between } from 'typeorm';
 import { MemberGameItemEntity } from '@entities/member-game-item.entity';
 import { GameItemType, MemberGameItemVM } from '../../../view-models/game.vm';
 import { checker, uniqueId } from '@utilities';
-import { AppError, BaseResult, ListResult, Result } from '@view-models/common.vm';
+import { AppError, BaseResult, ListResult, Result, ResultCode } from '@view-models/common.vm';
 import { GameItemEntity } from '@entities/game-item.entity';
 import { MemberEntity } from '@entities/member.entity';
 import { memberSvc } from '@services/member.svc';
@@ -41,7 +41,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
         const useGameItems = gameItemEntities.map(entity => {
 
-            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type } = entity
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = entity
             const gameItem: GameItemVM = {
                 id,
                 description,
@@ -50,7 +50,8 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 gamePoint,
                 carPlusPoint,
                 type,
-                enableBuy: true
+                enableBuy: true,
+                spriteFolderPath
             }
 
             const useGameItem: UseGameItemVM = {
@@ -138,7 +139,8 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 enableBuy: false,
                 name: gameItem.name,
                 isUsing: dic[key].some(entity => entity.isUsing),
-                memberGameItemIds: dic[key].map(entity => entity.id)
+                memberGameItemIds: dic[key].map(entity => entity.id),
+                spriteFolderPath: gameItem.spriteFolderPath
             }
             items.push(item)
 
@@ -303,6 +305,94 @@ export class MemberGameItemLibSvc extends BaseConnection {
         return new BaseResult(true);
     }
 
+    async getCurrentGameItemRole(): Promise<Result<GameItemVM>> {
+        const memberGameItemRet = await this.getMemberGameItems();
+
+        const gameItem = await memberGameItemRet.items.find(item => item.isUsing && item.type === GameItemType.role);
+        const ret = new Result<GameItemVM>(true);
+
+        if (!checker.isNullOrUndefinedObject(gameItem)) {
+            ret.item = {
+                id: gameItem.id,
+                imageUrl: gameItem.imageUrl,
+                gamePoint: gameItem.gamePoint,
+                type: gameItem.type,
+                carPlusPoint: gameItem.gamePoint,
+                description: gameItem.description,
+                enableBuy: false,
+                name: gameItem.name,
+                spriteFolderPath: gameItem.spriteFolderPath
+            }
+        }
+
+        const gameItemEntity = await this.entityManager.getRepository(GameItemEntity).findOne({
+            where: {
+                type: GameItemType.role,
+                levelMinLimit: -1
+            }
+        })
+
+
+        if (checker.isNullOrUndefinedObject(gameItemEntity)) {
+            throw new AppError('系統參數錯誤', ResultCode.serverError)
+        }
+
+        ret.item = {
+            id: gameItemEntity.id,
+            imageUrl: gameItemEntity.imageUrl,
+            gamePoint: gameItemEntity.gamePoint,
+            type: gameItemEntity.type,
+            carPlusPoint: gameItemEntity.gamePoint,
+            description: gameItemEntity.description,
+            enableBuy: gameItemEntity.enabled,
+            name: gameItemEntity.name,
+            spriteFolderPath: gameItemEntity.spriteFolderPath
+        }
+        return ret;
+    }
+
+
+    /**
+     * 一開始的遊戲道具設定（一般上班族）
+     */
+    async getMemberInitGameItem(): Promise<BaseResult> {
+        const ret = new BaseResult(true);
+
+        // 一般上班族
+        const gameItemRepository = this.entityManager.getRepository(GameItemEntity);
+
+        const gameItemEntity = await gameItemRepository.findOne({
+            where: {
+                type: GameItemType.role,
+                levelMinLimit: -1
+            }
+        })
+
+        if (checker.isNullOrUndefinedObject(gameItemEntity)) { 
+            throw new AppError('系統參數錯誤')
+        }
+
+        const memberGameItemEntity = new MemberGameItemEntity();
+        memberGameItemEntity.id = uniqueId.generateV4UUID();
+        memberGameItemEntity.gameItemId = gameItemEntity.id
+        memberGameItemEntity.memberId = this.memberId
+        memberGameItemEntity.memberGamePointHistoryId = null;
+        memberGameItemEntity.dateLastUsed = null;
+        memberGameItemEntity.dateCreated = new Date();
+        memberGameItemEntity.dateUpdated = new Date();
+        memberGameItemEntity.remainTimes = gameItemEntity.usedTimes
+        memberGameItemEntity.totalUsedTimes = gameItemEntity.usedTimes;
+        memberGameItemEntity.enabled = gameItemEntity.usedTimes > 0
+        memberGameItemEntity.isUsing = true;
+
+        await this.entityManager.getRepository(MemberGameItemEntity).insert(memberGameItemEntity);
+
+
+        return ret;
+    }
+
+
+
     private async addMemberGameItem(gameItemEntity: GameItemEntity, memberGamePointLibSvc: MemberGamePointLibSvc): Promise<MemberGameItemEntity> {
         const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity)
         // 驗證
@@ -320,11 +410,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
                         dateCreated: Between(luxon.DateTime.local().startOf('day').toFormat('yyyy/MM/dd HH:mm:ss'), luxon.DateTime.local().endOf('day').toFormat('yyyy/MM/dd HH:mm:ss')),
 
                     }
-                })
-
-                // gameItem: {
-                //     type: GameItemType.carPlusPoint
-                // }
+                });
 
                 if (findAndCountRet[0].filter(entity => entity.gameItem.type === GameItemType.carPlusPoint).length > maxCarPlusPointAmountRet.item) {
                     throw new AppError('今日已達購賣數量上限')

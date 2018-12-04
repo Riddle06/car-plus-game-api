@@ -99,7 +99,8 @@ export class AdminMembersLibSvc extends BaseConnection {
                 level,
                 experience,
                 carPlusMemberId,
-                gameItems: []
+                gameItems: [],
+                currentRoleGameItem: null
             }
             return item
         })
@@ -136,7 +137,8 @@ export class AdminMembersLibSvc extends BaseConnection {
             level,
             experience,
             carPlusMemberId,
-            gameItems: []
+            gameItems: [],
+            currentRoleGameItem: null
         }
 
         const memberGameItemRepository = this.entityManager.getRepository(MemberGameItemEntity);
@@ -152,7 +154,7 @@ export class AdminMembersLibSvc extends BaseConnection {
         const gameItems = await this.getGameItems();
 
         ret.item.gameItems = gameItems.items.map(item => {
-            const { id, description, name, imageUrl, type, enableBuy, addScoreRate, addGamePointRate } = item
+            const { id, description, name, imageUrl, type, enableBuy, addScoreRate, addGamePointRate, spriteFolderPath } = item
             const memberGameItem: AdminMemberGameItemVM = {
                 id,
                 description,
@@ -164,7 +166,8 @@ export class AdminMembersLibSvc extends BaseConnection {
                 enableBuy,
                 addScoreRate,
                 addGamePointRate,
-                num: 0
+                num: 0,
+                spriteFolderPath
             }
             const gameItemAggregation = gameItemAggregations.find(gameItemAggregation => gameItemAggregation.gameItemId === id)
             if (!checker.isNullOrUndefinedObject(gameItemAggregation)) {
@@ -282,7 +285,7 @@ export class AdminMembersLibSvc extends BaseConnection {
 
         const ret = new ListResult<GameItemVM>();
         ret.items = gameItemEntities.map(gameItemEntity => {
-            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type } = gameItemEntity
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = gameItemEntity
             const gameItemVM: GameItemVM = {
                 id,
                 description,
@@ -291,7 +294,8 @@ export class AdminMembersLibSvc extends BaseConnection {
                 gamePoint,
                 carPlusPoint,
                 type,
-                enableBuy: true
+                enableBuy: true,
+                spriteFolderPath
             }
 
             return gameItemVM;
