@@ -20,18 +20,35 @@ type ExportParameter = {
  * 匯出 excel 
  */
 export class AdminExportWebSvc extends BaseWebSvc {
+
+    /**
+     * 營運報表
+     * @param param 
+     */
     getExportDashboardLink(param: ExportParameter): string {
         return `/admin/api/export/dashboard?${this.getQueryString(param)}`
     }
 
+    /**
+     * 遊戲紀錄
+     * @param param 
+     */
     getExportGameHistoryLink(param: ExportParameter): string {
         return `/admin/api/export/member/game/history?${this.getQueryString(param)}`
     }
 
+    /**
+     * 兌換紀錄
+     * @param param 
+     */
     getExportGamePointHistoryLink(param: ExportParameter): string {
         return `/admin/api/export/member/point/history?${this.getQueryString(param)}`
     }
 
+    /**
+     * 會員報表
+     * @param param 
+     */
     getExportMemberWithGameItems(param: ExportParameter): string {
         return `/admin/api/export/member/with-game-items?${this.getQueryString(param)}`
     }
