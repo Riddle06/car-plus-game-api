@@ -7,7 +7,12 @@ import { AppError } from "@view-models/common.vm";
 const router = Router();
 
 
-// 取得遊戲
+
+/**
+ * [GET] /api/game/history/:id
+ * 取得該筆遊戲資料，用在結算頁面
+ * @param {String} id id 為 會員遊玩的該筆的紀錄
+ */
 router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
@@ -20,7 +25,11 @@ router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) =
 
 
 
-// 開始遊戲
+/**
+ * [POST] /api/game/history
+ * 新增一筆遊戲
+ * @returns {String} id ，回傳 id 為 會員遊玩的該筆的紀錄
+ */
 router.post('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
@@ -33,7 +42,11 @@ router.post('/', async (req: RequestExtension, res: ResponseExtension, next) => 
     next();
 })
 
-// 回報遊戲
+/**
+ * [PUT] /api/game/history/:id
+ * 回報遊戲分數
+ * @param {String} id id 為 會員遊玩的該筆的紀錄
+ */
 router.put('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {

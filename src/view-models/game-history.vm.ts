@@ -45,7 +45,13 @@ export interface PointHistoryVM {
     changeCarPlusPoint: number
 }
 
+/**
+ * 新增遊戲參數
+ */
 export interface PlayGameParameterVM {
+    /**
+     * 該遊戲種類的的 game id
+     */
     gameId: string
 }
 
@@ -65,7 +71,7 @@ export interface StartGameHistoryVM {
     /**
      * 遊戲參數
      */
-    gameParameters: {}
+    gameParameters: any
     usedItems: GameItemVM[]
     dateCreated: Date
     dateFinish: Date
@@ -104,8 +110,5 @@ export interface StartGameHistoryVM {
      * 遊戲後等級，遊戲後才會有值 
      */
     afterLevel?: number
-
-
-
 
 }

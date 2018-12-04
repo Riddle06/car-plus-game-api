@@ -1,9 +1,20 @@
 import { Result, PageInfo } from '@view-models/common.vm';
 import { BaseWebSvc } from "./base-web.svc";
+import { AdminGameDashboardVM } from '@view-models/admin.game.vm';
 export class AdminGameWebSvc extends BaseWebSvc {
 
-    async getDashboard(pageInfo: PageInfo = { index: 1, size: 10 }) {
-        
+    /**
+     * 取得營運報表
+     * @param pageInfo.dateStart 查詢開始時間 
+     * @param pageInfo.dateEnd 查詢結束時間 
+     */
+    async getDashboard(pageInfo: PageInfo): Promise<Result<AdminGameDashboardVM>> {
+        const res = await this.axiosAdminInstance.get('/admin/api/game/dashboard', {
+            data: {
+                ...pageInfo,
+            }
+        })
+        return res.data;
     }
 
 }

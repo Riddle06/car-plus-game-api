@@ -16,6 +16,10 @@ export interface GameItemVM {
     gamePoint: number
     carPlusPoint: number
     type: GameItemType
+
+    /**
+     * 是否可以購買此商品
+     */
     enableBuy: boolean
     /**
      * 動畫的路徑
@@ -46,9 +50,14 @@ export enum GameItemType {
 }
 
 export interface MemberGameItemVM extends GameItemVM {
+    /**
+     * 此道具是否正在使用中
+     */
     isUsing: boolean
+    /**
+     * 該會員擁有的道具紀錄 id 
+     */
     memberGameItemIds: string[]
-
 }
 
 
@@ -63,13 +72,22 @@ export enum GameCode {
 }
 
 export interface UseGameItemVM {
+    /**
+     * 道具類型
+     */
     type: GameItemType
     gameItemId: string
     isUsing: boolean
     usingMemberGameItemId?: string
     usingRemainTimes?: number
     totalGameItemCount: number
+    /**
+     * 該會員目前擁有的道具 id 
+     */
     memberGameItemIds: string[]
+    /**
+     * 道具資訊
+     */
     gameItem: GameItemVM
 
 }

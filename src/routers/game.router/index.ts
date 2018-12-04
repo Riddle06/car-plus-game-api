@@ -11,7 +11,11 @@ const router = Router();
 router.use('/history', GameHistoryRouter);
 router.use('/item', GameItemRouter);
 
-// 取得遊戲項目
+
+/**
+ * [GET] /api/game
+ * 取得遊戲項目
+ */
 router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
@@ -22,7 +26,10 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
     next();
 });
 
-// 取得問與答
+/**
+ * [GET] /api/game/question
+ *  取得問與答
+ * */ 
 router.get('/question', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {

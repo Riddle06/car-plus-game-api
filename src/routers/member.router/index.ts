@@ -11,7 +11,11 @@ const router = Router();
 router.use('/login', MemberLoginRouter)
 router.use('/game-item', MemberGameItemRouter);
 
-// 取得會員資料
+
+/**
+ * [GET] /api/member
+ * 取得會員資料
+ */
 router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
@@ -23,7 +27,11 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
     next();
 });
 
-// 修改暱稱
+
+/**
+ * [PUT] /api/member/nick-name
+ * 修改暱稱
+ */
 router.put('/nick-name', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
@@ -37,7 +45,11 @@ router.put('/nick-name', async (req: RequestExtension, res: ResponseExtension, n
     next();
 })
 
-// 等級參數
+
+/**
+ * [GET] /api/member/level-info
+ * 等級參數
+ */
 router.get('/level-info', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {

@@ -98,18 +98,28 @@ export class AdminMemberWebSvc extends BaseWebSvc {
     }
 
     /**
-     * 會員總覽：取得消費者及所屬商品數量
+     * 會員總覽：取得消費者列表
+     * @param {param.keyword} 關鍵字
      */
-    async getMemberWithGameItems(pageInfo: PageInfo = { index: 1, size: 10 }, param: { memberId: string } = { memberId: "" }): Promise<ListResult<AdminMemberVM>> {
-        const res = await this.axiosAdminInstance.get<ListResult<AdminMemberVM>>(`/admin/api/member/with-game-items`, {
+    async getMembers(pageInfo: PageInfo = { index: 1, size: 10 }, param: { memberId: string, keyword?: string } = { memberId: "" }): Promise<ListResult<AdminMemberVM>> {
+        const res = await this.axiosAdminInstance.get<ListResult<AdminMemberVM>>(`/admin/api/member`, {
             data: {
                 ...pageInfo,
-                mi: param.memberId
+                mi: param.memberId,
+                keyword: param.keyword
             }
         })
         return res.data
     }
 
+    /**
+     * 取得會員詳細資訊，包含個商品擁有列表
+     * @param id 
+     */
+    async getMemberDetail(id: string): Promise<Result<AdminMemberVM>> {
+        const res = await this.axiosAdminInstance.get<Result<AdminMemberVM>>(`/admin/api/member/${id}`)
+        return res.data
+    }
 
 
 }

@@ -5,8 +5,8 @@ export type QueryCountDbModel = {
 export interface PageInfo {
     index: number
     size: number
-    dateStart?: Date
-    dateEnd?: Date
+    dateStart?: Date | string
+    dateEnd?: Date | string
 }
 
 export enum ResultCode {

@@ -5,7 +5,12 @@ import { gameSvc } from "@services";
 
 const router = Router();
 
-// 使用此道具
+
+/**
+ * [PUT] /api/member/game-item/:id
+ * 使用此道具
+ * @param {String} id 此識別值為 `memberGameItemIds` 欄位中的 id
+ */
 router.put('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
@@ -19,7 +24,11 @@ router.put('/:id', async (req: RequestExtension, res: ResponseExtension, next) =
 
 })
 
-// 取得目前會員遊戲道具資訊
+
+/**
+ * [GET] /api/member/game-item
+ * 取得目前會員擁有的遊戲道具資訊（包含角色跟道具）
+ */
 router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
@@ -30,7 +39,11 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
     next();
 })
 
-// 取得目前會員可使用的道具資訊
+
+/**
+ * [GET] /api/member/game-item/usable
+ * 取得目前會員可使用的道具資訊
+ */
 router.get('/usable', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
