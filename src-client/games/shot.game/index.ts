@@ -167,7 +167,7 @@ export class ShotGame extends BaseGame {
     this.addCoins(coin);
     this.handleEffect(x, y, point, coin);
     
-    if(this.level % 6 === 0) {
+    if(this.level % 5 === 0) {
       this.cheer();
     } 
 

@@ -20,9 +20,9 @@ export class FallItem {
     this.app = app;
     this.types = [
       { point: -1, name: 'bomb' },
-      { point: 1, name: 'gift01' },
-      { point: 1, name: 'gift02' },
-      { point: 1, name: 'gift03' },
+      { point: 2, name: 'gift01' },
+      { point: 2, name: 'gift02' },
+      { point: 2, name: 'gift03' },
     ]
   }
 

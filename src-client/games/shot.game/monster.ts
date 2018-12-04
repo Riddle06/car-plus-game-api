@@ -29,12 +29,11 @@ export class Monster {
   public y: number = 0; // y座標
 
   private moveModes: MoveMode[] = [
-    { xSpeed: 0, ySpeed: 0, circleSpeed: 0, radius: 0 }, // level 1
-    { xSpeed: 1, ySpeed: 0, circleSpeed: 0, radius: 0 }, // level 2
-    { xSpeed: 0, ySpeed: 1, circleSpeed: 0, radius: 0 }, // level 3
-    { xSpeed: 1, ySpeed: 1, circleSpeed: 0, radius: 0 }, // levle 4
-    { xSpeed: 0, ySpeed: 0, circleSpeed: 5, radius: 30 }, // levle 5
-    { xSpeed: 1, ySpeed: 1, circleSpeed: 5, radius: 30 }, // levle 6
+    { xSpeed: 1, ySpeed: 0, circleSpeed: 0, radius: 0 }, // mode 1
+    { xSpeed: 0, ySpeed: 1, circleSpeed: 0, radius: 0 }, // mode 2
+    { xSpeed: 1, ySpeed: 1, circleSpeed: 0, radius: 0 }, // mode 3
+    { xSpeed: 0, ySpeed: 0, circleSpeed: 5, radius: 60 }, // mode 4
+    { xSpeed: .5, ySpeed: .5, circleSpeed: 5, radius: 30 }, // mode 5
   ]
 
   // public sprite: PIXI.extras.AnimatedSprite = null;
@@ -44,17 +43,40 @@ export class Monster {
     this.app = app;
   }
 
-  get point() {
+  get point(): number {
     return this.level;
   }
 
-  get coin() {
-    return 1;
+  get coin(): number {
+    if (this.level < 15) return 1;
+    return 2;
   }
 
   get moveMode(): MoveMode {
-    let index = (this.level - 1) % 6;
-    if(this.level !== 1 && (this.level - 1) % 6 === 0) index +=1;
+    if (this.level === 1) {
+      return { xSpeed: 0, ySpeed: 0, circleSpeed: 0, radius: 0 }; // 1等 不動
+    }
+
+    if (this.level <= 5) {
+      // 5等內
+      return this.moveModes[this.level - 2];
+    }
+
+    let index = (this.level - 1) % 5;
+
+    if (this.level > 10) {
+      // 大於10等 對參數加成
+      let { xSpeed, ySpeed, circleSpeed, radius } = this.moveModes[index];
+      let plus = Math.floor((this.level / 5));
+      radius = radius + (5 * plus);
+      return {
+        xSpeed: xSpeed * plus,
+        ySpeed: ySpeed * plus,
+        circleSpeed,
+        radius: radius > 100 ? 100 : radius,
+      }
+    }
+
     return this.moveModes[index];
   }
 
@@ -80,6 +102,7 @@ export class Monster {
 
   private move(): void {
     let { xSpeed, ySpeed, circleSpeed, radius } = this.moveMode;
+    const halfWidth = this.sprite.width / 2;
 
     if (this.x + this.sprite.width >= this.app.screen.width) {
       this.currentDirectionX = Direction.left;
@@ -87,16 +110,16 @@ export class Monster {
       this.currentDirectionX = Direction.right;
     }
 
-    if (this.y + this.sprite.height >= this.app.screen.height / 3) {
+    if (this.y + this.sprite.height >= this.app.screen.height / 2) {
       this.currentDirectionY = Direction.up;
     } else if (this.y < 0) {
       this.currentDirectionY = Direction.down;
     }
 
-    const isRandom = this.level > 15 ? Math.floor(Math.random()*2) === 0 : false;
+    const isRandom = this.level > 15 ? Math.floor(Math.random() * 2) === 0 : false;
     // 大於15等後開始隨機速度
-    let moveX = isRandom ? (Math.random() * xSpeed) : xSpeed;
-    let moveY = isRandom ? (Math.random() * ySpeed) : ySpeed;
+    let moveX = isRandom && !!xSpeed ? (Math.random() * xSpeed) + 1 : xSpeed;
+    let moveY = isRandom && !!ySpeed ? (Math.random() * ySpeed) + 1 : ySpeed;
     // let moveCircle = isRandom ? (Math.floor(Math.random() * circleSpeed)) + 1 : circleSpeed;
 
     switch (this.currentDirectionX) {
@@ -120,10 +143,24 @@ export class Monster {
     this.x += moveX;
     this.y += moveY;
 
+
     if (circleSpeed) {
+      // 盡量避免旋轉超出螢幕
+      if (this.x + radius + halfWidth > this.app.screen.width) {
+        this.x = this.app.screen.width - radius - halfWidth;
+        this.currentDirectionX = Direction.left;
+      } else if (this.x - radius - halfWidth < 0) {
+        this.x = 0 + radius + halfWidth;
+        this.currentDirectionX = Direction.right;
+      }
+      if (this.y - radius - halfWidth < 0) {
+        this.y = 0 + radius + halfWidth;
+        this.currentDirectionY = Direction.down;
+      }
+
       let round = +new Date() / 1000 * circleSpeed;
-      this.sprite.x = this.x + Math.cos(round) * radius - (this.sprite.width / 2);
-      this.sprite.y = this.y + Math.sin(round) * radius - (this.sprite.width / 2);
+      this.sprite.x = this.x + Math.cos(round) * radius - halfWidth;
+      this.sprite.y = this.y + Math.sin(round) * radius - halfWidth;
     } else {
       this.sprite.x = this.x;
       this.sprite.y = this.y;
@@ -147,8 +184,8 @@ export class Monster {
     this.boomEffect.visible = false;
 
     // 根據等級調整怪物大小
-    let scale = this.level >= 10 ? 1 - (this.level * 0.01) : 1;
-    if(scale <= 0.3) scale = 0.3;
+    let scale = this.level >= 5 ? 1 - (this.level * 0.01) : 1;
+    if (scale <= 0.5) scale = 0.5;
 
     this.sprite.height = (this.sprite.height / this.sprite.width) * (this.app.screen.width / 3);
     this.sprite.width = this.app.screen.width / 3;

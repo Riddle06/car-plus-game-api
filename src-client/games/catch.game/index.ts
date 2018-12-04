@@ -32,6 +32,7 @@ export class CatchGame extends BaseGame {
         // 建立計時器
         await this.setGameTime();
 
+        this.application.stage.interactive = true;
         return Promise.resolve(true);
     }
     protected initElementsOffset(): Promise<boolean> {
@@ -39,7 +40,7 @@ export class CatchGame extends BaseGame {
     }
     protected initElementsEvents(): Promise<boolean> {
         // 點擊畫面開始遊戲
-        document.addEventListener('touchstart', this.play.bind(this), false);
+        this.application.stage.on('touchstart', this.play, this);
 
 
         return Promise.resolve(true);
@@ -136,9 +137,10 @@ export class CatchGame extends BaseGame {
 
         this.isPlaying = true;
         this.now = moment();
-        document.removeEventListener('touchstart', this.play.bind(this));
 
-        document.addEventListener('touchstart', (e) => {
+        this.application.stage.off('touchstart', this.play, this);
+
+        this.application.stage.on('touchstart', (e) => {
             // 點擊畫面事件
             console.log('[touchstart]', e)
             this.superMan.turnDirection();

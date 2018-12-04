@@ -95,9 +95,9 @@ export class Cannon {
 
     if (this.isClockwiseDirection) {
 
-      this.cannonContainer.rotation += 0.01
+      this.cannonContainer.rotation += 0.015
     } else {
-      this.cannonContainer.rotation -= 0.01
+      this.cannonContainer.rotation -= 0.015
     }
 
     this.currentDegree = Math.abs(this.cannonContainer.rotation / (Math.PI / 180))
