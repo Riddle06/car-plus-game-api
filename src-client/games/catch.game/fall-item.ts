@@ -19,10 +19,10 @@ export class FallItem {
   constructor(app: PIXI.Application) {
     this.app = app;
     this.types = [
-      { point: -1, name: 'bomb' },
-      { point: 2, name: 'gift01' },
-      { point: 2, name: 'gift02' },
-      { point: 2, name: 'gift03' },
+      { point: -2, name: 'bomb' },
+      { point: 3, name: 'gift01' },
+      { point: 3, name: 'gift02' },
+      { point: 3, name: 'gift03' },
     ]
   }
 

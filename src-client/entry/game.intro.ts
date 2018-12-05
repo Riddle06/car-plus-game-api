@@ -4,11 +4,13 @@ import { BasePage } from "./base.page";
 class GameIntroPage extends BasePage {
     private gameCode: string
     private gameId: string
+
     async didMount() {
         this.gameCode = this.$('#hidden_game_code').val() as string;
         this.gameId = this.$('#hidden_game_id').val() as string;
 
         const useableGameItemsRet = await this.webSvc.member.getUsableGameItems()
+        console.log('[useableGameItemsRet]', useableGameItemsRet)
         this.loadGameItems(useableGameItemsRet.items)
         this.startGameHandler = this.startGameHandler.bind(this);
     }

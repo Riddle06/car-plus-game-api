@@ -3,14 +3,57 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=.5,user-scalable=0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>格上租車</title>
+
+    <!-- meta 資訊 start -->
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="image_src" href="" /> <!-- meta 資訊 end -->
+    <!-- start fb meta -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="" />
+    <meta property="og:description" content="" />
+    <meta property="og:image" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:site_name" content="" /> <!-- end fb meta -->
+    <!-- css -->
+    <link href="/static/css/main.min.css" rel="stylesheet" />
+
     <style>
-        body {
-            margin: 0
+        .stop-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            overflow: hidden;
+        }
+
+        .stop-mask.is-active {
+            display: flex !important;
+        }
+
+        .stop-mask__body {
+            height: 60vh;
+            width: auto;
+            text-align: center;
+        }
+
+        .stop-mask img {
+            height: 70%;
+        }
+
+        .stop-mask h2 {
+            font-weight: bold;
         }
     </style>
+
     <script src="/static/js/vendors~admin.blacklist~admin.game-history~admin.index~admin.login~admin.members~admin.point-history~7e3005c6.bundle.js"></script>
     <script src="/static/js/vendors~catch.game~game.intro~game.result~home~profile~question~shot.game.bundle.js"></script>
     <script src="/static/js/vendors~game.intro~game.result~home~profile~question~shot.game.bundle.js"></script>

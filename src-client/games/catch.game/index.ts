@@ -11,7 +11,7 @@ export class CatchGame extends BaseGame {
     private superMan: SuperMan = null; // 超人
     private fallItems: FallItem[] = []; // 掉落物陣列
     private fallItemsContainer: PIXI.Container = null;
-    private gameTime: number = 60 * 3; // 遊戲時間
+    private gameTime: number = 60; // 遊戲時間
     private timeText: Text = null; // 時間顯示文字
     private now: moment.Moment = moment(); // 計算時間用
 
@@ -86,9 +86,12 @@ export class CatchGame extends BaseGame {
             // 增加點數 & 金幣
             const { x, y } = this.superMan.sprite;
             let coin = 0;
+            // 接到炸彈 隨機扣 1~5秒
+            let time = item.point < 0 ? -Math.floor(Math.random() * 6) : 0;
+
             if (item.point > 0) {
                 // 有獲得點數才有機會獲得硬幣 & 一場最多不拿超過35個
-                if (this.coins < 35 && !Math.floor(Math.random() * 2)) {
+                if (this.coins < 35) { // && !Math.floor(Math.random() * 2)
                     coin = Math.floor(Math.random() * 2);
                 }
                 if (Math.floor(Math.random() * 3) === 2) {
@@ -96,10 +99,11 @@ export class CatchGame extends BaseGame {
                 }
             }
 
-
             this.addPoint(item.point);
             this.addCoins(coin);
-            this.handleEffect(x, y, item.point, coin);
+
+            this.gameTime += time;
+            this.handleEffect(x, y, item.point, coin, time);
         })
         this.fallItems.filter(item => item.sprite.y > this.application.screen.height).forEach(item => {
             // 檢查掉落物是否掉出畫面了，是 -> 隱藏+移除
@@ -121,15 +125,15 @@ export class CatchGame extends BaseGame {
         // 處理進行中遊戲
         this.checkGameTime();
         this.checkHitItem();
-        this.handleGameTimeText();
 
         if (Math.abs(this.now.diff(moment())) >= 1000) {
             // 每秒建立一次掉落物品
             this.generateFallItemHandler()
             this.gameTime -= 1; // 減少時間秒數
-            this.handleGameTimeText(); // 更新儀表板的時間
             this.now = moment();
         }
+
+        this.handleGameTimeText();  // 更新儀表板的時間
     }
 
     play(): void {

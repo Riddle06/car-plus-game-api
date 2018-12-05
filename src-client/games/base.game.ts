@@ -84,6 +84,7 @@ export abstract class BaseGame {
     private async initCommonImages(): Promise<void> {
         await loaderHandler('coin', '/static/images/item-coin.png');
         await loaderHandler('point', '/static/images/item-point.png');
+        await loaderHandler('hourglass', '/static/images/item-hourglass.png');
         await loaderHandler('win', '/static/images/img-win.png');
         await loaderHandler('wow', '/static/images/img-wow.png');
     }
@@ -134,11 +135,10 @@ export abstract class BaseGame {
         return text;
     }
 
-    protected handleEffect(x: number, y: number, point: number = 0, coin: number = 0): void {
+    protected handleEffect(x: number, y: number, point: number = 0, coin: number = 0, time: number = 0): void {
         // 特效處理
         let pointEffect: PIXI.Container = null;
-        let coinEffect: PIXI.Container = null;
-
+        
         if (point !== 0) {
             // 獲得的點數不等於 0 (加或減)
             pointEffect = this.generatePlusOrMinusEffect('point', x, y, point);
@@ -146,11 +146,21 @@ export abstract class BaseGame {
             this.application.ticker.add(this.effectTransition(pointEffect), this);
 
             if (coin !== 0) {
+                let coinEffect: PIXI.Container = null;
                 // 獲得的硬幣不等於0
                 coinEffect = this.generatePlusOrMinusEffect('coin', x, y, coin);
                 this.effectContainer.addChild(coinEffect);
                 coinEffect.y = coinEffect.y + pointEffect.height; // 硬幣顯示在點數下方
                 this.application.ticker.add(this.effectTransition(coinEffect), this);
+            }
+
+            if (time !== 0) {
+                let timeEffect: PIXI.Container = null;
+                // 有減少時間
+                timeEffect = this.generatePlusOrMinusEffect('hourglass', x, y, time);
+                this.effectContainer.addChild(timeEffect);
+                timeEffect.y = timeEffect.y + pointEffect.height; // 顯示在點數下方
+                this.application.ticker.add(this.effectTransition(timeEffect), this);
             }
         }
     }

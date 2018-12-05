@@ -8,7 +8,8 @@ router.get('/', async (req, res, next) => {
     const gamesListRet = await gameSvc.getGameList();
     const game = gamesListRet.items.find(game => game.code === GameCode.catch)
     res.render('pages/game-intro', {
-        game
+        game,
+        isCatchGame: true,
     })
 });
 

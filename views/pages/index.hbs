@@ -1,18 +1,123 @@
-<ul>
-    <li><a href="/">home</a></li>
-    <li><a href="/shot-game">shot game</a></li>
-    <li><a href="/catch-game">catch game</a></li>
-</ul>
-
-<ul>
-    <li>
-        <a href="/shop">商城</a>
-    </li>
-    <li>
-        <a href="/question">遊戲說明</a>
-    </li>
-</ul>
-
+<div class="wrapper wrap-bg01">
+    <!-- header: logo&主標 start -->
+    <div class="header">
+        <div class="header__logo"><img src="/static/images/img_logo.png" alt="格上租車"></div>
+        <div class="header__slogan">
+            <div class="item superman"><img src="/static/images/img_superman.png" alt=""></div>
+            <div class="item title"><img src="/static/images/img_slogan.png" alt=""></div>
+        </div>
+        <div class="header__cloud">
+            <div class="cloud--left"><img src="/static/images/img_cloudleft.png" alt=""></div>
+            <div class="cloud--right"><img src="/static/images/img_cloudright.png" alt=""></div>
+        </div>
+    </div>
+    <!-- header: logo&主標 end -->
+    <!-- 選擇遊戲 start -->
+    <div class="gameSelect boxformat">
+        <!-- 遊戲一 start -->
+        <a href="/catch-game">
+            <div class="button__game type-btn">
+                <div class="button__item">
+                    <div class="icon icon--l"><img src="/static/images/img_game01.png" alt=""></div>
+                    <div class="name"><img src="/static/images/btn_game01.png" alt=""></div>
+                </div>
+                <div class="button__bg"><img src="/static/images/img_gamebtnbor.png" alt=""></div>
+            </div>
+        </a>
+        <!-- 遊戲一 end -->
+        <!-- 遊戲二 start -->
+        <a href="/shot-game">
+            <div class="button__game type-btn">
+                <div class="button__item">
+                    <div class="icon"><img src="/static/images/img_game02.png" alt=""></div>
+                    <div class="name"><img src="/static/images/btn_game02.png" alt=""></div>
+                </div>
+                <div class="button__bg"><img src="/static/images/img_gamebtnbor.png" alt=""></div>
+            </div>
+        </a>
+        <!-- 遊戲二 end -->
+    </div>
+    <!-- 選擇遊戲 end -->
+    <!-- 使用者角色卡 start -->
+    <div class="userCard">
+        <div class="userCard__item">
+            <div class="character"><img src="/static/images/img_character02.png" alt=""></div>
+            <div id="js-info" class="info">
+                <!-- 暱稱 start -->
+                <div class="list">
+                    <div class="title"><img src="/static/images/img_carditem_name.png" alt=""></div>
+                    <div class="content">{nickName}</div>
+                </div>
+                <!-- 暱稱 end -->
+                <!-- 等級 start -->
+                <div class="list">
+                    <div class="title"><img src="/static/images/img_carditem_lv.png" alt=""></div>
+                    <div class="content">{level}</div>
+                </div>
+                <!-- 等級 end -->
+                <!-- 超人幣 start -->
+                <div class="list list--blue">
+                    <div class="title"><img src="/static/images/img_carditem_coins.png" alt=""></div>
+                    <div class="content">{gamePoint}</div>
+                </div>
+                <!-- 超人幣 end -->
+                <!-- 格上紅利 start -->
+                <div class="list list--red">
+                    <div class="title"><img src="/static/images/img_carditem_bonus.png" alt=""></div>
+                    <div class="content">{carPlusPoint}</div>
+                </div>
+                <!-- 格上紅利 end -->
+            </div>
+        </div>
+        <div class="userCard__button">
+            <a href="/profile">
+                <div class="button__config type-btn"><img src="/static/images/btn_config.png" alt="">
+            </a>
+        </div>
+    </div>
+</div>
+<!-- 使用者角色卡 end -->
+<!-- 其他按鈕 start -->
+<div class="footer boxformat">
+    <!-- 商城 start -->
+    <a href="/shop">
+        <div class="button__shop type-btn"><img src="/static/images/btn_shop.png" alt=""></div>
+    </a>
+    <!-- 商城 end -->
+    <!-- 遊戲說明 start -->
+    <div class="button__gameinfo type-btn"><img src="/static/images/btn_gameinfo.png" alt=""></div>
+    <!-- 遊戲說明 end -->
+</div>
+<!-- 其他按鈕 end -->
+</div>
+<!-- 遮罩 start -->
+<div class="zoneMask" id="js-zoneMask" style="display: none;">
+    <div class="attrBox" data-name="attrBox">
+        <div class="content">
+            <div class="item-title"><img src="/static/images/img_attrTitle07.png" alt=""></div>
+            <div class="inputList">
+                <div class="title">請輸入您的暱稱</div>
+                <div class="input"><input id="js-nickNameValue" type="text" placeholder="暱稱最多五個字" maxlength="5"></div>
+            </div>
+        </div>
+        <div id="js-submit" class="button__accept button__accept--singel type-btn"><img src="/static/images/btn_accept.png"
+                alt=""></div>
+        <div class="item-bg"><img src="/static/images/img_attrPanel.png" alt=""></div>
+    </div>
+    <div class="attrBox" data-name="next" style="display: none;">
+        <div class="content">
+            <div class="item-title"><img src="/static/images/img_attrTitle08.png" alt=""></div>
+            <div class="inputList">
+                <div class="title">恭喜你獲得<span>100</span>超人幣</div>
+                <div class="text">快來進行大挑戰獲得更多超人幣</div>
+            </div>
+        </div>
+        <div class="button__accept button__accept--singel type-btn" data-btn="close"><img src="/static/images/btn_accept.png"
+                alt=""></div>
+        <div class="item-bg"><img src="/static/images/img_attrPanel.png" alt=""></div>
+    </div>
+</div>
+<!-- 遮罩 end -->
 
 
 <script src="/static/js/home.bundle.js"></script>
