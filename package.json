@@ -17,7 +17,7 @@
     "build:windows": "start ./node_modules/.bin/tsc",
     "init:windows": "mkdir dist && mkdir -p logs",
     "prebuild:windows": "npm run clean:windows && npm run init:windows",
-    "clean:windows": "rm -rf dist"
+    "clean:windows": "rd -r dist"
   },
   "author": "rexli",
   "license": "MIT",
