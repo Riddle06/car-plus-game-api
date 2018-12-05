@@ -12,7 +12,12 @@
     "start": "npm run build && node ./dist",
     "webpack:watch": "./node_modules/.bin/webpack --mode production --watch",
     "webpack": "./node_modules/.bin/webpack",
-    "start:backend": "npm run build && BACKEND=1 node ./dist"
+    "start:backend": "npm run build && BACKEND=1 node ./dist",
+    "start:windows": "npm run build:windows && node ./dist",
+    "build:windows": "start ./node_modules/.bin/tsc",
+    "init:windows": "mkdir dist && mkdir -p logs",
+    "prebuild:windows": "npm run clean:windows && npm run init:windows",
+    "clean:windows": "rm -rf dist"
   },
   "author": "rexli",
   "license": "MIT",
