@@ -5,20 +5,23 @@ import QuestionRouter from "./question.router";
 import ProfileRouter from "./profile.router";
 import ShopRouter from "./shop.router";
 import AdministrationRouter from "./administration.router";
+import { gamePageMiddleware } from '../middlewares/game-page.middleware';
+import { RequestExtension, ResponseExtension } from "@view-models/extension";
+
 
 const router = Router();
 
-router.get('/', async (req, res, next) => {
+router.get('/', gamePageMiddleware, async (req: RequestExtension, res: ResponseExtension) => {
     res.render('pages/index', {
-        item: 'testItem'
+        scale: req._scale
     })
 });
 
-router.use('/shot-game', ShotGameRouter);
-router.use('/catch-game', CatchGameRouter);
-router.use('/question', QuestionRouter);
-router.use('/profile', ProfileRouter);
-router.use('/shop', ShopRouter);
+router.use('/shot-game', gamePageMiddleware, ShotGameRouter);
+router.use('/catch-game', gamePageMiddleware, CatchGameRouter);
+router.use('/question', gamePageMiddleware, QuestionRouter);
+router.use('/profile', gamePageMiddleware, ProfileRouter);
+router.use('/shop', gamePageMiddleware, ShopRouter);
 router.use('/administration', AdministrationRouter)
 
 export default router;

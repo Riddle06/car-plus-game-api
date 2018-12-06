@@ -1,11 +1,104 @@
 
-
-<a href="#">變更</a>
-
-
-<ul>
-    <li>tool</li>
-    <li>tool</li>
-    <li>tool</li>
-    <li>tool</li>
-</ul>
+    <div class="wrapper wrap-bg02">
+        <div class="userInfo">
+            <div class="userInfo__item userInfo__item--coins">
+                <div class="item">50</div>
+                <div class="itemBg"><img src="/static/images/img_user_coins.png" alt=""></div>
+            </div>
+            <div class="userInfo__item userInfo__item--img">
+                <div class="character">
+                    <div class="item--character"><img src="/static/images/img_character02.png" alt=""></div>
+                </div>
+                <div class="itemBg"><img src="/static/images/img_user_character.png" alt=""></div>
+            </div>
+            <div class="userInfo__item userInfo__item--bouns">
+                <div class="item">157999</div>
+                <div class="itemBg"><img src="/static/images/img_user_bonus.png" alt=""></div>
+            </div>
+        </div>
+        <!-- 使用者角色卡 start -->
+        <div class="userCard userCard--user">
+            <div class="button__back type-btn"><img src="/static/images/btn_back.png" alt=""></div>
+            <div class="userCard__item">
+                <div class="character"><img src="/static/images/img_character02.png" alt=""></div>
+                <div class="info">
+                    <!-- 暱稱 start -->
+                    <div class="list">
+                        <div class="title"><img src="/static/images/img_carditem_name.png" alt=""></div>
+                        <div class="content type-inset">最多五個字</div>
+                        <div class="button__edit type-btn" data-btn="edit"><img src="/static/images/btn_edit.png" alt=""></div>
+                    </div>
+                    <!-- 暱稱 end -->
+                    <!-- 等級 start -->
+                    <div class="list">
+                        <div class="title"><img src="/static/images/img_carditem_lv.png" alt=""></div>
+                        <div class="content">1級</div>
+                    </div>
+                    <!-- 等級 end -->
+                    <!-- 經驗 start -->
+                    <div class="list list--carplus">
+                        <div class="title"><img src="/static/images/img_carditem_exp.png" alt=""></div>
+                        <div class="content">5888/9999</div>
+                    </div>
+                    <!-- 經驗 end -->
+                    <!-- 經驗條 start -->
+                    <div class="list">
+                        <div class="item item__exp">
+                            <div class="item__expbar">
+                                <div class="exp__ing exp__ing--user">
+                                    <div class="exp" style="width: 45%"></div>
+                                </div>
+                                <div class="exp__bg exp__bg--user"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 經驗條 end -->
+                </div>
+            </div>
+        </div>
+        <!-- 使用者角色卡 end -->
+        <!-- 道具區 start -->
+        <div class="pocket">
+            <div class="header"></div>
+            <div class="content">
+                <div class="pocket__title"><img src="/static/images/img_shoptitle_2.png" alt=""></div>
+                <div class="itemList user">
+                    <div class="item item-char">
+                        <div class="item__icon icon__accept"></div>
+                        <div class="item__main">
+                            <div class="goods"><img src="/static/images/img_character02.png" alt=""></div>
+                        </div>
+                    </div>
+                    <div class="item item-prop">
+                        <div class="item__icon icon__amount"><span>x5</span></div>
+                        <div class="item__main">
+                            <div class="goods"><img src="/static/images/icon_scoreup.png" alt=""></div>
+                        </div>
+                    </div>
+                    <div class="item item-prop">
+                        <div class="item__icon icon__amount"><span>x99</span></div>
+                        <div class="item__main">
+                            <div class="goods"><img src="/static/images/icon_coinup.png" alt=""></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer"></div>
+        </div>
+        <!-- 道具區 end -->
+        <!-- 遮罩 start -->
+        <div class="zoneMask" style="display: none;">
+            <div class="attrBox" data-name="edit">
+                <div class="content">
+                    <div class="item-title"><img src="/static/images/img_attrTitle06.png" alt=""></div>
+                    <div class="inputList">
+                        <div class="input"><input type="text" placeholder="暱稱最多五個字" maxlength="5" value="最多五個字"></div>
+                    </div>
+                </div>
+                <div class="button__accept button__accept--singel type-btn" data-btn="close"><img src="/static/images/btn_accept.png"
+                        alt=""></div>
+                <div class="item-bg"><img src="/static/images/img_attrPanel.png" alt=""></div>
+            </div>
+        </div>
+        <!-- 遮罩 end -->
+    </div>

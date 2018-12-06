@@ -2,22 +2,12 @@ import { BasePage } from "./base.page";
 
 
 class HomePage extends BasePage {
-    private $zoneMask: JQuery<HTMLElement>;
     private $info: JQuery<HTMLElement>;
-
-    async didMount() {
-        this.$zoneMask = this.$("#js-zoneMask")
-        this.$info = this.$("#js-info");
-
-        this.getMemberProfile();
-
-        return;
-    }
 
     domEventBinding(): void {
         const _this = this;
 
-        this.$('[data-btn="close"]').click(this.closeZoneMask.bind(this));
+        this.$info = this.$("#js-info");
 
         this.$('#js-submit').click(async () => {
             // 送出暱稱
@@ -37,14 +27,11 @@ class HomePage extends BasePage {
         return;
     }
 
-    openZoneMask(name: string): void {
-        this.$zoneMask.fadeIn(400);
-        this.$zoneMask.find(`[data-name]`).hide();
-        this.$zoneMask.find(`[data-name='${name}']`).show();
-    }
+    didMount(): void {
 
-    closeZoneMask(): void {
-        this.$zoneMask.fadeOut(400);
+        this.getMemberProfile();
+        
+        return;
     }
 
     async getMemberProfile(): Promise<void> {

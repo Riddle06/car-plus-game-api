@@ -27,6 +27,7 @@ export interface RequestExtension extends Request {
     listQuery?: ListQueryParameter
     memberToken: MemberToken
     adminUserToken: AdminUserToken
+    _scale?: number
 }
 
 export interface ResponseExtension extends Response {
