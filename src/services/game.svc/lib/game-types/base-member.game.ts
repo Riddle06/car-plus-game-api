@@ -371,10 +371,28 @@ export abstract class BaseMemberGame extends BaseConnection {
             afterLevel: memberGameHistoryEntity.afterLevel,
             changeLevel: memberGameHistoryEntity.changeLevel,
             gamePoint,
-            usedItems
+            usedItems,
+            levelUpGamePoint: await this.getLevelUpGamePoint(memberGameHistoryEntity.beforeLevel, memberGameHistoryEntity.changeLevel)
+        }
+        return ret;
+    }
+
+    private async getLevelUpGamePoint(beforeLevel: number, changeLevel: number): Promise<number> {
+        if (changeLevel === 0) {
+            return 0;
+        }
+        const levelInfoRet = await variableSvc.getLevelInformation();
+        let totalLevelUpGamePoint = 0
+        for (let i = 1; i <= changeLevel; i++) {
+
+            const info = levelInfoRet.items.find(level => level.level === beforeLevel + i);
+
+            if (info) {
+                totalLevelUpGamePoint += info.levelUpGetGamePoint;
+            }
         }
 
-        return ret;
+        return totalLevelUpGamePoint;
     }
 
     getScoreByEncryptString(encryptString: string): number {

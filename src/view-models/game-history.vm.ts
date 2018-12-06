@@ -111,4 +111,9 @@ export interface StartGameHistoryVM {
      */
     afterLevel?: number
 
+    /**
+     * 如果有升等的話，會把單純升等得到的超人金幣紀錄在這裡（彈出視窗會拿到這個值）
+     */
+    levelUpGamePoint?:number
+
 }
