@@ -49,27 +49,27 @@
         <div class="gameprop__title"><img src="/static/images/img_proptitle.png" alt=""></div>
         <div class="gameprop__content">
             <!-- item-prop:一般狀態 | item-prop--lock:鎖住狀態 | item-prop--select: 使用中狀態 -->
-            <div class="type-btn item item-prop--lock" data-btn="attrBox">
+            <div id="js-pointPlus" class="type-btn item" data-btn="attrBox" style="display: none">
                 <div class="item-icon"><img src="/static/images/icon_scoreup.png" alt=""></div>
                 <div class="item-info">
-                    <div class="item-name">能量果實</div>
-                    <div class="item-possess"><span>0</span></div>
+                    <div class="item-name">{itemName}</div>
+                    <div class="item-possess"><span>{totalGameItemCount}</span></div>
                     <div class="item-objects">
                         <!-- 使用中會有兩次： 1:未使用 | 0:已使用 | select:目前狀態(閃爍) -->
-                        <div class="item"><img src="/static/images/img_itemrate_1.png" alt=""></div>
-                        <div class="item select"><img src="/static/images/img_itemrate_1.png" alt=""></div>
+                        {{!-- <div class="item"><img src="/static/images/img_itemrate_1.png" alt=""></div>
+                        <div class="item"><img src="/static/images/img_itemrate_1.png" alt=""></div> --}}
                     </div>
                 </div>
             </div>
-            <div class="type-btn item item-prop" data-btn="attrBox" data-name="accept">
+            <div id="js-coinPlus" class="type-btn item" data-btn="attrBox" data-name="accept" style="display: none">
                 <div class="item-icon"><img src="/static/images/icon_coinup.png" alt=""></div>
                 <div class="item-info">
-                    <div class="item-name">富翁果實</div>
-                    <div class="item-possess"><span>5</span></div>
+                    <div class="item-name">{itemName}</div>
+                    <div class="item-possess"><span>{totalGameItemCount}</span></div>
                     <div class="item-objects">
                         <!-- 使用中會有兩次： 1:未使用 | 0:已使用 | select:目前狀態(閃爍) -->
-                        <div class="item select"><img src="/static/images/img_itemrate_1.png" alt=""></div>
-                        <div class="item"><img src="/static/images/img_itemrate_0.png" alt=""></div>
+                        {{!-- <div class="item select"><img src="/static/images/img_itemrate_1.png" alt=""></div>
+                        <div class="item"><img src="/static/images/img_itemrate_0.png" alt=""></div> --}}
                     </div>
                 </div>
             </div>
@@ -77,16 +77,16 @@
     </div>
     <!-- 道具使用 end -->
     <!-- 開始遊戲 start -->
-    <div class="button__go type-btn"><img src="/static/images/btn_go.png" alt=""></div>
+    <div id="js-go" class="button__go type-btn"><img src="/static/images/btn_go.png" alt=""></div>
     <!-- 開始遊戲 end -->
     <!-- 遮罩 start -->
-    <div class="zoneMask" style="display: none;">
+    <div id="js-zoneMask" class="zoneMask" style="display: none;">
         <div class="attrBox" data-name="attrBox">
             <div class="content">
                 <div class="item-title"><img src="/static/images/img_attrTitle01.png" alt=""></div>
                 <div class="inputList">
-                    <div class="title">富翁果實</div>
-                    <div class="tips">該場遊戲 超人幣+10% (效用持續兩場)</div>
+                    <div class="title"></div>
+                    <div class="tips"></div>
                 </div>
             </div>
             <div class="attrBox__button">
@@ -110,25 +110,6 @@
     {{{game.code}}}
     {{{game.imageUrl}}}
 </p> --}}
-
-
-<h5>道具使用</h5>
-<ul id="block_game_items_container">
-
-</ul>
-
-<button id="btn_go">go</button>
-
-
-<div style="display: none;">
-    <li data-game-item-id={gameItem.id} id="item_template_game_item">
-        名稱：{gameItem.name}
-        持有數：{totalGameItemCount}
-        使用中：{isUsing}
-        剩餘次數：{usingRemainTimes}
-    </li>
-</div>
-
 
 
 

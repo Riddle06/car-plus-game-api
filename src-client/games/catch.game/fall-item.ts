@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { loaderHandler } from '../base.game';
 
 interface Type {
-  point: number,
+  score: number,
   name: string
 }
 
@@ -13,16 +13,16 @@ export class FallItem {
   private types: Type[] = [];
 
   public sprite: PIXI.Sprite = null;
-  public point: number = 0;
+  public score: number = 0;
 
 
   constructor(app: PIXI.Application) {
     this.app = app;
     this.types = [
-      { point: -2, name: 'bomb' },
-      { point: 3, name: 'gift01' },
-      { point: 3, name: 'gift02' },
-      { point: 3, name: 'gift03' },
+      { score: -2, name: 'bomb' },
+      { score: 3, name: 'gift01' },
+      { score: 3, name: 'gift02' },
+      { score: 3, name: 'gift03' },
     ]
   }
 
@@ -35,7 +35,7 @@ export class FallItem {
 
 
     const type = this.types[Math.floor(Math.random() * this.types.length)];
-    this.point = type.point;
+    this.score = type.score;
     this.sprite = new PIXI.Sprite(PIXI.loader.resources[type.name].texture);
     this.sprite.height = (this.sprite.height / this.sprite.width) * (this.app.screen.width / 5);
     this.sprite.width = this.app.screen.width / 5;

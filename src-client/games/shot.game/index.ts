@@ -156,16 +156,16 @@ export class ShotGame extends BaseGame {
 
   async hit() {
     const { x, y } = this.superMan.ball;
-    let { point, coin } = this.monster;
+    let { score, gamePoint } = this.monster;
 
-    if(this.coins >= 35) {
+    if(this.gamePoints >= 35) {
       // 一場最多不拿超過35個
-      coin = 0
+      gamePoint = 0
     }
 
-    this.addPoint(point);
-    this.addCoins(coin);
-    this.handleEffect(x, y, point, coin);
+    this.addScore(score);
+    this.addGamePoint(gamePoint);
+    this.handleEffect(x, y, score, gamePoint);
     
     if(this.level % 5 === 0) {
       this.cheer();
@@ -196,6 +196,7 @@ export class ShotGame extends BaseGame {
         this.life[this.lifeStep].hollow.visible = true;
         this.lifeStep += 1;
         this.setCannon();
+        this.checkGameEnd();
         this.application.ticker.remove(effect, this);
       }
     }
@@ -244,5 +245,14 @@ export class ShotGame extends BaseGame {
       this.missed();
       return;
     }
+  }
+
+  checkGameEnd(): void {
+    if (this.lifeStep >= 2) this.end();
+  }
+
+  end(): void {
+    this.monster.sprite.visible = false;
+    this.dispatchEvent('gameEnd')
   }
 }

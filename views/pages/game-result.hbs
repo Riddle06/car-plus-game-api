@@ -1,3 +1,56 @@
-<a href="#">重玩</a>
-<a href="#">分享</a>
-<a href="/">首頁</a>
+<!-- 遊戲一bg: wrap-bg03 | 遊戲二bg: wrap-bg04 -->
+<div class="wrapper {{#if isCatchGame}}wrap-bg03{{else}}wrap-bg04{{/if}}">
+  <!-- 遊戲結果 start -->
+  <div class="wrap-result">
+    <div class="header">
+      <!-- 遊戲一 icon-win | 遊戲二 icon-wow -->
+      <div class="icon {{#if isCatchGame}}icon-win{{else}}icon-wow{{/if}}"></div>
+      <div class="adornment"><img src="/static/images/img_celebration.png" alt=""></div>
+    </div>
+    <div class="content">
+      <div class="board wrap-gameinfo">
+        <div class="header">
+          <div class="title"><img src="/static/images/img_ribbon.png" alt=""></div>
+        </div>
+        <div class="content">
+          <div class="list">
+            <div class="item item__score">
+              <div class="item__title"><img src="/static/images/img_show_score.png" alt=""></div>
+              <div class="item__result">9999</div>
+            </div>
+            <div class="item item__exp">
+              <div class="item__title"><img src="/static/images/img_show_exp.png" alt=""></div>
+              <div class="item__result">1級</div>
+              <div class="item__expbar">
+                <div class="exp__ing">
+                  <div class="exp" style="width: 45%"></div>
+                </div>
+                <div class="exp__plus">
+                  <div class="exp" style="width: 55%"></div>
+                </div>
+                <div class="exp__bg"></div>
+              </div>
+            </div>
+            <div class="item item__coins">
+              <div class="item__title"><img src="/static/images/img_show_coins.png" alt=""></div>
+              <div class="item__result">120</div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+        </div>
+      </div>
+    </div>
+    <div class="footer__button">
+      <a href="/shot-game"><div class="button__again type-btn"><img src="/static/images/btn_again.png" alt=""></div></a>
+      <a href="/"><div class="button__home type-btn"><img src="/static/images/btn_home.png" alt=""></div></a>
+      <div class="button__partake type-btn"><img src="/static/images/btn_partake.png" alt=""></div>
+    </div>
+  </div>
+  <!-- 遊戲結果 end -->
+
+</div>
+
+<input type="hidden" name="game_id" id="hidden_game_id" value="{{id}}">
+
+<script src="/static/js/game.result.bundle.js"></script>

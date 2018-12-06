@@ -43,11 +43,11 @@ export class Monster {
     this.app = app;
   }
 
-  get point(): number {
+  get score(): number {
     return this.level;
   }
 
-  get coin(): number {
+  get gamePoint(): number {
     if (this.level < 15) return 1;
     return 2;
   }

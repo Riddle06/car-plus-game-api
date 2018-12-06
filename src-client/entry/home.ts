@@ -50,6 +50,8 @@ class HomePage extends BasePage {
         if (this.$.trim(profileRet.item.nickName) === '') {
             this.openZoneMask('attrBox');
         }
+
+        this.toggleLoader(false);
     }
 
 }

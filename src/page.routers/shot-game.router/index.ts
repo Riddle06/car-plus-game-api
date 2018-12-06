@@ -16,10 +16,23 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
     })
 });
 
-router.get('/:id', async (req, res, next) => {
-    res.render('pages/shot-game', {
-        sacle: 1,
+router.get('/result/:id', (req: RequestExtension, res: ResponseExtension, next) => {
+    const { id } = req.params;
+    res.render('pages/game-result', {
+        id,
+        isCatchGame: false,
+        scale: req._scale
     })
 })
+
+router.get('/:id', (req, res, next) => {
+    const { id } = req.params;
+    res.render('pages/shot-game', {
+        id,
+        scale: 1,
+    })
+})
+
+
 
 export default router;

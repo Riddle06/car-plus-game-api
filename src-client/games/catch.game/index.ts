@@ -85,25 +85,25 @@ export class CatchGame extends BaseGame {
 
             // 增加點數 & 金幣
             const { x, y } = this.superMan.sprite;
-            let coin = 0;
+            let gamePoint = 0;
             // 接到炸彈 隨機扣 1~5秒
-            let time = item.point < 0 ? -Math.floor(Math.random() * 6) : 0;
+            let time = item.score < 0 ? -Math.floor(Math.random() * 6) : 0;
 
-            if (item.point > 0) {
+            if (item.score > 0) {
                 // 有獲得點數才有機會獲得硬幣 & 一場最多不拿超過35個
-                if (this.coins < 35) { // && !Math.floor(Math.random() * 2)
-                    coin = Math.floor(Math.random() * 2);
+                if (this.gamePoints < 35) { // && !Math.floor(Math.random() * 2)
+                    gamePoint = Math.floor(Math.random() * 2);
                 }
                 if (Math.floor(Math.random() * 3) === 2) {
                     this.cheer();
                 }
             }
 
-            this.addPoint(item.point);
-            this.addCoins(coin);
+            this.addScore(item.score);
+            this.addGamePoint(gamePoint);
 
             this.gameTime += time;
-            this.handleEffect(x, y, item.point, coin, time);
+            this.handleEffect(x, y, item.score, gamePoint, time);
         })
         this.fallItems.filter(item => item.sprite.y > this.application.screen.height).forEach(item => {
             // 檢查掉落物是否掉出畫面了，是 -> 隱藏+移除
@@ -164,5 +164,6 @@ export class CatchGame extends BaseGame {
             item.sprite.visible = false;
             item.sprite.removeChild(item.sprite);
         });
+        this.dispatchEvent('gameEnd');
     }
 }

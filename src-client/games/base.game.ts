@@ -19,15 +19,18 @@ export interface BaseShape {
 export abstract class BaseGame {
     protected isPlaying: Boolean = false; // 遊戲正在進行
     protected isGameEnd: Boolean = false; // 遊戲已結束
-    protected points: number = 0; // 獲得分數
-    protected coins: number = 0; // 獲得的金幣
-    protected pointsText: Text = null; // 分數文字
-    protected coinsText: Text = null; // 金幣文字
+    public scores: number = 0; // 獲得分數
+    public gamePoints: number = 0; // 獲得的超人幣
+    protected scoresText: Text = null; // 分數文字
+    protected gamePointsText: Text = null; // 金幣文字
 
     protected application: Application = null
     protected stage: PIXI.Container = null; // 遊戲舞台
     protected effectContainer: PIXI.Container = null; // 特效使用的容器
+
     private dashboardContainer: PIXI.Container = null; // 儀表板用舞台
+
+    private _eventListeners = {};
 
     protected screen: {
         width: number
@@ -82,8 +85,8 @@ export abstract class BaseGame {
     }
 
     private async initCommonImages(): Promise<void> {
-        await loaderHandler('coin', '/static/images/item-coin.png');
-        await loaderHandler('point', '/static/images/item-point.png');
+        await loaderHandler('score', '/static/images/item-point.png');
+        await loaderHandler('gamePoint', '/static/images/item-coin.png');
         await loaderHandler('hourglass', '/static/images/item-hourglass.png');
         await loaderHandler('win', '/static/images/img-win.png');
         await loaderHandler('wow', '/static/images/img-wow.png');
@@ -96,8 +99,8 @@ export abstract class BaseGame {
         this.dashboardContainer.x = 0;
         this.dashboardContainer.y = 0;
         // 初始化點數跟金幣計數
-        this.pointsText = await this.generateText('/static/images/item-points.png', 0, 95, 28, 15);
-        this.coinsText = await this.generateText('/static/images/item-coins.png', 1, 95, 29, 13);
+        this.scoresText = await this.generateText('/static/images/item-points.png', 0, 95, 28, 15);
+        this.gamePointsText = await this.generateText('/static/images/item-coins.png', 1, 95, 29, 13);
     }
 
     protected setBackground(): void {
@@ -135,23 +138,23 @@ export abstract class BaseGame {
         return text;
     }
 
-    protected handleEffect(x: number, y: number, point: number = 0, coin: number = 0, time: number = 0): void {
+    protected handleEffect(x: number, y: number, score: number = 0, gamePoint: number = 0, time: number = 0): void {
         // 特效處理
-        let pointEffect: PIXI.Container = null;
-        
-        if (point !== 0) {
-            // 獲得的點數不等於 0 (加或減)
-            pointEffect = this.generatePlusOrMinusEffect('point', x, y, point);
-            this.effectContainer.addChild(pointEffect);
-            this.application.ticker.add(this.effectTransition(pointEffect), this);
+        let scoreEffect: PIXI.Container = null;
 
-            if (coin !== 0) {
-                let coinEffect: PIXI.Container = null;
+        if (score !== 0) {
+            // 獲得的點數不等於 0 (加或減)
+            scoreEffect = this.generatePlusOrMinusEffect('score', x, y, score);
+            this.effectContainer.addChild(scoreEffect);
+            this.application.ticker.add(this.effectTransition(scoreEffect), this);
+
+            if (gamePoint !== 0) {
+                let gamePointEffect: PIXI.Container = null;
                 // 獲得的硬幣不等於0
-                coinEffect = this.generatePlusOrMinusEffect('coin', x, y, coin);
-                this.effectContainer.addChild(coinEffect);
-                coinEffect.y = coinEffect.y + pointEffect.height; // 硬幣顯示在點數下方
-                this.application.ticker.add(this.effectTransition(coinEffect), this);
+                gamePointEffect = this.generatePlusOrMinusEffect('gamePoint', x, y, gamePoint);
+                this.effectContainer.addChild(gamePointEffect);
+                gamePointEffect.y = gamePointEffect.y + scoreEffect.height; // 硬幣顯示在點數下方
+                this.application.ticker.add(this.effectTransition(gamePointEffect), this);
             }
 
             if (time !== 0) {
@@ -159,7 +162,7 @@ export abstract class BaseGame {
                 // 有減少時間
                 timeEffect = this.generatePlusOrMinusEffect('hourglass', x, y, time);
                 this.effectContainer.addChild(timeEffect);
-                timeEffect.y = timeEffect.y + pointEffect.height; // 顯示在點數下方
+                timeEffect.y = timeEffect.y + scoreEffect.height; // 顯示在點數下方
                 this.application.ticker.add(this.effectTransition(timeEffect), this);
             }
         }
@@ -211,14 +214,14 @@ export abstract class BaseGame {
         this.application.ticker.add(wowTransition, this);
     }
 
-    protected addPoint(point: number): void {
-        this.points += point;
-        this.pointsText.text = pad(this.points, 4, '0')
+    protected addScore(point: number): void {
+        this.scores += point;
+        this.scoresText.text = pad(this.scores, 4, '0')
     }
 
-    protected addCoins(coin: number): void {
-        this.coins += coin;
-        this.coinsText.text = pad(this.coins, 4, '0')
+    protected addGamePoint(gamePoint: number): void {
+        this.gamePoints += gamePoint;
+        this.gamePointsText.text = pad(this.gamePoints, 4, '0')
     }
 
     private generatePlusOrMinusEffect(name: string, x: number, y: number, num: number): PIXI.Container {
@@ -260,6 +263,34 @@ export abstract class BaseGame {
         }
         return fun;
     }
+
+    public addEventListener(type: string, handler: Function): void {
+        const el = this._eventListeners;
+        type = type.toLowerCase();
+
+        if (!el.hasOwnProperty(type)) {
+            el[type] = [];
+        }
+
+        if (el[type].indexOf(handler) == -1) {
+            el[type].push(handler);
+        }
+    };
+
+    dispatchEvent(type: string): void {
+        const el = this._eventListeners;
+        type = type.toLowerCase();
+
+        if (!el.hasOwnProperty(type)) {
+            return;
+        }
+
+        var len = el[type].length;
+
+        for (var i = 0; i < len; i++) {
+            el[type][i].call(this);
+        }
+    };
 }
 
 export function loaderHandler(name, path): Promise<LoaderResponse> {

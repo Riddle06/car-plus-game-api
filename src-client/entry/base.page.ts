@@ -8,6 +8,7 @@ export abstract class BasePage {
     protected mql: MediaQueryList = window.matchMedia("(orientation: portrait)");
 
     public $zoneMask: JQuery<HTMLElement>;
+    public $loader: JQuery<HTMLElement>;
 
     constructor() {
 
@@ -59,7 +60,7 @@ export abstract class BasePage {
         if (!windowWidth && this.mql.matches) {
             jsCookie.set('windowWidth', `${window.screen.width}`)
         }
-        
+
         // const $meta: HTMLMetaElement = document.querySelector('[name=viewport]');
         // const scale: number = window.screen.width / 640;
         // const pathname = window.location.pathname;
@@ -75,6 +76,15 @@ export abstract class BasePage {
     private setZoneMask(): void {
         this.$zoneMask = this.$("#js-zoneMask");
         this.$('[data-btn="close"]').click(this.closeZoneMask.bind(this));
+    }
+
+    toggleLoader(bool: Boolean): void {
+        if (!this.$loader) this.$loader = this.$("#js-loader");
+        if (bool) {
+            this.$loader.addClass('is-active')
+        } else {
+            this.$loader.removeClass('is-active')
+        }
     }
 
     openZoneMask(name: string): void {

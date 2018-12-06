@@ -15,9 +15,20 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
     })
 });
 
+router.get('/result/:id', (req: RequestExtension, res: ResponseExtension, next) => {
+    const { id } = req.params;
+    res.render('pages/game-result', {
+        id,
+        isCatchGame: true,
+        scale: req._scale
+    })
+})
+
 router.get('/:id', async (req, res, next) => {
+    const { id } = req.params;
     res.render('pages/catch-game', {
-        sacle: 1,
+        id,
+        scale: 1,
     })
 })
 
