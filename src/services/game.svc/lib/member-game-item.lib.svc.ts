@@ -106,7 +106,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
         const memberGameItemRepository = await this.entityManager.getRepository(MemberGameItemEntity);
 
 
-        const memberGameItemEntities = await memberGameItemRepository
+        const memberGameItemToolEntities = await memberGameItemRepository
             .createQueryBuilder("memberGameItem")
             .innerJoinAndSelect("memberGameItem.gameItem", "gameItem", "gameItem.type in (:...types)")
             .where("memberGameItem.memberId = :memberId and memberGameItem.remainTimes > 0 and memberGameItem.enabled = 1")
@@ -119,7 +119,23 @@ export class MemberGameItemLibSvc extends BaseConnection {
             .getMany();
 
 
-        const dic = _.groupBy<MemberGameItemEntity>(memberGameItemEntities, "gameItemId")
+        const memberGameItemRoleEntities = await memberGameItemRepository
+            .createQueryBuilder("memberGameItem")
+            .innerJoinAndSelect("memberGameItem.gameItem", "gameItem", "gameItem.type in (:...types)")
+            .where("memberGameItem.memberId = :memberId")
+            .orderBy("gameItem.type", "ASC")
+            .addOrderBy("memberGameItem.is_using", "DESC")
+            .setParameters({
+                types: [GameItemType.role],
+                memberId: this.memberId
+            })
+            .getMany();
+
+        const memberGameEntities: MemberGameItemEntity[] = []
+        memberGameEntities.push(...memberGameItemRoleEntities)
+        memberGameEntities.push(...memberGameItemToolEntities)
+
+        const dic = _.groupBy<MemberGameItemEntity>(memberGameEntities, "gameItemId")
 
         const ret = new ListResult<MemberGameItemVM>(true);
         const items: MemberGameItemVM[] = []
@@ -368,7 +384,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
             }
         })
 
-        if (checker.isNullOrUndefinedObject(gameItemEntity)) { 
+        if (checker.isNullOrUndefinedObject(gameItemEntity)) {
             throw new AppError('系統參數錯誤')
         }
 
@@ -382,7 +398,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
         memberGameItemEntity.dateUpdated = new Date();
         memberGameItemEntity.remainTimes = gameItemEntity.usedTimes
         memberGameItemEntity.totalUsedTimes = gameItemEntity.usedTimes;
-        memberGameItemEntity.enabled = gameItemEntity.usedTimes > 0
+        memberGameItemEntity.enabled = true;
         memberGameItemEntity.isUsing = true;
 
         await this.entityManager.getRepository(MemberGameItemEntity).insert(memberGameItemEntity);
@@ -435,7 +451,15 @@ export class MemberGameItemLibSvc extends BaseConnection {
         memberGameItemEntity.dateUpdated = new Date();
         memberGameItemEntity.remainTimes = gameItemEntity.usedTimes
         memberGameItemEntity.totalUsedTimes = gameItemEntity.usedTimes;
-        memberGameItemEntity.enabled = gameItemEntity.usedTimes > 0
+
+        if (gameItemEntity.type === GameItemType.role) {
+            memberGameItemEntity.enabled = true;
+        } else { 
+            memberGameItemEntity.enabled = gameItemEntity.usedTimes > 0
+        }
+
+
+
         memberGameItemEntity.isUsing = false
 
         memberGameItemRepository.insert(memberGameItemEntity);
