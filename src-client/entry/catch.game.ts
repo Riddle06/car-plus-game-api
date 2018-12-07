@@ -32,7 +32,7 @@ class CatchGamePage extends BasePage {
             return;
         }
 
-        window.location.href = `/catch-game/result/${ret.item.id}`;
+        window.location.replace(`/catch-game/result/${ret.item.id}`);
     }
 
 }

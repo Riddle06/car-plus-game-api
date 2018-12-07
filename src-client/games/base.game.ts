@@ -118,7 +118,7 @@ export abstract class BaseGame {
         const fullWidth = this.application.screen.width - 30;
         const textConfig = {
             fontSize: 32,
-            fontFamily: "Arial Black",
+            fontFamily: "Arial",
             lineJoin: "bevel",
             fill: ['#ffffff'],
             stroke: '#000000',
@@ -229,7 +229,7 @@ export abstract class BaseGame {
         const sprite = new PIXI.Sprite(PIXI.loader.resources[name].texture) // Icon
         const text = new PIXI.Text(`${num > 0 ? '+' : '-'}${Math.abs(num)}`, { // 加減數字
             fontSize: 32,
-            fontFamily: "Arial Black",
+            fontFamily: "Arial",
             lineJoin: "bevel",
             fill: ['#ffffff'],
             stroke: '#000000',

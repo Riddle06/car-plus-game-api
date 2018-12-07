@@ -29,7 +29,7 @@ export class SuperMan {
     this.man.animationSpeed = 0.1;
     this.man.play();
 
-    window['man'] = this.man;
+    // window['man'] = this.man;
 
     return this.man;
   }
@@ -45,7 +45,7 @@ export class SuperMan {
     this.ball.y = -(this.ball.height / 6);
     this.ball.rotation = 90 * (Math.PI / 180);
 
-    window['ball'] = this.ball;
+    // window['ball'] = this.ball;
 
     return this.ball;
   }

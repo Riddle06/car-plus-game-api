@@ -10,6 +10,12 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
     })
 })
 
+router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
+    res.render('pages/shop-merch', {
+        scale: req._scale
+    })
+})
+
 
 export default router;
 

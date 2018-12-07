@@ -1,6 +1,7 @@
 import { BasePage } from "./base.page";
+import { GameItemVM } from '@view-models/game.vm';
 
-class QuestionPage extends BasePage {
+class ShopPage extends BasePage {
     private $info: JQuery<HTMLElement>;
 
     domEventBinding() {
@@ -10,6 +11,7 @@ class QuestionPage extends BasePage {
     } 
     didMount() {
         this.getMemberProfile();
+        this.getGameItems();
     }
     
 
@@ -23,9 +25,20 @@ class QuestionPage extends BasePage {
         this.$info.find("#js-gamePoint").text(gamePoint);
         this.$info.find("#js-carPlusPoint").text(carPlusPoint);
 
+       
+    }
+
+    async getGameItems():  Promise<void> {
+        const ret = await this.webSvc.game.getGameItems();
+        console.log(ret)
+
+        
+        const ret2 = await this.webSvc.game.getGameItemById(ret.items[0].id);
+        console.log(ret2)
+
         this.toggleLoader(false);
     }
 
 }
 
-const questionPage = new QuestionPage();
+const page = new ShopPage();

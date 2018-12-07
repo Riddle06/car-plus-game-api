@@ -33,7 +33,7 @@ class ShotGamePage extends BasePage {
             return;
         }
 
-        window.location.href = `/shot-game/result/${ret.item.id}`;
+        window.location.replace(`/shot-game/result/${ret.item.id}`);
     }
 }
 
