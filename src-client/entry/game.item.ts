@@ -1,6 +1,6 @@
 import { BasePage } from "./base.page";
 
-class QuestionPage extends BasePage {
+class ShopPage extends BasePage {
     private $info: JQuery<HTMLElement>;
 
     domEventBinding() {
@@ -28,4 +28,4 @@ class QuestionPage extends BasePage {
 
 }
 
-const questionPage = new QuestionPage();
+const page = new ShopPage();

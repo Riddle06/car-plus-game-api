@@ -56,4 +56,4 @@ class HomePage extends BasePage {
 
 }
 
-window['homePage'] = new HomePage();
+const homePage = new HomePage();

@@ -1,14 +1,58 @@
-<h1>question list</h1>
+<div id="js-info" class="wrapper wrap-bg02">
+    <div class="userInfo">
+        <div class="userInfo__item userInfo__item--coins">
+            <div id="js-gamePoint" class="item">{gamePoint}</div>
+            <div class="itemBg"><img src="/static/images/img_user_coins.png" alt=""></div>
+        </div>
+        <div class="userInfo__item userInfo__item--img">
+            <div class="character">
+                <div class="item--character"><img src="/static/images/img_character02.png" alt=""></div>
+            </div>
+            <div class="itemBg"><img src="/static/images/img_user_character.png" alt=""></div>
+        </div>
+        <div class="userInfo__item userInfo__item--bouns">
+            <div id="js-carPlusPoint" class="item">{carPlusPoint}</div>
+            <div class="itemBg"><img src="/static/images/img_user_bonus.png" alt=""></div>
+        </div>
+    </div>
+    <!-- 遊戲Q&A start -->
+    <div class="pocket faq">
+        <div class="header"></div>
+        <div class="content itok">
+            <a href="/"><div class="button__back type-btn"><img src="/static/images/btn_back.png" alt=""></div></a>
+            <div class="faq__title">遊戲說明</div>
+            <div class="faq__list">
+                {{#each questions}}
+                <div class="faq__item">
+                    <div class="item-q">{{question}}</div>
+                    <div class="item-a">{{answer}}</div>
+                </div>
+                {{/each}}
+                {{!-- <div class="faq__item">
+                    <div class="item-q">超人大挑戰是一款什麼樣的遊戲？</div>
+                    <div class="item-a">超人大挑戰是格上會員專屬的一款遊戲，會員化身為超人，於城市中進行大挑戰。透過遊戲中可獲得分數與超人幣，累積分數可提升等級，獲得的超人幣可購買遊戲中道具。除了這些之外，平常於格上消費所產生的紅利也可於小遊戲當中使用喔！</div>
+                </div>
+                <div class="faq__item">
+                    <div class="item-q">超人大挑戰限定為格上會員才可進行遊戲嗎？</div>
+                    <div class="item-a">進入超人大挑戰遊戲限定需有格上會員身分方可進入喔！</div>
+                </div>
+                <div class="faq__item">
+                    <div class="item-q">超人大挑戰是一款什麼樣的遊戲？</div>
+                    <div class="item-a">超人大挑戰是格上會員專屬的一款遊戲，會員化身為超人，於城市中進行大挑戰。透過遊戲中可獲得分數與超人幣，累積分數可提升等級，獲得的超人幣可購買遊戲中道具。除了這些之外，平常於格上消費所產生的紅利也可於小遊戲當中使用喔！</div>
+                </div>
+                <div class="faq__item">
+                    <div class="item-q">超人大挑戰限定為格上會員才可進行遊戲嗎？</div>
+                    <div class="item-a">進入超人大挑戰遊戲限定需有格上會員身分方可進入喔！</div>
+                </div> --}}
+            </div>
+            <div class="faq__mask"></div>
+        </div>
+        <div class="footer"></div>
+    </div>
+    <!-- 遊戲Q&A end -->
+</div>
 
 
-{{#each questions}}
-
-    <li> {{question}}
-        <a>
-            {{answer}}
-        </a>
-    </li>
-
-{{/each}}
 
 
+<script src="/static/js/question.bundle.js"></script>

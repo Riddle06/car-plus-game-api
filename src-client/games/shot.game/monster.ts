@@ -95,7 +95,7 @@ export class Monster {
     this.sprite.addChild(this.boomEffect);
     this.boomEffect.visible = false;
 
-    window['monster'] = this
+    // window['monster'] = this
 
     return this;
   }

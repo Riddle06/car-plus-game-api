@@ -49,10 +49,15 @@ export class Cannon {
     this.sprite.addChild(this.car);
     
     this.car.position.set(0, this.sprite.height - this.car.height);
-    window['cannon'] = this.cannon;
-    window['car'] = this.car;
-    window['sprite'] = this.sprite;
-    window['cannonContainer'] = this.cannonContainer;
+
+    // window['cannon'] = this.cannon;
+    // window['car'] = this.car;
+    // window['sprite'] = this.sprite;
+    // window['cannonContainer'] = this.cannonContainer;
+    // const stage = new Graphics()
+    // stage.beginFill(0x1099bb);
+    // stage.drawRect(0, 0, this.screenSize.width, this.screenSize.height)
+    // stage.endFill();
 
     this.cannon.anchor.x = .5;
     this.cannon.anchor.y = .6;
