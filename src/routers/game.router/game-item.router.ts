@@ -28,7 +28,9 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
-        res.result = null;
+        const { memberToken } = req;
+        const id = req.params.id || "";
+        res.result = await gameSvc.getGameItemById(memberToken, id)
     } catch (error) {
         res.appError = AppError.getAppError(error)
     }
