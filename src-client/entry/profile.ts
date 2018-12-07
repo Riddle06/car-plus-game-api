@@ -1,11 +1,12 @@
 import { LevelUpInformation } from '@view-models/variable.vm';
+import { GameItemVM } from '@view-models/game.vm';
 import { BasePage } from "./base.page";
 
 class ProfilePage extends BasePage {
     private $info: JQuery<HTMLElement>;
     private nickName: string = '';
-
     private levelList: LevelUpInformation[];
+    private currentRoleGameItem: GameItemVM;
 
     domEventBinding(): void {
         const _this = this;
@@ -41,8 +42,8 @@ class ProfilePage extends BasePage {
         const ret = await this.webSvc.member.getLevelInfo();
         this.levelList = ret.items;
 
-        this.getMemberProfile();
-        this.getMemberItem();
+        await this.getMemberProfile();
+        this.getMemberItems();
     }
 
 
@@ -51,6 +52,7 @@ class ProfilePage extends BasePage {
         const profileRet = await this.webSvc.member.getProfile()
 
         const { nickName, level, gamePoint, carPlusPoint, currentRoleGameItem, experience } = profileRet.item;
+        this.currentRoleGameItem = currentRoleGameItem;
         const { spriteFolderPath } = currentRoleGameItem;
         
         const nowLevelInfo = this.levelList.find(item => item.level === level + 1);
@@ -71,9 +73,37 @@ class ProfilePage extends BasePage {
         this.toggleLoader(false);
     }
 
-    async getMemberItem(): Promise<void> {
+    async getMemberItems(): Promise<void> {
         const ret = await this.webSvc.member.getMemberItems();
         console.log(ret)
+
+        this.$("#js-itemList").html(ret.items.map(item => {
+            if (item.type === 1) {
+                const isCurrent = this.currentRoleGameItem.id === item.id;
+                // 角色
+                return `
+                    <a href="${isCurrent ? 'javascript:;': `/profile/game-item/${item.id}` }">
+                        <div class="item item-char">
+                            <div class="item__icon icon__accept"></div>
+                            <div class="item__main">
+                                <div class="goods"><img src="/static/images/img_character02.png" alt=""></div>
+                            </div>
+                        </div>
+                    </a>
+                `
+            }
+
+            return `
+                <a href="/profile/game-item/${item.id}">
+                    <div class="item item-prop">
+                        <div class="item__icon icon__amount"><span>x${item.memberGameItemIds.length}</span></div>
+                        <div class="item__main">
+                            <div class="goods"><img src="${item.imageUrl}" alt=""></div>
+                        </div>
+                    </div>
+                </a>
+            `
+        }).join(''))
     }
 
 }

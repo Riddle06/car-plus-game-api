@@ -11,7 +11,9 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 })
 
 router.get('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
+    const { id } = req.params;
     res.render('pages/shop-merch', {
+        id,
         scale: req._scale
     })
 })

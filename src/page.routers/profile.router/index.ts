@@ -11,4 +11,13 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
     
 })
 
+router.get('/game-item/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
+    const { id } = req.params;
+    res.render('pages/game-item', {
+        id,
+        scale: req._scale
+    });
+    
+})
+
 export default router;

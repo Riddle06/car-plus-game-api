@@ -1,0 +1,108 @@
+<div id="js-info" class="wrapper wrap-bg05">
+  <div class="userInfo">
+    <div class="userInfo__item userInfo__item--coins">
+      <div id="js-gamePoint" class="item">{gamePoint}</div>
+      <div class="itemBg"><img src="/static/images/img_user_coins.png" alt=""></div>
+    </div>
+    <div class="userInfo__item userInfo__item--img">
+      <div class="character">
+        <div class="item--character"><img src="/static/images/img_character02.png" alt=""></div>
+      </div>
+      <div class="itemBg"><img src="/static/images/img_user_character.png" alt=""></div>
+    </div>
+    <div class="userInfo__item userInfo__item--bouns">
+      <div id="js-carPlusPoint" class="item">{carPlusPoint}</div>
+      <div class="itemBg"><img src="/static/images/img_user_bonus.png" alt=""></div>
+    </div>
+  </div>
+  <!-- 角色 start -->
+  <div id="js-character" class="merch merch-character" style="display: none;">
+    <div class="button__back type-btn" onclick="history.back()"><img src="/static/images/btn_back.png" alt=""></div>
+    <div class="header"></div>
+    <div class="content">
+      <div class="merch__title">{name}</div>
+      <div class="merch__graph">
+        <div class="photo"><img src="/static/images/img_character02.png" alt=""></div>
+      </div>
+      <div class="merch__price type-shop"><span>{gamePoint}</span></div>
+      <div class="merch__info">{description}</div>
+      <div class="merch__status">
+        <div class="status show">
+          <div class="button__buy type-btn" data-btn="merch-char"><img src="/static/images/btn_buy.png" alt=""></div>
+        </div>
+        <div class="status">
+          <div class="title">已擁有</div>
+          <div class="tips">使用角色請前往首頁個人資訊頁替換。</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"></div>
+  </div>
+  <!-- 角色 end -->
+  <!-- 道具 start -->
+  <div id="js-prop" class="merch merch-prop" style="display: none;">
+    <div class="button__back type-btn" onclick="history.back()"><img src="/static/images/btn_back.png" alt=""></div>
+    <div class="header"></div>
+    <div class="content">
+      <div class="merch__title">能量果實</div>
+      <div class="merch__graph">
+        <div class="photo"><img src="/static/images/img_item_1.png" alt=""></div>
+      </div>
+      <div class="merch__price type-shop"><span>500</span></div>
+      <div class="merch__info">充滿能量的神祕果實，使用後的兩場比賽，遊戲分數加乘10%。(使用後效果無法中斷，可與富翁果實同時使用)</div>
+      <div class="merch__amount">
+        <div class="button__less type-btn"><img src="/static/images/brn_less.png" alt=""></div>
+        <div class="item-amount">1</div>
+        <div class="button__plus type-btn"><img src="/static/images/brn_plus.png" alt=""></div>
+      </div>
+      <div class="merch__status">
+        <!--  show: 顯示 -->
+        <div class="status__tips">您的超人幣不足!</div>
+        <!-- lock: 鎖住 -->
+        <div class="status show">
+          <div class="button__buy type-btn" data-btn="merch-prop"><img src="/static/images/btn_buy.png" alt=""></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"></div>
+  </div>
+  <!-- 道具 end -->
+</div>
+<!-- 遮罩 start -->
+<div id="js-zoneMask" class="zoneMask" style="display: none;">
+  <div class="attrBox" data-name="merch-char">
+    <div class="content">
+      <div class="item-title"><img src="/static/images/img_attrTitle05.png" alt=""></div>
+      <div class="inputList">
+        <div class="title">實習超人</div>
+        <div class="tips"><label>
+            <input type="checkbox" class="option-input checkbox" />
+            <span>我要立即使用此角色</span>
+          </label></div>
+      </div>
+    </div>
+    <div class="attrBox__button">
+      <div class="button__x type-btn" data-btn="close"><img src="/static/images/btn_x.png" alt=""></div>
+      <div class="button__accept type-btn" data-btn="accept"><img src="/static/images/btn_accept.png" alt=""></div>
+    </div>
+    <div class="item-bg"><img src="/static/images/img_attrPanel.png" alt=""></div>
+  </div>
+  <div class="attrBox" data-name="merch-prop">
+    <div class="content">
+      <div class="item-title"><img src="/static/images/img_attrTitle05.png" alt=""></div>
+      <div class="inputList">
+        <div class="title"></div>
+        <div class="tips"></div>
+      </div>
+    </div>
+    <div class="attrBox__button">
+      <div class="button__x type-btn" data-btn="close"><img src="/static/images/btn_x.png" alt=""></div>
+      <div class="button__accept type-btn" data-btn="accept"><img src="/static/images/btn_accept.png" alt=""></div>
+    </div>
+    <div class="item-bg"><img src="/static/images/img_attrPanel.png" alt=""></div>
+  </div>
+</div>
+
+<input type="hidden" name="item_id" id="hidden_item_id" value="{{id}}">
+
+<script src="/static/js/shop.merch.bundle.js"></script>

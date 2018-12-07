@@ -99,7 +99,7 @@ export abstract class BaseGame {
         this.dashboardContainer.x = 0;
         this.dashboardContainer.y = 0;
         // 初始化點數跟金幣計數
-        this.scoresText = await this.generateText('/static/images/item-points.png', 0, 95, 28, 15);
+        this.scoresText = await this.generateText('/static/images/item-points.png', 0, 95, 26, 15);
         this.gamePointsText = await this.generateText('/static/images/item-coins.png', 1, 95, 29, 13);
     }
 

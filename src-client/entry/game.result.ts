@@ -47,12 +47,12 @@ class GameResultPage extends BasePage {
         const levelUpNeedExperience = nowLevelInfo ? nowLevelInfo.experience : 0;
 
         this.$score.text(changeExperience);
-        this.$level.text(`${afterLevel}級`);
-        this.$gamePoint.text(`${gamePoint}`);
+        this.$level.text(`${beforeLevel}級`);
+        this.$gamePoint.text(`${gamePoint - levelUpGamePoint}`);
 
         this.beforeExp = (beforeExperience / levelUpNeedExperience) * 100;
-        this.afterExp = (afterExperience / levelUpNeedExperience) * 100;
-        
+        this.afterExp = changeLevel ? 100 : (afterExperience / levelUpNeedExperience) * 100;
+
         this.$expIng.css('width', `${this.beforeExp}%`);
         this.$expPlus.css('width', `${this.afterExp}%`)
 
@@ -60,7 +60,20 @@ class GameResultPage extends BasePage {
 
         setTimeout(() => {
             this.$expIng.css('width', `${this.afterExp}%`);
+
+            setTimeout(() => {
+                this.$level.text(`${afterLevel}級`);
+                this.$gamePoint.text(`${gamePoint - levelUpGamePoint}+${levelUpGamePoint}`);
+                if (levelUpGamePoint) {
+                    this.fakeAlert({
+                        title: `恭喜您升級！獲得${levelUpGamePoint}超人幣`,
+                        text: '',
+                    });
+                }
+            }, 200)
         }, 1000)
+
+
     }
 
 }

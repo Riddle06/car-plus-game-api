@@ -16,25 +16,13 @@
     </div>
   </div>
   <div class="shop">
-    <div class="button__back type-btn"><img src="/static/images/btn_back.png" alt=""></div>
+    <a href="/"><div class="button__back type-btn"><img src="/static/images/btn_back.png" alt=""></div></a>
     <div class="header"></div>
     <div class="content">
       <div class="title"><img src="/static/images/img_shoptitle_0.png" alt=""></div>
       <!-- 購買角色區 start -->
-      <div class="itemList character">
-        <!-- 左上角狀態: item (一般狀態) | item--lock (鎖住狀態) -->
-        <div class="item">
-          <div class="item__icon icon"></div>
-          <div class="item__main">
-            <div class="goods"><img src="/static/images/img_character02.png" alt=""></div>
-          </div>
-          <!-- lock:鎖住(等級限制) | price:解鎖(購買金額) | hold:已擁有 | show:顯示 -->
-          <div class="item__tips type-shop">
-            <div class="it-s lock"><span>Lv1</span></div>
-            <div class="it-s price"><span>500</span></div>
-            <div class="it-s hold show"></div>
-          </div>
-        </div>
+      <div id="js-character" class="itemList character">
+        
         <!-- 左上角狀態: item (一般狀態) | item--lock (鎖住狀態) -->
         <div class="item item--lock">
           <div class="item__icon icon"></div>
@@ -91,7 +79,7 @@
       <!-- 購買角色區 end -->
       <div class="title"><img src="/static/images/img_shoptitle_1.png" alt=""></div>
       <!-- 購買道具區 start -->
-      <div class="itemList prop">
+      <div id="js-prop" class="itemList prop">
         <div class="item">
           <div class="item__main">
             <div class="goods"><img src="/static/images/icon_scoreup.png" alt=""></div>

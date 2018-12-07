@@ -69,16 +69,16 @@ export class ShotGame extends BaseGame {
   protected async initElementsEvents(): Promise<boolean> {
 
     this.application.stage.on('touchstart', () => {
-      // console.log(`touchstart`)
+      console.log(`touchstart`)
 
       if (this.shotting || this.lifeStep >= 2 || !this.superMan.isReady) return;
       this.cannon.isRotating = true;
     })
 
     this.application.stage.on('touchend', () => {
-      // console.log(`touchend`)
+      console.log(`touchend`)
 
-      if (this.shotting || this.lifeStep >= 2 || !this.superMan.isReady) return;
+      if (this.shotting || this.lifeStep >= 2 || !this.superMan.isReady || !this.cannon.isRotating) return;
       this.cannon.isRotating = false
       this.fire();
       this.cannon.fire();
@@ -136,7 +136,6 @@ export class ShotGame extends BaseGame {
   }
 
   async fire(): Promise<void> {
-
     this.shotting = true;
 
     this.currentShellXPower = this.shellInitPower * Math.cos(this.cannon.currentDegree * (Math.PI / 180))
@@ -158,7 +157,7 @@ export class ShotGame extends BaseGame {
     const { x, y } = this.superMan.ball;
     let { score, gamePoint } = this.monster;
 
-    if(this.gamePoints >= 35) {
+    if (this.gamePoints >= 35) {
       // 一場最多不拿超過35個
       gamePoint = 0
     }
@@ -166,10 +165,10 @@ export class ShotGame extends BaseGame {
     this.addScore(score);
     this.addGamePoint(gamePoint);
     this.handleEffect(x, y, score, gamePoint);
-    
-    if(this.level % 5 === 0) {
+
+    if (this.level % 5 === 0) {
       this.cheer();
-    } 
+    }
 
     await this.monster.boom();
 

@@ -23,6 +23,8 @@ class ShotGamePage extends BasePage {
             gameHistoryId: this.gameId,
             scoreEncryptString: btoa(btoa(scores.toString())),
             gamePintEncryptString: btoa(btoa(gamePoints.toString()))
+            // scoreEncryptString: btoa(btoa('1103')),
+            // gamePintEncryptString: btoa(btoa('500'))
         })
         
         if (!ret.success) {
