@@ -154,7 +154,7 @@ export class AdminMembersLibSvc extends BaseConnection {
         const gameItems = await this.getGameItems();
 
         ret.item.gameItems = gameItems.items.map(item => {
-            const { id, description, name, imageUrl, type, enableBuy, addScoreRate, addGamePointRate, spriteFolderPath } = item
+            const { id, description, name, imageUrl, type, enableBuy, addScoreRate, addGamePointRate, spriteFolderPath, levelMinLimit } = item
             const memberGameItem: AdminMemberGameItemVM = {
                 id,
                 description,
@@ -167,7 +167,8 @@ export class AdminMembersLibSvc extends BaseConnection {
                 addScoreRate,
                 addGamePointRate,
                 num: 0,
-                spriteFolderPath
+                spriteFolderPath,
+                levelMinLimit
             }
             const gameItemAggregation = gameItemAggregations.find(gameItemAggregation => gameItemAggregation.gameItemId === id)
             if (!checker.isNullOrUndefinedObject(gameItemAggregation)) {
@@ -285,7 +286,7 @@ export class AdminMembersLibSvc extends BaseConnection {
 
         const ret = new ListResult<GameItemVM>();
         ret.items = gameItemEntities.map(gameItemEntity => {
-            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = gameItemEntity
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath,levelMinLimit } = gameItemEntity
             const gameItemVM: GameItemVM = {
                 id,
                 description,
@@ -295,7 +296,8 @@ export class AdminMembersLibSvc extends BaseConnection {
                 carPlusPoint,
                 type,
                 enableBuy: true,
-                spriteFolderPath
+                spriteFolderPath,
+                levelMinLimit
             }
 
             return gameItemVM;

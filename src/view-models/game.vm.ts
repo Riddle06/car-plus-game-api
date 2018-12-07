@@ -25,7 +25,7 @@ export interface GameItemVM {
      * 動畫的路徑
      */
     spriteFolderPath: string
-
+    levelMinLimit: number
     addScoreRate?: number
     addGamePointRate?: number
 }

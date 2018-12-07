@@ -41,7 +41,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
         const useGameItems = gameItemEntities.map(entity => {
 
-            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = entity
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath, levelMinLimit } = entity
             const gameItem: GameItemVM = {
                 id,
                 description,
@@ -51,7 +51,8 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 carPlusPoint,
                 type,
                 enableBuy: true,
-                spriteFolderPath
+                spriteFolderPath,
+                levelMinLimit
             }
 
             const useGameItem: UseGameItemVM = {
@@ -156,7 +157,8 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 name: gameItem.name,
                 isUsing: dic[key].some(entity => entity.isUsing),
                 memberGameItemIds: dic[key].map(entity => entity.id),
-                spriteFolderPath: gameItem.spriteFolderPath
+                spriteFolderPath: gameItem.spriteFolderPath,
+                levelMinLimit: gameItem.levelMinLimit
             }
             items.push(item)
 
@@ -337,7 +339,8 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 description: gameItem.description,
                 enableBuy: false,
                 name: gameItem.name,
-                spriteFolderPath: gameItem.spriteFolderPath
+                spriteFolderPath: gameItem.spriteFolderPath,
+                levelMinLimit: gameItem.levelMinLimit
             }
         }
 
@@ -362,7 +365,8 @@ export class MemberGameItemLibSvc extends BaseConnection {
             description: gameItemEntity.description,
             enableBuy: gameItemEntity.enabled,
             name: gameItemEntity.name,
-            spriteFolderPath: gameItemEntity.spriteFolderPath
+            spriteFolderPath: gameItemEntity.spriteFolderPath,
+            levelMinLimit: gameItemEntity.levelMinLimit
         }
         return ret;
     }
@@ -454,7 +458,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
         if (gameItemEntity.type === GameItemType.role) {
             memberGameItemEntity.enabled = true;
-        } else { 
+        } else {
             memberGameItemEntity.enabled = gameItemEntity.usedTimes > 0
         }
 

@@ -46,7 +46,7 @@ export class GameLibSvc extends BaseConnection {
 
         const ret = new Result<GameItemVM>();
 
-        const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = gameItemEntity
+        const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath, levelMinLimit } = gameItemEntity
 
         ret.item = {
             id,
@@ -57,7 +57,8 @@ export class GameLibSvc extends BaseConnection {
             carPlusPoint,
             type,
             enableBuy: true,
-            spriteFolderPath
+            spriteFolderPath,
+            levelMinLimit: levelMinLimit
         }
 
         return ret.setResultValue(true);
@@ -78,7 +79,7 @@ export class GameLibSvc extends BaseConnection {
 
         const ret = new ListResult<GameItemVM>();
         ret.items = gameItemEntities.map(gameItemEntity => {
-            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = gameItemEntity
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath, levelMinLimit } = gameItemEntity
             const gameItemVM: GameItemVM = {
                 id,
                 description,
@@ -88,7 +89,8 @@ export class GameLibSvc extends BaseConnection {
                 carPlusPoint,
                 type,
                 enableBuy: true,
-                spriteFolderPath
+                spriteFolderPath,
+                levelMinLimit
             }
 
             return gameItemVM;

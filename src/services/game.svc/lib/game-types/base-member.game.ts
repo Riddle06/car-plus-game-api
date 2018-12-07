@@ -101,7 +101,7 @@ export abstract class BaseMemberGame extends BaseConnection {
             gameParameters: this.game.parameters,
             id: history.id,
             usedItems: memberGameItemEntities.map(entity => {
-                const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = entity.gameItem
+                const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath, levelMinLimit } = entity.gameItem
                 const gameItemVM: GameItemVM = {
                     id,
                     description,
@@ -111,7 +111,8 @@ export abstract class BaseMemberGame extends BaseConnection {
                     carPlusPoint,
                     type,
                     enableBuy: true,
-                    spriteFolderPath
+                    spriteFolderPath,
+                    levelMinLimit
                 }
                 return gameItemVM;
             })
@@ -261,7 +262,8 @@ export abstract class BaseMemberGame extends BaseConnection {
                 carPlusPoint: entity.gameItem.carPlusPoint,
                 type: entity.gameItem.type,
                 enableBuy: true,
-                spriteFolderPath: entity.gameItem.spriteFolderPath
+                spriteFolderPath: entity.gameItem.spriteFolderPath,
+                levelMinLimit: entity.gameItem.levelMinLimit
             });
         }
 
@@ -327,7 +329,7 @@ export abstract class BaseMemberGame extends BaseConnection {
 
         for (const memberGameHistoryMemberGameItemEntity of memberGameHistoryMemberGameItemEntities) {
 
-            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath } = memberGameHistoryMemberGameItemEntity.memberGameItem.gameItem
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath, levelMinLimit } = memberGameHistoryMemberGameItemEntity.memberGameItem.gameItem
 
             const gameItemVM: GameItemVM = {
                 id,
@@ -338,7 +340,8 @@ export abstract class BaseMemberGame extends BaseConnection {
                 carPlusPoint,
                 type,
                 enableBuy: true,
-                spriteFolderPath
+                spriteFolderPath,
+                levelMinLimit
             }
 
             usedItems.push(gameItemVM)
