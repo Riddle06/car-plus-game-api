@@ -4,8 +4,6 @@ import { LevelUpInformation } from '@view-models/variable.vm';
 class GameResultPage extends BasePage {
     private gameId: string
     private levelList: LevelUpInformation[];
-    private beforeExp: number = 0;
-    private afterExp: number = 0;
 
     private $score: JQuery<HTMLElement>;
     private $level: JQuery<HTMLElement>;
@@ -50,25 +48,37 @@ class GameResultPage extends BasePage {
         this.$level.text(`${beforeLevel}級`);
         this.$gamePoint.text(`${gamePoint - levelUpGamePoint}`);
 
-        this.beforeExp = (beforeExperience / levelUpNeedExperience) * 100;
-        this.afterExp = changeLevel ? 100 : (afterExperience / levelUpNeedExperience) * 100;
+        let beforeExp = (beforeExperience / levelUpNeedExperience) * 100;
+        let afterExp = changeLevel ? 100 : (afterExperience / levelUpNeedExperience) * 100;
 
-        this.$expIng.css('width', `${this.beforeExp}%`);
-        this.$expPlus.css('width', `${this.afterExp}%`)
+        if(!changeLevel && afterExp > 90) {
+            afterExp = 90;
+        }
+
+        this.$expIng.css('width', `${beforeExp}%`);
+        this.$expPlus.css('width', `${afterExp}%`)
 
         this.toggleLoader(false);
 
         setTimeout(() => {
-            this.$expIng.css('width', `${this.afterExp}%`);
+            this.$expIng.css('width', `${afterExp}%`);
 
             setTimeout(() => {
-                this.$level.text(`${afterLevel}級`);
                 if (levelUpGamePoint) {
+                    this.$level.text(`${afterLevel}級`);
                     this.fakeAlert({
                         title: `恭喜您升級！獲得${levelUpGamePoint}超人幣`,
                         text: '',
                     });
                     this.$gamePoint.text(`${gamePoint - levelUpGamePoint}+${levelUpGamePoint}`);
+
+                    const nowLevelInfo = this.levelList.find(item => item.level === afterLevel + 1);
+                    const levelUpAfterExp = (afterExperience / nowLevelInfo.experience) * 100;
+                    this.$expPlus.css('width', `${levelUpAfterExp}%`)
+                    this.$expIng.css('width', `0%`);
+                    setTimeout(() => {
+                        this.$expIng.css('width', `${levelUpAfterExp}%`);
+                    }, 1000)
                 }
             }, 200)
         }, 1000)

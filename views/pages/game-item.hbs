@@ -1,0 +1,82 @@
+<div class="wrapper wrap-bg02">
+  {{> userInfo}}
+
+  <!-- 角色 start -->
+  <div id="js-character" class="merch merch-character" style="display: none;">
+    <div class="button__back type-btn" onclick="history.back()"><img src="/static/images/btn_back.png" alt=""></div>
+    <div class="header"></div>
+    <div class="content">
+      <div class="merch__title">實習超人</div>
+      <div class="merch__graph">
+        <div class="photo"><img src="/static/images/img_character02.png" alt=""></div>
+      </div>
+      <div class="merch__info">正在進行超人技能訓練的實習超人，配備僅有基本的超人內褲，需經過訓練才能成為真正的超人成員。</div>
+      <div class="merch__status">
+        <div class="status show">
+          <div class="button__use type-btn" data-btn="user-char"><img src="/static/images/btn_use.png" alt=""></div>
+        </div>
+        <div class="status">
+          <div class="button__use"><img src="/static/images/btn_uselock.png" alt=""></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"></div>
+  </div>
+  <!-- 角色 end -->
+
+  <!-- 道具 start -->
+  <div id="js-prop" class="merch merch-prop" style="display: none;">
+    <div class="button__back type-btn" onclick="history.back()"><img src="/static/images/btn_back.png" alt=""></div>
+    <div class="header"></div>
+    <div class="content">
+      <div class="merch__title">能量果實</div>
+      <div class="merch__graph">
+        <div class="photo"><img src="" alt=""></div>
+      </div>
+      <div class="merch__info">充滿能量的神祕果實，使用後的兩場比賽，遊戲分數加乘10%。(使用後效果無法中斷，可與富翁果實同時使用)</div>
+      <div class="merch__status">
+        <div class="status show">
+          <div class="button__use type-btn" data-btn="user-prop"><img src="/static/images/btn_use.png" alt=""></div>
+        </div>
+
+      </div>
+    </div>
+    <div class="footer"></div>
+  </div>
+  <!-- 道具 end -->
+  <!-- 遮罩 start -->
+  <div id="js-zoneMask" class="zoneMask" style="display: none;">
+    <div class="attrBox" data-name="user-char" style="display: none;">
+      <div class="content">
+        <div class="item-title"><img src="/static/images/img_attrTitle01.png" alt=""></div>
+        <div class="inputList">
+          <div class="title type-title">實習超人</div>
+        </div>
+      </div>
+      <div class="attrBox__button">
+        <div class="button__x type-btn" data-btn="close"><img src="/static/images/btn_x.png" alt=""></div>
+        <div class="button__accept type-btn" data-btn="accept"><img src="/static/images/btn_accept.png" alt=""></div>
+      </div>
+      <div class="item-bg"><img src="/static/images/img_attrPanel.png" alt=""></div>
+    </div>
+    <div class="attrBox" data-name="user-prop" style="display: none;">
+      <div class="content">
+        <div class="item-title"><img src="/static/images/img_attrTitle01.png" alt=""></div>
+        <div class="inputList">
+          <div class="title">能量果實</div>
+          <div class="tips">目前持有數: 5</div>
+        </div>
+      </div>
+      <div class="attrBox__button">
+        <div class="button__x type-btn" data-btn="close"><img src="/static/images/btn_x.png" alt=""></div>
+        <div class="button__accept type-btn" data-btn="accept"><img src="/static/images/btn_accept.png" alt=""></div>
+      </div>
+      <div class="item-bg"><img src="/static/images/img_attrPanel.png" alt=""></div>
+    </div>
+  </div>
+  <!-- 遮罩 end -->
+</div>
+
+<input type="hidden" name="item_id" id="hidden_item_id" value="{{id}}">
+
+<script src="/static/js/game.item.bundle.js"></script>

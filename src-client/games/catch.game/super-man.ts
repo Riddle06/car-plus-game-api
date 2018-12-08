@@ -11,19 +11,21 @@ export class SuperMan {
     private currentDirection: SuperManDirection = SuperManDirection.right;
     private rightSprite: PIXI.extras.AnimatedSprite = null;
     private leftSprite: PIXI.extras.AnimatedSprite = null;
+    private spriteFolderPath: string;
 
     public sprite: PIXI.Graphics = null;
     
     
-    constructor(app: PIXI.Application) {
+    constructor(app: PIXI.Application, spriteFolderPath: string) {
         this.app = app;
+        this.spriteFolderPath = spriteFolderPath;
     }
 
     async init(): Promise<this> {
-        await loaderHandler('super-man01', '/static/images/img-superman01/img-superman01.json');
-        const superManFrames: PIXI.Texture[] =
-            ["img-superman010.png", "img-superman011.png", "img-superman012.png"]
-                .map(x => PIXI.Texture.fromFrame(x))
+        await loaderHandler('super-man', '/static/images/img-superman01/img-superman01.json');
+
+        const superManFrames: PIXI.Texture[] = Object.keys(PIXI.loader.resources['super-man'].data.frames)
+                .map(key => PIXI.Texture.fromFrame(key))
 
         
         this.sprite = new PIXI.Graphics();

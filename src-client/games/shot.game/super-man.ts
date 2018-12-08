@@ -6,28 +6,29 @@ import { Cannon } from './cannon';
 export class SuperMan {
   private app: PIXI.Application = null
   private cannon: Cannon = null;
+  private spriteFolderPath: string;
 
   public man: PIXI.extras.AnimatedSprite = null;
   public ball: PIXI.Sprite = null;
   public isReady: boolean = false;
 
-  constructor(app: PIXI.Application, cannon: Cannon) {
+  constructor(app: PIXI.Application, cannon: Cannon, spriteFolderPath: string) {
     this.app = app;
     this.cannon = cannon;
+    this.spriteFolderPath = spriteFolderPath;
   }
 
   async initMan(): Promise<PIXI.extras.AnimatedSprite> {
-    if (!PIXI.loader.resources['man']) await loaderHandler('man', '/static/images/img-superman01/img-superman01.json');
-    const superManFrames: PIXI.Texture[] =
-      ["img-superman010.png", "img-superman011.png", "img-superman012.png"]
-        .map(x => PIXI.Texture.fromFrame(x))
+    if (!PIXI.loader.resources['man']) await loaderHandler('super-man', '/static/images/img-superman01/img-superman01.json');
+    const superManFrames: PIXI.Texture[] = Object.keys(PIXI.loader.resources['super-man'].data.frames)
+            .map(key => PIXI.Texture.fromFrame(key))
 
     this.man = new PIXI.extras.AnimatedSprite(superManFrames);
     this.man.x = 0;
     this.man.anchor.y = 1;
     this.man.y = this.cannon.carY + this.cannon.carHeight;
     this.man.animationSpeed = 0.1;
-    this.man.play();
+    // this.man.play();
 
     // window['man'] = this.man;
 

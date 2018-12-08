@@ -6,13 +6,22 @@ class ShotGamePage extends BasePage {
     private shotGame: ShotGame;
 
     async domEventBinding() {
-        this.gameId = this.$('#hidden_game_id').val() as string;
-        this.shotGame = await new ShotGame(window.innerWidth, window.innerHeight).init();
-
-        this.shotGame.addEventListener('gameEnd', this.reportGameResult.bind(this));
+        this.gameId = this.$('#hidden_game_id').val() as string;   
     }
 
     async didMount() {
+        this.getMemberProfile();
+    }
+
+    async getMemberProfile(): Promise<void> {
+        const profileRet = await this.webSvc.member.getProfile()
+
+        const {  currentRoleGameItem } = profileRet.item;
+        const { spriteFolderPath } = currentRoleGameItem;
+
+        this.shotGame = await new ShotGame(window.innerWidth, window.innerHeight, spriteFolderPath).init();
+        this.shotGame.addEventListener('gameEnd', this.reportGameResult.bind(this));
+
         this.toggleLoader(false);
     }
 
@@ -23,8 +32,8 @@ class ShotGamePage extends BasePage {
             gameHistoryId: this.gameId,
             scoreEncryptString: btoa(btoa(scores.toString())),
             gamePintEncryptString: btoa(btoa(gamePoints.toString()))
-            // scoreEncryptString: btoa(btoa('1103')),
-            // gamePintEncryptString: btoa(btoa('500'))
+            // scoreEncryptString: btoa(btoa('1500')),
+            // gamePintEncryptString: btoa(btoa('300'))
         })
         
         if (!ret.success) {

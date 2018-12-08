@@ -84,6 +84,16 @@ class ShopMerchPage extends BasePage {
                 </div>
                 <div class="footer"></div>
             `).show();
+
+            this.$('#js-buy').click(() => {
+                this.openZoneMask('merch-char');
+                const $attrBox = this.$zoneMask.find('[data-name="merch-char"]');
+                $attrBox.find('.title').text(`${name}`)
+
+                this.$('[data-btn="accept"]').off('click')
+                this.$('[data-btn="accept"]').click(this.buyGameItem.bind(this));
+            })
+
         } else {
             const isGamePoint = type === 3; // 用格上紅利買超人幣
             const isCarPlus = type === 4; // 是購買格上紅利
@@ -118,20 +128,21 @@ class ShopMerchPage extends BasePage {
                 </div>
                 <div class="footer"></div>
             `).show();
+
+            this.$('#js-buy').click(() => {
+                this.openZoneMask('merch-prop');
+                const $attrBox = this.$zoneMask.find('[data-name="merch-prop"]');
+                $attrBox.find('.title').text(`${name} x ${this.count}`)
+                $attrBox.find('.tips').text(`目前持有數: ${this.memberItem ? this.memberItem.memberGameItemIds.length : 0}`);
+
+                this.$('[data-btn="accept"]').off('click')
+                this.$('[data-btn="accept"]').click(this.buyGameItem.bind(this));
+            })
+
+            this.$('#js-plus').click(() => { this.addCount(1) })
+            this.$('#js-less').click(() => { this.addCount(-1) })
         }
 
-        this.$('#js-buy').click(() => {
-            this.openZoneMask('merch-prop');
-            const $attrBox = this.$zoneMask.find('[data-name="merch-prop"]');
-            $attrBox.find('.title').text(`${name} x ${this.count}`)
-            $attrBox.find('.tips').text(`目前持有數: ${this.memberItem ? this.memberItem.memberGameItemIds.length : 0}`);
-
-            this.$('[data-btn="accept"]').off('click')
-            this.$('[data-btn="accept"]').click(this.buyGameItem.bind(this));
-        })
-
-        this.$('#js-plus').click(() => { this.addCount(1) })
-        this.$('#js-less').click(() => { this.addCount(-1) })
     }
 
     addCount(num: number): void {
@@ -144,6 +155,9 @@ class ShopMerchPage extends BasePage {
     }
 
     async buyGameItem(): Promise<void> {
+        const useNow = this.$("#js-use").prop('checked');
+        // 是否立即使用此超人
+
         const ret = await this.webSvc.game.buyGameItem({
             gameItemId: this.itemId,
             num: this.count
@@ -155,6 +169,16 @@ class ShopMerchPage extends BasePage {
             });
             return;
         }
+
+        if (useNow) {
+            // 立即使用此超人
+            await this.getMemberItems();
+            const id = this.memberItem.memberGameItemIds[0]
+            if (id) {
+                await this.webSvc.member.useGameItem(id);
+            } 
+        }
+
         this.fakeAlert({
             title: '購買成功',
             text: '',

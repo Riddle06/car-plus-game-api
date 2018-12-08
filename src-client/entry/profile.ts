@@ -4,6 +4,7 @@ import { BasePage } from "./base.page";
 
 class ProfilePage extends BasePage {
     private $info: JQuery<HTMLElement>;
+    private $infoCard: JQuery<HTMLElement>;
     private nickName: string = '';
     private levelList: LevelUpInformation[];
     private currentRoleGameItem: GameItemVM;
@@ -12,6 +13,7 @@ class ProfilePage extends BasePage {
         const _this = this;
 
         this.$info = this.$("#js-info");
+        this.$infoCard = this.$("#js-info-card");
 
         this.$('#js-submit').click(async () => {
             // 送出暱稱
@@ -61,10 +63,11 @@ class ProfilePage extends BasePage {
 
         this.$info.find("#js-gamePoint").text(gamePoint);
         this.$info.find("#js-carPlusPoint").text(carPlusPoint);
-        this.$info.find("#js-nickName").text(nickName);
-        this.$info.find("#js-level").text(`${level}級`);
-        this.$info.find("#js-experience").text(`${experience}/${levelUpNeedExperience}`);
-        this.$info.find("#js-percentage").css('width', `${percentage}%`);
+
+        this.$infoCard.find("#js-nickName").text(nickName);
+        this.$infoCard.find("#js-level").text(`${level}級`);
+        this.$infoCard.find("#js-experience").text(`${experience}/${levelUpNeedExperience}`);
+        this.$infoCard.find("#js-percentage").css('width', `${percentage}%`);
 
         this.nickName = nickName;
         this.$("#js-nickNameValue").val(nickName)
@@ -82,7 +85,7 @@ class ProfilePage extends BasePage {
                 const isCurrent = this.currentRoleGameItem.id === item.id;
                 // 角色
                 return `
-                    <a href="${isCurrent ? 'javascript:;': `/profile/game-item/${item.id}` }">
+                    <a href="/profile/game-item/${item.id}">
                         <div class="item item-char">
                             <div class="item__icon ${isCurrent ? 'icon__accept': '' }"></div>
                             <div class="item__main">

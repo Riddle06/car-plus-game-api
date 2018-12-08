@@ -7,11 +7,21 @@ class CatchGamePage extends BasePage {
 
     async domEventBinding() {
         this.gameId = this.$('#hidden_game_id').val() as string;
-        this.catchGame = await new CatchGame(window.innerWidth, window.innerHeight).init();
-
-        this.catchGame.addEventListener('gameEnd', this.reportGameResult.bind(this));
+        
     }
     didMount() {
+        this.getMemberProfile();
+    }
+
+    async getMemberProfile(): Promise<void> {
+        const profileRet = await this.webSvc.member.getProfile()
+
+        const {  currentRoleGameItem } = profileRet.item;
+        const { spriteFolderPath } = currentRoleGameItem;
+
+        this.catchGame = await new CatchGame(window.innerWidth, window.innerHeight, spriteFolderPath).init();
+        this.catchGame.addEventListener('gameEnd', this.reportGameResult.bind(this));
+
         this.toggleLoader(false);
     }
 

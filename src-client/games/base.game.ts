@@ -19,8 +19,10 @@ export interface BaseShape {
 export abstract class BaseGame {
     protected isPlaying: Boolean = false; // 遊戲正在進行
     protected isGameEnd: Boolean = false; // 遊戲已結束
+
     public scores: number = 0; // 獲得分數
     public gamePoints: number = 0; // 獲得的超人幣
+
     protected scoresText: Text = null; // 分數文字
     protected gamePointsText: Text = null; // 金幣文字
 
@@ -37,11 +39,14 @@ export abstract class BaseGame {
         height: number
     } = null
 
-    constructor(screenWidth: number, screenHeight: number) {
+    protected superManSpriteFolderPath: string;
+
+    constructor(screenWidth: number, screenHeight: number, superManSpriteFolderPath: string) {
         this.screen = {
             width: screenWidth,
             height: screenHeight
         }
+        this.superManSpriteFolderPath = superManSpriteFolderPath;
     }
     async init(): Promise<this> {
         this.setApplication();

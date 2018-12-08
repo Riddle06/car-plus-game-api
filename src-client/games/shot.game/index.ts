@@ -42,7 +42,7 @@ export class ShotGame extends BaseGame {
 
   protected async initElements(): Promise<boolean> {
     this.cannon = await new Cannon(this.application).init();
-    this.superMan = new SuperMan(this.application, this.cannon);
+    this.superMan = new SuperMan(this.application, this.cannon, this.superManSpriteFolderPath);
     this.superMan.man = await this.superMan.initMan();
     this.monster = await new Monster(this.application).init();
     this.cannon.sprite.addChild(this.superMan.man);

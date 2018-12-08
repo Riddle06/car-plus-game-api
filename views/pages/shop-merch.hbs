@@ -1,20 +1,6 @@
-<div id="js-info" class="wrapper wrap-bg05">
-  <div class="userInfo">
-    <div class="userInfo__item userInfo__item--coins">
-      <div id="js-gamePoint" class="item">{gamePoint}</div>
-      <div class="itemBg"><img src="/static/images/img_user_coins.png" alt=""></div>
-    </div>
-    <div class="userInfo__item userInfo__item--img">
-      <div class="character">
-        <div class="item--character"><img src="/static/images/img_character02.png" alt=""></div>
-      </div>
-      <div class="itemBg"><img src="/static/images/img_user_character.png" alt=""></div>
-    </div>
-    <div class="userInfo__item userInfo__item--bouns">
-      <div id="js-carPlusPoint" class="item">{carPlusPoint}</div>
-      <div class="itemBg"><img src="/static/images/img_user_bonus.png" alt=""></div>
-    </div>
-  </div>
+<div class="wrapper wrap-bg05">
+  {{> userInfo}}
+
   <!-- 角色 start -->
   <div id="js-character" class="merch merch-character" style="display: none;">
     <div class="button__back type-btn" onclick="history.back()"><img src="/static/images/btn_back.png" alt=""></div>
@@ -39,6 +25,7 @@
     <div class="footer"></div>
   </div>
   <!-- 角色 end -->
+  
   <!-- 道具 start -->
   <div id="js-prop" class="merch merch-prop" style="display: none;">
     <div class="button__back type-btn" onclick="history.back()"><img src="/static/images/btn_back.png" alt=""></div>
@@ -76,7 +63,7 @@
       <div class="inputList">
         <div class="title">實習超人</div>
         <div class="tips"><label>
-            <input type="checkbox" class="option-input checkbox" />
+            <input id="js-use" type="checkbox" class="option-input checkbox" />
             <span>我要立即使用此角色</span>
           </label></div>
       </div>

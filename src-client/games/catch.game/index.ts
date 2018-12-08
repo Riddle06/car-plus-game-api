@@ -27,7 +27,7 @@ export class CatchGame extends BaseGame {
         this.fallItemsContainer = generateContainer(this.application.screen.width, this.application.screen.height);
         this.stage.addChild(this.fallItemsContainer);
         // 建立超人
-        this.superMan = await new SuperMan(this.application).init();
+        this.superMan = await new SuperMan(this.application, this.superManSpriteFolderPath).init();
         this.stage.addChild(this.superMan.sprite);
         // 建立計時器
         await this.setGameTime();
