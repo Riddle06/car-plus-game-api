@@ -14,11 +14,32 @@ export class CarPlusLibSvc extends BaseConnection {
         const queryRet: { msg: string, id: string, bonus: number }[] = await this.entityManager.query('execute s_customer_R2 @0', [carPlusMemberId]);
 
         if (queryRet.length === 0) {
-            throw new AppError(`查無資料 carPlusMemberId: ${carPlusMemberId}`)
+            if (testRegex.test(carPlusMemberId)) {
+                ret.item = {
+                    carPlusPoint: queryRet[0].bonus,
+                    dateCreated: luxon.DateTime.fromFormat("2017-01-10 10:00:00", "YYYY-MM-DD HH:mm:ss").toJSDate(),
+                    id: carPlusMemberId
+                }
+                return ret.setResultValue(true)
+            } else {
+                throw new AppError(`查無資料 carPlusMemberId: ${carPlusMemberId}`)
+            }
+
         }
 
         if (queryRet[0].msg === "error") {
-            throw new AppError(`此ID無效，並無此會員 carPlusMemberId: ${carPlusMemberId}`)
+
+            if (testRegex.test(carPlusMemberId)) {
+                ret.item = {
+                    carPlusPoint: queryRet[0].bonus,
+                    dateCreated: luxon.DateTime.fromFormat("2017-01-10 10:00:00", "YYYY-MM-DD HH:mm:ss").toJSDate(),
+                    id: carPlusMemberId
+                }
+                return ret.setResultValue(true)
+            } else {
+                throw new AppError(`此ID無效，並無此會員 carPlusMemberId: ${carPlusMemberId}`)
+            }
+
         }
 
         ret.item = {
