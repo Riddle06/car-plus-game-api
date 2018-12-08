@@ -20,6 +20,7 @@ class HomePage extends BasePage {
                 });
                 return;
             }
+            this.$("#js-nick-name").text(nickName);
             this.openZoneMask('next');
         })
 
@@ -29,7 +30,7 @@ class HomePage extends BasePage {
     didMount(): void {
 
         this.getMemberProfile();
-        
+
         return;
     }
 

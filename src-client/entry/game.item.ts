@@ -1,5 +1,5 @@
 import { BasePage } from "./base.page";
-import { MemberGameItemVM, GameItemVM, UseGameItemVM } from '@view-models/game.vm';
+import { MemberGameItemVM, GameItemVM, UseGameItemVM, GameItemType } from '@view-models/game.vm';
 
 class ShopPage extends BasePage {
     private $info: JQuery<HTMLElement>;
@@ -123,7 +123,21 @@ class ShopPage extends BasePage {
                 this.openZoneMask('user-prop');
                 const $attrBox = this.$zoneMask.find('[data-name="user-prop"]');
                 $attrBox.find('.title').text(`${name}`)
-                $attrBox.find('.tips').text(`目前持有數: ${this.memberItem.memberGameItemIds.length}`)
+                let itemCount = 0;
+                switch (this.memberItem.type) {
+                    case GameItemType.role:
+                    case GameItemType.tool:
+                        itemCount = this.memberItem.memberGameItemIds.length;
+                        break;
+                    case GameItemType.carPlusPoint:
+                        itemCount = parseInt(this.$info.find("#js-carPlusPoint").text())
+                        break;
+                    case GameItemType.gamePoint:
+                        itemCount = parseInt(this.$info.find("#js-gamePoint").text())
+                        break;
+                }
+
+                $attrBox.find('.tips').text(`目前持有數: ${itemCount}`)
 
                 this.$('[data-btn="accept"]').off('click')
                 this.$('[data-btn="accept"]').click(() => {
