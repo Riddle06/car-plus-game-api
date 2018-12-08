@@ -114,7 +114,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
             .orderBy("gameItem.type", "ASC")
             .addOrderBy("memberGameItem.is_using", "DESC")
             .setParameters({
-                types: [GameItemType.tool, GameItemType.role],
+                types: [GameItemType.tool],
                 memberId: this.memberId
             })
             .getMany();
@@ -328,7 +328,6 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
         const gameItem = await memberGameItemRet.items.find(item => item.isUsing && item.type === GameItemType.role);
         const ret = new Result<GameItemVM>(true);
-
         if (!checker.isNullOrUndefinedObject(gameItem)) {
             ret.item = {
                 id: gameItem.id,
@@ -342,6 +341,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 spriteFolderPath: gameItem.spriteFolderPath,
                 levelMinLimit: gameItem.levelMinLimit
             }
+            return ret;
         }
 
         const gameItemEntity = await this.entityManager.getRepository(GameItemEntity).findOne({
