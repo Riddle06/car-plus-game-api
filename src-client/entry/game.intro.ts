@@ -1,25 +1,18 @@
 import { UseGameItemVM } from '@view-models/game.vm';
-import { BasePage } from "./base.page";
+import { BasePage, PlusItem } from "./base.page";
 
-enum GameItem {
-    pointPlus = "920A9F93-102F-4B55-9ED5-A93F887DAF27",
-    coinPlus = "28CCBE12-023B-42D9-97E0-23B1AFB56029"
-}
+
 
 class GameIntroPage extends BasePage {
     private gameCode: string
     private gameId: string
-    private $pointPlusInfo: JQuery<HTMLElement>;
-    private $coinPlusInfo: JQuery<HTMLElement>;
+    private $content: JQuery<HTMLElement>;
     private items: UseGameItemVM[] = [];
 
     async domEventBinding() {
-        this.$pointPlusInfo = this.$("#js-pointPlus");
-        this.$coinPlusInfo = this.$("#js-coinPlus");
-
+        this.$content = this.$("#js-content");
         this.$('#js-go').click(() => { this.startGameHandler(this.gameId) })
-        this.$pointPlusInfo.click(() => { this.useGameItemPopup(GameItem.pointPlus) })
-        this.$coinPlusInfo.click(() => { this.useGameItemPopup(GameItem.coinPlus) })
+
     }
     didMount() {
         this.gameCode = this.$('#hidden_game_code').val() as string;
@@ -52,19 +45,11 @@ class GameIntroPage extends BasePage {
     }
 
     loadGameItems(useGameItems: UseGameItemVM[]): void {
-
+        this.$content.html('');
         for (const item of useGameItems) {
-            let $target: JQuery<HTMLElement>;
-            switch(item.gameItemId) {
-                case GameItem.pointPlus:
-                    $target = this.$pointPlusInfo;
-                    break;
-                case GameItem.coinPlus:
-                    $target = this.$coinPlusInfo;
-                    break;
-            }
+
             const { totalGameItemCount, isUsing, gameItem, usingRemainTimes } = item;
-            const { name } = gameItem;
+            const { name, spriteFolderPath } = gameItem;
             const className = totalGameItemCount <= 0 ? 'item-prop--lock' : isUsing ? 'item-prop--select' : 'item-prop';
 
             let useStatusHtml = '';
@@ -72,21 +57,28 @@ class GameIntroPage extends BasePage {
                 let twoTimes = usingRemainTimes === 2;
 
                 useStatusHtml = `
+                    <!-- 使用中會有兩次： 1:未使用 | 0:已使用 | select:目前狀態(閃爍) -->
                     <div class="item ${twoTimes ? '' : 'select'}"><img src="/static/images/img_itemrate_1.png" alt=""></div>
                     <div class="item ${twoTimes ? 'select' : ''}"><img src="/static/images/img_itemrate_${twoTimes ? '1' : '0'}.png" alt=""></div>
                 `
             }
 
-            let tempHtml = $target
-                .attr('class', 'type-btn item ' + className)
-                .attr('data-id', item.gameItemId)
-                .html()
-                .replace('{itemName}', name)
-                .replace('{totalGameItemCount}', totalGameItemCount.toString())
+            const $item = this.$(`
+                <div class="type-btn item ${className}" data-id="${item.gameItemId}" data-btn="attrBox">
+                    <div class="item-icon"><img src="${spriteFolderPath}list.png" alt=""></div>
+                    <div class="item-info">
+                        <div class="item-name">${name}</div>
+                        <div class="item-possess"><span>${totalGameItemCount}</span></div>
+                        <div class="item-objects">
+                            ${useStatusHtml}
+                        </div>
+                    </div>
+                </div>
+            `)
 
-            $target.html(tempHtml);
-            $target.find('.item-objects').html(useStatusHtml)
-            $target.show();
+            $item.click(() => { this.useGameItemPopup(item.gameItemId) })
+
+            this.$content.append($item);
         }
     }
 

@@ -47,32 +47,32 @@
     <!-- 道具使用 start -->
     <div class="wrap-gameprop">
         <div class="gameprop__title"><img src="/static/images/img_proptitle.png" alt=""></div>
-        <div class="gameprop__content">
+        <div id="js-content" class="gameprop__content">
             <!-- item-prop:一般狀態 | item-prop--lock:鎖住狀態 | item-prop--select: 使用中狀態 -->
-            <div id="js-pointPlus" class="type-btn item" data-btn="attrBox" style="display: none">
+            {{!-- <div class="type-btn item" data-btn="attrBox" style="display: none">
                 <div class="item-icon"><img src="/static/images/icon_scoreup.png" alt=""></div>
                 <div class="item-info">
                     <div class="item-name">{itemName}</div>
                     <div class="item-possess"><span>{totalGameItemCount}</span></div>
                     <div class="item-objects">
                         <!-- 使用中會有兩次： 1:未使用 | 0:已使用 | select:目前狀態(閃爍) -->
-                        {{!-- <div class="item"><img src="/static/images/img_itemrate_1.png" alt=""></div>
-                        <div class="item"><img src="/static/images/img_itemrate_1.png" alt=""></div> --}}
+                        <div class="item"><img src="/static/images/img_itemrate_1.png" alt=""></div>
+                        <div class="item"><img src="/static/images/img_itemrate_1.png" alt=""></div>
                     </div>
                 </div>
             </div>
-            <div id="js-coinPlus" class="type-btn item" data-btn="attrBox" data-name="accept" style="display: none">
+            <div class="type-btn item" data-btn="attrBox" style="display: none">
                 <div class="item-icon"><img src="/static/images/icon_coinup.png" alt=""></div>
                 <div class="item-info">
                     <div class="item-name">{itemName}</div>
                     <div class="item-possess"><span>{totalGameItemCount}</span></div>
                     <div class="item-objects">
                         <!-- 使用中會有兩次： 1:未使用 | 0:已使用 | select:目前狀態(閃爍) -->
-                        {{!-- <div class="item select"><img src="/static/images/img_itemrate_1.png" alt=""></div>
-                        <div class="item"><img src="/static/images/img_itemrate_0.png" alt=""></div> --}}
+                        <div class="item select"><img src="/static/images/img_itemrate_1.png" alt=""></div>
+                        <div class="item"><img src="/static/images/img_itemrate_0.png" alt=""></div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
     <!-- 道具使用 end -->

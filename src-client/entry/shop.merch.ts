@@ -1,4 +1,4 @@
-import { BasePage } from "./base.page";
+import { BasePage, PlusItem } from "./base.page";
 import { MemberGameItemVM, GameItemVM } from '@view-models/game.vm';
 
 class ShopMerchPage extends BasePage {
@@ -57,7 +57,7 @@ class ShopMerchPage extends BasePage {
     }
 
     render(): void {
-        const { type, name, description, gamePoint, carPlusPoint } = this.item;
+        const { type, name, description, gamePoint, carPlusPoint, spriteFolderPath } = this.item;
         const isHave = !!this.memberItem && !!this.memberItem.memberGameItemIds.length;
 
         if (type === 1) {
@@ -90,6 +90,7 @@ class ShopMerchPage extends BasePage {
             const enoughPoint = isGamePoint ? this.carPlusPoint >= carPlusPoint : this.gamePoint > this.count * gamePoint;
             console.log(this.gamePoint, this.count * gamePoint)
 
+
             // 道具
             this.$prop.html(`
                 <div class="button__back type-btn" onclick="history.back()"><img src="/static/images/btn_back.png" alt=""></div>
@@ -97,7 +98,7 @@ class ShopMerchPage extends BasePage {
                 <div class="content">
                     <div class="merch__title">${name}</div>
                     <div class="merch__graph">
-                        <div class="photo"><img src="/static/images/img_item_1.png" alt=""></div>
+                        <div class="photo"><img src="${spriteFolderPath}details.png" alt=""></div>
                     </div>
                     <div class="merch__price type-shop"><span>${isGamePoint ? carPlusPoint : gamePoint}</span></div>
                     <div class="merch__info">${description}</div>

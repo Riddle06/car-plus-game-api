@@ -136,3 +136,10 @@ interface AlertOptions {
     showCancelButton?: Boolean,
     closeCallback?: Function,
 }
+
+export enum PlusItem {
+    pointPlus = "920A9F93-102F-4B55-9ED5-A93F887DAF27",
+    coinPlus = "28CCBE12-023B-42D9-97E0-23B1AFB56029",
+    gamePoint = "BCDC5657-F5EF-4D97-ADEE-5BD2129202C2",
+    carsPlusPoint = ""
+}

@@ -84,7 +84,7 @@ class ProfilePage extends BasePage {
                 return `
                     <a href="${isCurrent ? 'javascript:;': `/profile/game-item/${item.id}` }">
                         <div class="item item-char">
-                            <div class="item__icon icon__accept"></div>
+                            <div class="item__icon ${isCurrent ? 'icon__accept': '' }"></div>
                             <div class="item__main">
                                 <div class="goods"><img src="/static/images/img_character02.png" alt=""></div>
                             </div>
@@ -98,7 +98,7 @@ class ProfilePage extends BasePage {
                     <div class="item item-prop">
                         <div class="item__icon icon__amount"><span>x${item.memberGameItemIds.length}</span></div>
                         <div class="item__main">
-                            <div class="goods"><img src="${item.imageUrl}" alt=""></div>
+                            <div class="goods"><img src="${item.spriteFolderPath}list.png" alt=""></div>
                         </div>
                     </div>
                 </a>

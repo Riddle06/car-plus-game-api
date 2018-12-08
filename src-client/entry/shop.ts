@@ -14,8 +14,9 @@ class ShopPage extends BasePage {
 
         this.$info = this.$("#js-info");
     } 
-    didMount() {
-        this.getMemberProfile();
+    async didMount() {
+        await this.getMemberProfile();
+        await this.getMemberItems();
         this.getGameItems();
     }
     
@@ -53,7 +54,7 @@ class ShopPage extends BasePage {
 
         
         this.$('#js-character').html(this.characters.map(obj => {
-            const isHold = this.memberItems.some(item => item.id === obj.id)
+            const isHave = this.memberItems.some(item => item.id === obj.id)
             const enable = obj.enableBuy && this.level >= obj.levelMinLimit;
 
             return `
@@ -65,9 +66,9 @@ class ShopPage extends BasePage {
                     </div>
                     <!-- lock:鎖住(等級限制) | price:解鎖(購買金額) | hold:已擁有 | show:顯示 -->
                     <div class="item__tips type-shop">
-                        <div class="it-s lock ${enable? '' : 'show'}"><span>Lv${obj.levelMinLimit}</span></div>
-                        <div class="it-s price ${enable ? 'show' : ''}"><span>${obj.gamePoint}</span></div>
-                        <div class="it-s hold ${isHold ? 'show': ''}"></div>
+                        <div class="it-s lock ${enable || isHave ? '' : 'show'}"><span>Lv${obj.levelMinLimit}</span></div>
+                        <div class="it-s price ${enable && !isHave ? 'show' : ''}"><span>${obj.gamePoint}</span></div>
+                        <div class="it-s hold ${isHave ? 'show': ''}"></div>
                     </div>
                 </div>
             `
@@ -81,7 +82,7 @@ class ShopPage extends BasePage {
             return `
                 <div class="item ${enable ? 'js-buy' : 'item--lock'}" data-id="${obj.id}">
                     <div class="item__main">
-                    <div class="goods"><img src="/static/images/icon_scoreup.png" alt=""></div>
+                    <div class="goods"><img src="${obj.spriteFolderPath}list.png" alt=""></div>
                     </div>
                     <!-- price: 超人幣 | bounce: 紅利 -->
                     <div class="item__tips type-shop">

@@ -63,12 +63,12 @@ class GameResultPage extends BasePage {
 
             setTimeout(() => {
                 this.$level.text(`${afterLevel}級`);
-                this.$gamePoint.text(`${gamePoint - levelUpGamePoint}+${levelUpGamePoint}`);
                 if (levelUpGamePoint) {
                     this.fakeAlert({
                         title: `恭喜您升級！獲得${levelUpGamePoint}超人幣`,
                         text: '',
                     });
+                    this.$gamePoint.text(`${gamePoint - levelUpGamePoint}+${levelUpGamePoint}`);
                 }
             }, 200)
         }, 1000)
