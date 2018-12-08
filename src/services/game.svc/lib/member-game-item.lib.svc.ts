@@ -525,8 +525,8 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 // 要扣掉格上紅利
                 // 加遊戲點數
                 pointHistoryResult = await memberGamePointLibSvc.addGamePointByTransferFromCarPlusPoint(
-                    gameItemEntity.carPlusPoint,
                     gameItemEntity.gamePoint,
+                    gameItemEntity.carPlusPoint,
                     {
                         gameItemId: gameItemEntity.id,
                         memberGameItemId: memberGameItemEntity.id
