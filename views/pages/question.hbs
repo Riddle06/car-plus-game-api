@@ -24,8 +24,8 @@
             <div class="faq__list">
                 {{#each questions}}
                 <div class="faq__item">
-                    <div class="item-q">{{question}}</div>
-                    <div class="item-a">{{answer}}</div>
+                    <div class="item-q js-question" data-index="{{@index}}">{{question}}</div>
+                    <div id="js-answer-{{@index}}" class="item-a" style="display: none">{{answer}}</div>
                 </div>
                 {{/each}}
                 {{!-- <div class="faq__item">

@@ -7,6 +7,11 @@ class QuestionPage extends BasePage {
         const _this = this;
 
         this.$info = this.$("#js-info");
+
+        this.$(".js-question").click((e) => {
+            const id = this.$(e.currentTarget).attr('data-index');
+            this.$(`#js-answer-${id}`).slideToggle(400);
+        })
     } 
     didMount() {
         this.getMemberProfile();
