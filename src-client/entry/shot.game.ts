@@ -1,5 +1,6 @@
 import { BasePage } from "./base.page";
 import { ShotGame } from '../games/shot.game'
+import { GameCode } from "@view-models/game.vm";
 
 class ShotGamePage extends BasePage {
     private gameId: string
@@ -9,17 +10,27 @@ class ShotGamePage extends BasePage {
         this.gameId = this.$('#hidden_game_id').val() as string;   
     }
 
-    async didMount() {
-        this.getMemberProfile();
+    didMount() {
+        this.initGame();
     }
 
-    async getMemberProfile(): Promise<void> {
+    async initGame(): Promise<void> {
+        const ganeListRet = await this.webSvc.game.getGameList();
+        const { parameters } = ganeListRet.items.find(item => item.code === GameCode.shot);
+
         const profileRet = await this.webSvc.member.getProfile()
 
         const {  currentRoleGameItem } = profileRet.item;
         const { spriteFolderPath } = currentRoleGameItem;
 
-        this.shotGame = await new ShotGame(window.innerWidth, window.innerHeight, spriteFolderPath).init();
+        this.shotGame = await new ShotGame({
+            screenWidth: window.innerWidth,
+            screenHeight: window.innerHeight,
+            superManSpriteFolderPath: spriteFolderPath,
+            monsterSpriteFolderPath: '',
+            parameters,
+        }).init();
+
         this.shotGame.addEventListener('gameEnd', this.reportGameResult.bind(this));
 
         this.toggleLoader(false);

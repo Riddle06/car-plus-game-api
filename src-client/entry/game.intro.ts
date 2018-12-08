@@ -26,8 +26,21 @@ class GameIntroPage extends BasePage {
     
 
     async startGameHandler(gameId: string): Promise<void> {
+        if(this.isProcessing) return;
+
+        this.toggleLoader(true);
+        this.isProcessing = true;
         const startGameRet = await this.webSvc.game.startGame({ gameId });
-        console.log('[startGameRet]', startGameRet);
+        if (!startGameRet.success) {
+            this.toggleLoader(false);
+            this.isProcessing = false;
+            this.fakeAlert({
+                title: 'Oops',
+                text: startGameRet.message
+            });
+            return;
+        }
+        // console.log('[startGameRet]', startGameRet);
 
         if (startGameRet.success && startGameRet.item.id) {
             location.href = `/${this.gameCode}-game/${startGameRet.item.id}`;

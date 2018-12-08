@@ -2,7 +2,14 @@ import { Application, Texture, loader, Sprite, Text } from "pixi.js";
 import * as pad from "pad-left";
 
 interface LoaderResponse {
-    llama: PIXI.extras.AnimatedSprite
+    animatedSprite: PIXI.extras.AnimatedSprite
+}
+
+export interface GameConfig {
+    screenWidth: number,
+    screenHeight: number,
+    superManSpriteFolderPath: string,
+    monsterSpriteFolderPath?: string,
 }
 
 export interface BaseShape {
@@ -41,12 +48,12 @@ export abstract class BaseGame {
 
     protected superManSpriteFolderPath: string;
 
-    constructor(screenWidth: number, screenHeight: number, superManSpriteFolderPath: string) {
+    constructor(config: GameConfig) {
         this.screen = {
-            width: screenWidth,
-            height: screenHeight
+            width: config.screenWidth,
+            height: config.screenHeight
         }
-        this.superManSpriteFolderPath = superManSpriteFolderPath;
+        this.superManSpriteFolderPath = config.superManSpriteFolderPath;
     }
     async init(): Promise<this> {
         this.setApplication();

@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
-import { BaseGame, loaderHandler, hitTestRectangle } from '../base.game';
+import { BaseGame, loaderHandler, hitTestRectangle, GameConfig } from '../base.game';
 import { Cannon } from './cannon';
 import { SuperMan } from './super-man';
-import { Monster } from './monster';
+import { Monster, MoveMode } from './monster';
 // import * as dat from "dat.gui";
 // const gui = new dat.GUI();
 
@@ -13,6 +13,18 @@ interface LifeVM {
   hollow: PIXI.Sprite,
 }
 
+export interface ShotGameConfig extends GameConfig {
+  parameters: ShotGameParameters
+}
+
+export interface ShotGameParameters {
+  degreeConfig: any
+  rotationSpeed: number
+  shellInitPower: number
+  shellInitWeightSpeed: number
+  moveModes: MoveMode[]
+}
+
 export class ShotGame extends BaseGame {
   private superMan: SuperMan = null; // 超人
   private cannon: Cannon = null // 大砲
@@ -21,15 +33,22 @@ export class ShotGame extends BaseGame {
   private lifeStep: number = 0; // 現在使用的命
   private level: number = 1; // 等級
 
-  private readonly shellInitPower = 13; // 射擊初速度
-  private shellInitWeightSpeed = 0.1;
+  private shellInitPower: number = 13; // 射擊初速度
+  private shellInitWeightSpeed: number = 0.1;
   private shotting: boolean;
 
   private currentShellXPower: number = 0
   private currentShellYPower: number = 0
   private currentShellWeightSpeed = 0
 
+  public parameters: ShotGameParameters;
 
+  constructor(config: ShotGameConfig) {
+    super(config);
+    this.parameters = config.parameters;
+    this.shellInitPower = this.parameters.shellInitPower;
+    this.shellInitWeightSpeed = this.parameters.shellInitWeightSpeed;
+}
 
   protected async initImages(): Promise<void> {
     await loaderHandler('bg', '/static/images/bg.shot.jpg');
@@ -41,10 +60,10 @@ export class ShotGame extends BaseGame {
   }
 
   protected async initElements(): Promise<boolean> {
-    this.cannon = await new Cannon(this.application).init();
+    this.cannon = await new Cannon(this.application, this.parameters).init();
     this.superMan = new SuperMan(this.application, this.cannon, this.superManSpriteFolderPath);
     this.superMan.man = await this.superMan.initMan();
-    this.monster = await new Monster(this.application).init();
+    this.monster = await new Monster(this.application, this.parameters.moveModes).init();
     this.cannon.sprite.addChild(this.superMan.man);
     this.stage.addChild(this.cannon.sprite);
     this.stage.addChild(this.monster.sprite);
@@ -69,14 +88,14 @@ export class ShotGame extends BaseGame {
   protected async initElementsEvents(): Promise<boolean> {
 
     this.application.stage.on('touchstart', () => {
-      console.log(`touchstart`)
+      // console.log(`touchstart`)
 
       if (this.shotting || this.lifeStep >= 2 || !this.superMan.isReady) return;
       this.cannon.isRotating = true;
     })
 
     this.application.stage.on('touchend', () => {
-      console.log(`touchend`)
+      // console.log(`touchend`)
 
       if (this.shotting || this.lifeStep >= 2 || !this.superMan.isReady || !this.cannon.isRotating) return;
       this.cannon.isRotating = false

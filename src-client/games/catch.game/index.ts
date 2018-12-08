@@ -1,19 +1,39 @@
-import { BaseGame, hitTestRectangle, loaderHandler, generateContainer } from "../base.game";
-import { Graphics, Text, Texture, Sprite, loader } from "pixi.js";
-import { SuperMan, SuperManDirection } from './super-man';
-import { FallItem } from './fall-item';
+import { BaseGame, hitTestRectangle, loaderHandler, generateContainer, GameConfig } from "../base.game";
+import { Text } from "pixi.js";
+import { SuperMan } from './super-man';
+import { FallItem, FallItemType } from './fall-item';
 import * as moment from 'moment';
 
 // import * as dat from "dat.gui";
 // const gui = new dat.GUI();
 
+export interface CatchGameConfig extends GameConfig {
+    parameters: CatchGameParameters
+}
+
+export interface CatchGameParameters {
+    fallSpeed: number
+    gameTime: number
+    lessTime: number
+    moveSpeed: number,
+    types: FallItemType[]
+}
+
+
 export class CatchGame extends BaseGame {
     private superMan: SuperMan = null; // 超人
     private fallItems: FallItem[] = []; // 掉落物陣列
     private fallItemsContainer: PIXI.Container = null;
-    private gameTime: number = 60; // 遊戲時間
+    private gameTime: number; // 遊戲時間
     private timeText: Text = null; // 時間顯示文字
     private now: moment.Moment = moment(); // 計算時間用
+    private parameters: CatchGameParameters;
+
+    constructor(config: CatchGameConfig) {
+        super(config);
+        this.parameters = config.parameters;
+        this.gameTime = this.parameters.gameTime;
+    }
 
 
     protected async initImages(): Promise<void> {
@@ -27,7 +47,7 @@ export class CatchGame extends BaseGame {
         this.fallItemsContainer = generateContainer(this.application.screen.width, this.application.screen.height);
         this.stage.addChild(this.fallItemsContainer);
         // 建立超人
-        this.superMan = await new SuperMan(this.application, this.superManSpriteFolderPath).init();
+        this.superMan = await new SuperMan(this.application, this.parameters, this.superManSpriteFolderPath).init();
         this.stage.addChild(this.superMan.sprite);
         // 建立計時器
         await this.setGameTime();
@@ -64,7 +84,7 @@ export class CatchGame extends BaseGame {
             posArr[index] = 1;
 
             if ((Math.ceil((Math.random() * 1000)) % 2) === 1) {
-                const fallitem = await new FallItem(this.application).init(index);
+                const fallitem = await new FallItem(this.application, this.parameters).init(index);
                 this.fallItems.push(fallitem);
                 this.fallItemsContainer.addChild(fallitem.sprite)
             }
@@ -87,7 +107,7 @@ export class CatchGame extends BaseGame {
             const { x, y } = this.superMan.sprite;
             let gamePoint = 0;
             // 接到炸彈 隨機扣 0~5秒
-            let time = item.score < 0 ? -Math.floor(Math.random() * 6) : 0;
+            let time = item.score < 0 ? -Math.floor(Math.random() * (this.parameters.lessTime + 1)) : 0;
 
             if (item.score > 0) {
                 // 有獲得點數才有機會獲得硬幣 & 一場最多不拿超過35個
@@ -146,7 +166,7 @@ export class CatchGame extends BaseGame {
 
         this.application.stage.on('touchstart', (e) => {
             // 點擊畫面事件
-            console.log('[touchstart]', e)
+            // console.log('[touchstart]', e)
             this.superMan.turnDirection();
         });
         this.superMan.start(); // 超人開始移動

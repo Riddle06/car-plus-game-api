@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
-import { loaderHandler, BaseShape } from '../base.game';
+import { loaderHandler } from '../base.game';
 
-interface MoveMode {
+export interface MoveMode {
   xSpeed: number,
   ySpeed: number,
   circleSpeed: number,
@@ -39,8 +39,9 @@ export class Monster {
   // public sprite: PIXI.extras.AnimatedSprite = null;
   public sprite: PIXI.Graphics = null;
 
-  constructor(app: PIXI.Application) {
+  constructor(app: PIXI.Application, moveModes: MoveMode[]) {
     this.app = app;
+    this.moveModes = moveModes;
   }
 
   get score(): number {

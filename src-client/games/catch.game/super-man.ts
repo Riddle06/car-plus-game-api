@@ -1,11 +1,12 @@
 import * as PIXI from "pixi.js";
 import { loaderHandler } from '../base.game';
+import { CatchGameParameters } from './index';
 export class SuperMan {
     private initPosition: {
         x: number
         y: number
     } = null
-    private moveSpeed: number = 3;
+    private moveSpeed: number;
     private animationSpeed: number  = 0.1;
     private app: PIXI.Application = null
     private currentDirection: SuperManDirection = SuperManDirection.right;
@@ -16,9 +17,10 @@ export class SuperMan {
     public sprite: PIXI.Graphics = null;
     
     
-    constructor(app: PIXI.Application, spriteFolderPath: string) {
+    constructor(app: PIXI.Application, parameters: CatchGameParameters, spriteFolderPath: string) {
         this.app = app;
         this.spriteFolderPath = spriteFolderPath;
+        this.moveSpeed = parameters.moveSpeed;
     }
 
     async init(): Promise<this> {

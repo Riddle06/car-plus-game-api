@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { loaderHandler } from '../base.game';
+import {  ShotGameParameters } from './index';
 
 export class Cannon {
   private app: PIXI.Application = null;
@@ -9,17 +10,20 @@ export class Cannon {
   // 是否為順時針
   private isClockwiseDirection: boolean = false
 
-  private readonly degreeConfig = {
+  private degreeConfig = {
     max: 100,
     min: 1
   }
+  private rotationSpeed: number = 0.015;
 
   public sprite: PIXI.Graphics = null;
   public currentDegree: number = 0;
   public isRotating: boolean = false;
 
-  constructor(app: PIXI.Application) {
+  constructor(app: PIXI.Application, parameters: ShotGameParameters) {
     this.app = app;
+    this.degreeConfig = parameters.degreeConfig;
+    this.rotationSpeed = parameters.rotationSpeed;
   }
 
   get rotation(): number {
@@ -100,9 +104,9 @@ export class Cannon {
 
     if (this.isClockwiseDirection) {
 
-      this.cannonContainer.rotation += 0.015
+      this.cannonContainer.rotation += this.rotationSpeed;
     } else {
-      this.cannonContainer.rotation -= 0.015
+      this.cannonContainer.rotation -= this.rotationSpeed;
     }
 
     this.currentDegree = Math.abs(this.cannonContainer.rotation / (Math.PI / 180))

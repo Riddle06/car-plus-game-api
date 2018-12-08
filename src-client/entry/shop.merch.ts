@@ -50,7 +50,7 @@ class ShopMerchPage extends BasePage {
 
     async getItemInfo(): Promise<void> {
         const ret = await this.webSvc.game.getGameItemById(this.itemId);
-        console.log(ret)
+        // console.log(ret)
         this.toggleLoader(false);
 
         this.item = ret.item;
@@ -100,7 +100,7 @@ class ShopMerchPage extends BasePage {
             const isGamePoint = type === 3; // 用格上紅利買超人幣
             const isCarPlus = type === 4; // 是購買格上紅利
             const enoughPoint = isGamePoint ? this.carPlusPoint >= carPlusPoint : this.gamePoint > this.count * gamePoint;
-            console.log(this.gamePoint, this.count * gamePoint)
+            // console.log(this.gamePoint, this.count * gamePoint)
 
 
             // 道具

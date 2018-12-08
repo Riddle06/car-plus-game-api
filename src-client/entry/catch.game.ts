@@ -1,5 +1,6 @@
 import { CatchGame } from '../games/catch.game';
 import { BasePage } from "./base.page";
+import { GameCode } from "@view-models/game.vm";
 
 class CatchGamePage extends BasePage {
     private gameId: string
@@ -10,16 +11,24 @@ class CatchGamePage extends BasePage {
         
     }
     didMount() {
-        this.getMemberProfile();
+        this.initGame();
     }
 
-    async getMemberProfile(): Promise<void> {
-        const profileRet = await this.webSvc.member.getProfile()
+    async initGame(): Promise<void> {
+        const ganeListRet = await this.webSvc.game.getGameList();
+        const { parameters } = ganeListRet.items.find(item => item.code === GameCode.catch);
 
+        const profileRet = await this.webSvc.member.getProfile();
         const {  currentRoleGameItem } = profileRet.item;
         const { spriteFolderPath } = currentRoleGameItem;
 
-        this.catchGame = await new CatchGame(window.innerWidth, window.innerHeight, spriteFolderPath).init();
+        this.catchGame = await new CatchGame({
+            screenWidth: window.innerWidth,
+            screenHeight: window.innerHeight,
+            superManSpriteFolderPath: spriteFolderPath,
+            parameters: parameters
+        }).init();
+        
         this.catchGame.addEventListener('gameEnd', this.reportGameResult.bind(this));
 
         this.toggleLoader(false);

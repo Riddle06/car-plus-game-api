@@ -13,7 +13,6 @@ class HomePage extends BasePage {
             // 送出暱稱
             const nickName = this.$("#js-nickNameValue").val() as string;
             const ret = await this.webSvc.member.updateNickName({ nickName: nickName })
-            console.log('[updateNickName]', ret);
             if (!ret.success) {
                 this.fakeAlert({
                     title: 'Oops',
@@ -36,7 +35,7 @@ class HomePage extends BasePage {
 
     async getMemberProfile(): Promise<void> {
         const profileRet = await this.webSvc.member.getProfile()
-        console.log('[profile]', profileRet)
+        // console.log('[profile]', profileRet)
 
         const { nickName, level, gamePoint, carPlusPoint, currentRoleGameItem } = profileRet.item;
         const { spriteFolderPath } = currentRoleGameItem;

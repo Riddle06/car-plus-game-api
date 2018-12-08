@@ -29,7 +29,6 @@ class GameResultPage extends BasePage {
 
     async getGameResult(): Promise<void> {
         const ret = await this.webSvc.game.getGameHistory(this.gameId);
-        console.log(ret)
         if (!ret.success) {
             this.fakeAlert({
                 title: 'Oops',

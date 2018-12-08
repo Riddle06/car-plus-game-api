@@ -41,7 +41,7 @@ class ShopPage extends BasePage {
 
     async getGameItems():  Promise<void> {
         const ret = await this.webSvc.game.getGameItems();
-        console.log(ret)
+        // console.log(ret)
         if (!ret.success) {
             this.fakeAlert({
                 title: 'Oops',

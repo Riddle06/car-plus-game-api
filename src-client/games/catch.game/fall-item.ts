@@ -1,29 +1,26 @@
 import * as PIXI from "pixi.js";
 import { loaderHandler } from '../base.game';
+import { CatchGameParameters } from './index';
 
-interface Type {
+export interface FallItemType {
   score: number,
   name: string
 }
 
 export class FallItem {
-  private fallSpeed: number = 3
+  private fallSpeed: number;
   // private sprite: PIXI.extras.AnimatedSprite = null;
   private app: PIXI.Application = null;
-  private types: Type[] = [];
+  private types: FallItemType[] = [];
 
   public sprite: PIXI.Sprite = null;
   public score: number = 0;
 
 
-  constructor(app: PIXI.Application) {
+  constructor(app: PIXI.Application, parameters: CatchGameParameters) {
     this.app = app;
-    this.types = [
-      { score: -2, name: 'bomb' },
-      { score: 3, name: 'gift01' },
-      { score: 3, name: 'gift02' },
-      { score: 3, name: 'gift03' },
-    ]
+    this.fallSpeed = parameters.fallSpeed;
+    this.types = parameters.types;
   }
 
   async init(index: number): Promise<this> {

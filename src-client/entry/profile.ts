@@ -24,7 +24,7 @@ class ProfilePage extends BasePage {
                 return;
             }
             const ret = await this.webSvc.member.updateNickName({ nickName: nickName })
-            console.log('[updateNickName]', ret);
+            // console.log('[updateNickName]', ret);
             if (!ret.success) {
                 this.fakeAlert({
                     title: 'Oops',
@@ -78,7 +78,7 @@ class ProfilePage extends BasePage {
 
     async getMemberItems(): Promise<void> {
         const ret = await this.webSvc.member.getMemberItems();
-        console.log(ret)
+        // console.log(ret)
 
         this.$("#js-itemList").html(ret.items.map(item => {
             if (item.type === 1) {
