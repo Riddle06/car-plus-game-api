@@ -24,7 +24,7 @@ export class SuperMan {
     }
 
     async init(): Promise<this> {
-        await loaderHandler('super-man', '/static/images/img-superman01/img-superman01.json');
+        await loaderHandler('super-man', `${this.spriteFolderPath || '/static/images/superman00'}/config.json`);
 
         const superManFrames: PIXI.Texture[] = Object.keys(PIXI.loader.resources['super-man'].data.frames)
                 .map(key => PIXI.Texture.fromFrame(key))

@@ -45,7 +45,9 @@ class HomePage extends BasePage {
             .replace('{level}', `${level}級`)
             .replace('{gamePoint}', `${gamePoint}`)
             .replace('{carPlusPoint}', `${carPlusPoint}`)
+
         this.$info.html(infoHtml);
+        this.$("#js-superMan").attr('src', `${spriteFolderPath}/default.png`)
 
         if (this.$.trim(profileRet.item.nickName) === '') {
             this.openZoneMask('attrBox');

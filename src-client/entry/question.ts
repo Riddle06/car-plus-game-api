@@ -40,6 +40,7 @@ class QuestionPage extends BasePage {
 
         this.$info.find("#js-gamePoint").text(gamePoint);
         this.$info.find("#js-carPlusPoint").text(carPlusPoint);
+        this.$(".js-superMan").attr('src', `${spriteFolderPath}/default.png`)
 
         this.toggleLoader(false);
     }

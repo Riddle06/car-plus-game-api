@@ -38,6 +38,7 @@ export class CatchGame extends BaseGame {
 
     protected async initImages(): Promise<void> {
         await loaderHandler('bg', '/static/images/bg.catch.jpg');
+        await loaderHandler('tips', '/static/images/img-tips.png');
 
         this.setBackground();  // 放上背景
     }

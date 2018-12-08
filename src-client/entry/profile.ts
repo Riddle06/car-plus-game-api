@@ -59,7 +59,7 @@ class ProfilePage extends BasePage {
         
         const nowLevelInfo = this.levelList.find(item => item.level === level + 1);
         const levelUpNeedExperience = nowLevelInfo ? nowLevelInfo.experience : 0;
-        const percentage = levelUpNeedExperience ? (experience / levelUpNeedExperience) * 100 : 100;
+        const percentage = levelUpNeedExperience ? (experience / levelUpNeedExperience) * 100 : 0;
 
         this.$info.find("#js-gamePoint").text(gamePoint);
         this.$info.find("#js-carPlusPoint").text(carPlusPoint);
@@ -68,6 +68,8 @@ class ProfilePage extends BasePage {
         this.$infoCard.find("#js-level").text(`${level}級`);
         this.$infoCard.find("#js-experience").text(`${experience}/${levelUpNeedExperience}`);
         this.$infoCard.find("#js-percentage").css('width', `${percentage}%`);
+
+        this.$(".js-superMan").attr('src', `${spriteFolderPath}/default.png`)
 
         this.nickName = nickName;
         this.$("#js-nickNameValue").val(nickName)
@@ -89,7 +91,7 @@ class ProfilePage extends BasePage {
                         <div class="item item-char">
                             <div class="item__icon ${isCurrent ? 'icon__accept': '' }"></div>
                             <div class="item__main">
-                                <div class="goods"><img src="/static/images/img_character02.png" alt=""></div>
+                                <div class="goods"><img src="${item.spriteFolderPath}/default.png" alt=""></div>
                             </div>
                         </div>
                     </a>

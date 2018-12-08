@@ -52,14 +52,18 @@ class GameResultPage extends BasePage {
         let beforeExp = (beforeExperience / levelUpNeedExperience) * 100;
         let afterExp = changeLevel ? 100 : (afterExperience / levelUpNeedExperience) * 100;
 
-        if(!changeLevel && afterExp > 90) {
+        if (!changeLevel && afterExp > 90) {
             afterExp = 90;
+        }
+        if (!nowLevelInfo) {
+            beforeExp = 0;
+            afterExp = 0;
         }
 
         this.$expIng.css('width', `${beforeExp}%`);
         this.$expPlus.css('width', `${afterExp}%`)
 
-        
+
 
         setTimeout(() => {
             this.$expIng.css('width', `${afterExp}%`);
@@ -74,7 +78,7 @@ class GameResultPage extends BasePage {
                     this.$gamePoint.text(`${gamePoint - levelUpGamePoint}+${levelUpGamePoint}`);
 
                     const nowLevelInfo = this.levelList.find(item => item.level === afterLevel + 1);
-                    const levelUpAfterExp = (afterExperience / nowLevelInfo.experience) * 100;
+                    const levelUpAfterExp = nowLevelInfo ? (afterExperience / nowLevelInfo.experience) * 100 : 0;
                     this.$expPlus.css('width', `${levelUpAfterExp}%`)
                     this.$expIng.css('width', `0%`);
                     setTimeout(() => {

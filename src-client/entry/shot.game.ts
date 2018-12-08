@@ -27,7 +27,6 @@ class ShotGamePage extends BasePage {
             screenWidth: window.innerWidth,
             screenHeight: window.innerHeight,
             superManSpriteFolderPath: spriteFolderPath,
-            monsterSpriteFolderPath: '',
             parameters,
         }).init();
 
@@ -42,9 +41,9 @@ class ShotGamePage extends BasePage {
         const ret = await this.webSvc.game.reportGame(this.gameId, {
             gameHistoryId: this.gameId,
             scoreEncryptString: btoa(btoa(scores.toString())),
-            gamePintEncryptString: btoa(btoa(gamePoints.toString()))
-            // scoreEncryptString: btoa(btoa('1500')),
-            // gamePintEncryptString: btoa(btoa('300'))
+            gamePintEncryptString: btoa(btoa(gamePoints.toString())),
+            // scoreEncryptString: btoa(btoa('60000')),
+            // gamePintEncryptString: btoa(btoa('10000'))
         })
         
         if (!ret.success) {

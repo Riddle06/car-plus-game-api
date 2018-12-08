@@ -9,7 +9,6 @@ export interface GameConfig {
     screenWidth: number,
     screenHeight: number,
     superManSpriteFolderPath: string,
-    monsterSpriteFolderPath?: string,
 }
 
 export interface BaseShape {
@@ -105,7 +104,6 @@ export abstract class BaseGame {
         await loaderHandler('hourglass', '/static/images/item-hourglass.png');
         await loaderHandler('win', '/static/images/img-win.png');
         await loaderHandler('wow', '/static/images/img-wow.png');
-        await loaderHandler('tips', '/static/images/img-tips.png');
     }
 
     private async setDashboard(): Promise<void> {

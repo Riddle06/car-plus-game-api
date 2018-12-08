@@ -87,11 +87,12 @@ export class Monster {
     // const superManFrames: PIXI.Texture[] =
     //   ["img-superman010.png", "img-superman011.png", "img-superman012.png"]
     //     .map(x => PIXI.Texture.fromFrame(x))
-    if (!PIXI.loader.resources['monster']) await loaderHandler('monster', '/static/images/img-monster01.png');
+    if (!PIXI.loader.resources['monster00']) await loaderHandler('monster00', '/static/images/img-monster00.png');
+    if (!PIXI.loader.resources['monster01']) await loaderHandler('monster01', '/static/images/img-monster01.png');
+    if (!PIXI.loader.resources['monster02']) await loaderHandler('monster02', '/static/images/img-monster02.png');
     if (!PIXI.loader.resources['boom']) await loaderHandler('boom', '/static/images/img-boom.png');
 
     this.sprite = new PIXI.Graphics();
-    this.monster = new PIXI.Sprite(PIXI.loader.resources['monster'].texture);
     this.boomEffect = new PIXI.Sprite(PIXI.loader.resources['boom'].texture);
     this.sprite.addChild(this.boomEffect);
     this.boomEffect.visible = false;
@@ -178,6 +179,8 @@ export class Monster {
   setMonster(level: number): void {
     this.level = level;
 
+    this.monster = new PIXI.Sprite(PIXI.loader.resources[`monster0${(this.level - 1) % 3}`].texture);
+
     // 加入怪物、隱藏爆炸效果
     this.sprite.addChild(this.monster);
     this.sprite.alpha = 1;
@@ -207,6 +210,9 @@ export class Monster {
     this.boomEffect.visible = true;
     this.boomEffect.x = this.monster.x;
     this.boomEffect.y = this.monster.y;
+    // this.boomEffect.height = (this.boomEffect.height / this.boomEffect.width) * this.monster.width;
+    // this.boomEffect.width = this.monster.width;
+
     this.sprite.removeChild(this.monster);
     // 炸裂
     return new Promise((reslove) => {

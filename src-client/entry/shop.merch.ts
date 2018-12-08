@@ -40,7 +40,7 @@ class ShopMerchPage extends BasePage {
         this.carPlusPoint = carPlusPoint;
         this.$info.find("#js-gamePoint").text(gamePoint);
         this.$info.find("#js-carPlusPoint").text(carPlusPoint);
-
+        this.$(".js-superMan").attr('src', `${spriteFolderPath}/default.png`);
     }
 
     async getMemberItems(): Promise<void> {
@@ -70,7 +70,7 @@ class ShopMerchPage extends BasePage {
                 <div class="content">
                 <div class="merch__title">${name}</div>
                 <div class="merch__graph">
-                    <div class="photo"><img src="/static/images/img_character02.png" alt=""></div>
+                    <div class="photo"><img src="${spriteFolderPath}/default.png" alt=""></div>
                 </div>
                 <div class="merch__price type-shop"><span>${gamePoint}</span></div>
                 <div class="merch__info">${description}</div>

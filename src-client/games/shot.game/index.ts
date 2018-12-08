@@ -55,6 +55,7 @@ export class ShotGame extends BaseGame {
     await loaderHandler('heart', '/static/images/item-heart.png');
     await loaderHandler('hurt', '/static/images/item-hurt.png');
     await loaderHandler('hollow', '/static/images/item-hollow.png');
+    await loaderHandler('tips', '/static/images/img-tips02.png');
 
     this.setBackground();  // 放上背景
   }

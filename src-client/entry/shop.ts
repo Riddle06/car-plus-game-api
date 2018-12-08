@@ -31,6 +31,7 @@ class ShopPage extends BasePage {
         this.level = level;
         this.$info.find("#js-gamePoint").text(gamePoint);
         this.$info.find("#js-carPlusPoint").text(carPlusPoint);
+        this.$(".js-superMan").attr('src', `${spriteFolderPath}/default.png`)
     
     }
 
@@ -62,7 +63,7 @@ class ShopPage extends BasePage {
                 <div class="item ${enable ? 'js-buy' : 'item--lock'}" data-id="${obj.id}">
                     <div class="item__icon icon"></div>
                     <div class="item__main">
-                        <div class="goods"><img src="/static/images/img_character02.png" alt=""></div>
+                        <div class="goods"><img src="${obj.spriteFolderPath}/default.png" alt=""></div>
                     </div>
                     <!-- lock:鎖住(等級限制) | price:解鎖(購買金額) | hold:已擁有 | show:顯示 -->
                     <div class="item__tips type-shop">
