@@ -18,9 +18,17 @@ export class GameLibSvc extends BaseConnection {
                 description,
                 imageUrl: gameCoverImageUrl,
                 name,
-                parameters,
+                parameters: null,
                 code: code as GameCode
             }
+
+            try {
+                game.parameters = JSON.parse(parameters)
+            } catch (error) {
+                game.parameters = {}
+            }
+
+
             return game;
         })
 
