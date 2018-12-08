@@ -24,7 +24,7 @@ export class RegisterLibSvc extends BaseConnection {
 
         let carPlusPoint: number = 0
         if (!testCarPlusIdRegex.test(carPlusMemberId)) {
-            const carPlusMemberInformationRet = await carPlusSvc.getCarPlusMemberInformation(carPlusMemberId);
+            const carPlusMemberInformationRet = await carPlusSvc.getCarPlusMemberInformation(carPlusMemberId, this.queryRunner);
             if (checker.isNullOrUndefinedObject(carPlusMemberInformationRet) || !carPlusMemberInformationRet.success) {
                 throw new AppError(`此會員不存在格上系統中`);
             }

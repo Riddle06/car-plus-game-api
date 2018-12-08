@@ -116,7 +116,7 @@ export class MemberGamePointLibSvc extends BaseConnection {
             }).execute()
 
         
-        await carPlusSvc.minusCarPlusPoint(memberEntity.carPlusMemberId, carPlusPoint)
+        await carPlusSvc.minusCarPlusPoint(memberEntity.carPlusMemberId, carPlusPoint, this.queryRunner)
 
         ret.item = this.parseMemberGamePointHistoryToHistoryVM(pointHistory);
 
@@ -163,7 +163,7 @@ export class MemberGamePointLibSvc extends BaseConnection {
                 carPlusPoint
             }).execute();
 
-        await carPlusSvc.plusCarPlusPoint(memberEntity.carPlusMemberId, carPlusPoint);
+        await carPlusSvc.plusCarPlusPoint(memberEntity.carPlusMemberId, carPlusPoint,this.queryRunner);
 
         ret.item = this.parseMemberGamePointHistoryToHistoryVM(pointHistory);
 

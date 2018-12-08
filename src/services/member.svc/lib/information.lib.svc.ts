@@ -60,7 +60,7 @@ export class MemberInformationLibSvc extends BaseConnection {
     async getCarPlusPoint(carPlusMemberId: string): Promise<number> {
 
         // call store procedure 同步格上紅利
-        const carPlusMemberInformation = await carPlusSvc.getCarPlusMemberInformation(carPlusMemberId);
+        const carPlusMemberInformation = await carPlusSvc.getCarPlusMemberInformation(carPlusMemberId, this.queryRunner);
 
         return carPlusMemberInformation.item.carPlusPoint;
     }
