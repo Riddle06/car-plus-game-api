@@ -29,7 +29,7 @@ export class MemberWebSvc extends BaseWebSvc {
      * @param {String} memberGameItemId 此識別值為 `memberGameItemId` 欄位中的 id
      */
     async useGameItem(memberGameItemId: string): Promise<BaseResult> {
-        const res = await this.axiosInstance.get<Result<BaseResult>>(`/api/member/game-item/${memberGameItemId}`);
+        const res = await this.axiosInstance.put<Result<BaseResult>>(`/api/member/game-item/${memberGameItemId}`);
         return res.data;
     }
 
