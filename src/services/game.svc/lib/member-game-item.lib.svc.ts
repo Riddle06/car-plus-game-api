@@ -298,6 +298,10 @@ export class MemberGameItemLibSvc extends BaseConnection {
             }
         }
 
+        if (gameItemEntity.type === GameItemType.role && num > 1) { 
+            throw new AppError('角色只能買一筆')
+        }
+
 
         // 新增一筆紀錄
         const memberGameItemEntities: MemberGameItemEntity[] = [];
@@ -439,6 +443,15 @@ export class MemberGameItemLibSvc extends BaseConnection {
                 break;
             case GameItemType.gamePoint:
             case GameItemType.role:
+                // 如果已經擁有就不能買了
+                const memberGameItemsRet = await this.getMemberGameItems()
+
+                const role = memberGameItemsRet.items.find(item => item.id === gameItemEntity.id);
+                if (role) {
+                    throw new AppError('您已擁有此角色無法購買')
+                }
+
+
             case GameItemType.tool:
                 break;
             default:
