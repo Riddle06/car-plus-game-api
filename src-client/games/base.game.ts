@@ -36,6 +36,7 @@ export abstract class BaseGame {
     protected application: Application = null
     protected stage: PIXI.Container = null; // 遊戲舞台
     protected effectContainer: PIXI.Container = null; // 特效使用的容器
+    protected tips: PIXI.Sprite = null; // 開始提示
 
     private dashboardContainer: PIXI.Container = null; // 儀表板用舞台
 
@@ -58,13 +59,15 @@ export abstract class BaseGame {
     async init(): Promise<this> {
         this.setApplication();
         this.setStage();
-
+        
         await this.initCommonImages(); // 載入共用圖片
         await this.initImages(); // 載入圖片
         await this.setDashboard(); // 建立計數計時文字
-        await this.initElements()
-        await this.initElementsEvents()
-        await this.initElementsOffset()
+        this.setStartTips();
+        await this.initElements();
+        await this.initElementsEvents();
+        await this.initElementsOffset();
+
         this.application.stage.addChild(this.effectContainer); // 放入特效容器
         this.application.stage.addChild(this.dashboardContainer); // 放入儀表板容器
 
@@ -102,6 +105,7 @@ export abstract class BaseGame {
         await loaderHandler('hourglass', '/static/images/item-hourglass.png');
         await loaderHandler('win', '/static/images/img-win.png');
         await loaderHandler('wow', '/static/images/img-wow.png');
+        await loaderHandler('tips', '/static/images/img-tips.png');
     }
 
     private async setDashboard(): Promise<void> {
@@ -121,6 +125,18 @@ export abstract class BaseGame {
         background.width = this.screen.width;
         background.height = this.screen.height;
         this.stage.addChild(background);
+    }
+
+    protected setStartTips(): void {
+        // 點擊開始遊戲的提示
+        this.tips = new Sprite(loader.resources['tips'].texture);
+        this.tips.height = (this.tips.height / this.tips.width) * (this.application.screen.width * 0.7);
+        this.tips.width = (this.application.screen.width * 0.7);
+        this.tips.x = this.application.screen.width / 2 - this.tips.width / 2;
+        this.tips.y = this.application.screen.height / 2 - this.tips.height / 2;
+        this.tips.visible = false;
+
+        this.effectContainer.addChild(this.tips);
     }
 
     protected async generateText(path: string, index: number, x: number, y: number, bgY: number): Promise<Text> {
