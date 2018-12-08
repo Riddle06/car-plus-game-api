@@ -32,7 +32,7 @@ class ProfilePage extends BasePage {
                 });
                 return;
             }
-            
+            this.closeZoneMask();
             this.getMemberProfile();
         })
 
