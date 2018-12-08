@@ -13,12 +13,15 @@ class QuestionPage extends BasePage {
 
             if (this.currentId) {
                 this.$(`#js-answer-${this.currentId}`).slideToggle(400);
+
             }
             const id = this.$(e.currentTarget).attr('data-index');
 
             if (this.currentId !== id) {
                 this.$(`#js-answer-${id}`).slideToggle(400);
                 this.currentId = id;
+            } else {
+                this.currentId = undefined;
             }
 
         })
