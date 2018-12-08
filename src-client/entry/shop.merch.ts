@@ -13,6 +13,8 @@ class ShopMerchPage extends BasePage {
     private carPlusPoint: number = 0;
     private memberItem: MemberGameItemVM;
 
+    private isProcessing = false;
+
     domEventBinding() {
         const _this = this;
 
@@ -155,13 +157,21 @@ class ShopMerchPage extends BasePage {
     }
 
     async buyGameItem(): Promise<void> {
+        if(this.isProcessing) return;
+        this.closeZoneMask();
+        this.toggleLoader(true);
+
         const useNow = this.$("#js-use").prop('checked');
         // 是否立即使用此超人
 
+        this.isProcessing = true;
         const ret = await this.webSvc.game.buyGameItem({
             gameItemId: this.itemId,
             num: this.count
         });
+        this.isProcessing = false;
+        this.toggleLoader(false);
+
         if (!ret.success) {
             this.fakeAlert({
                 title: 'Oops',

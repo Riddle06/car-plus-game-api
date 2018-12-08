@@ -9,6 +9,8 @@ class GameIntroPage extends BasePage {
     private $content: JQuery<HTMLElement>;
     private items: UseGameItemVM[] = [];
 
+    private isProcessing: boolean = false;
+
     async domEventBinding() {
         this.$content = this.$("#js-content");
         this.$('#js-go').click(() => { this.startGameHandler(this.gameId) })
@@ -102,6 +104,12 @@ class GameIntroPage extends BasePage {
     }
 
     async submitUseGameItem(id: string) {
+        if (this.isProcessing) return;
+        this.closeZoneMask();
+        this.toggleLoader(true);
+
+        this.isProcessing = true;
+
         const ret = await this.webSvc.member.useGameItem(id);
         if(!ret.success) {
             this.fakeAlert({

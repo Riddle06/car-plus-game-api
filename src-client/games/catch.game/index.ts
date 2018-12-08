@@ -86,7 +86,7 @@ export class CatchGame extends BaseGame {
             // 增加點數 & 金幣
             const { x, y } = this.superMan.sprite;
             let gamePoint = 0;
-            // 接到炸彈 隨機扣 1~5秒
+            // 接到炸彈 隨機扣 0~5秒
             let time = item.score < 0 ? -Math.floor(Math.random() * 6) : 0;
 
             if (item.score > 0) {

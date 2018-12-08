@@ -6,17 +6,17 @@
       <div class="text-center" slot="header">登入系統</div>
       <el-form>
         <el-form-item>
-          <el-input type="text" placeholder="請輸入帳號">
+          <el-input type="text" v-model="account" placeholder="請輸入帳號">
             <template slot="prepend">帳號</template>
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-input type="password" placeholder="請輸入密碼">
+          <el-input type="password" v-model="password" placeholder="請輸入密碼">
             <template slot="prepend">密碼</template>
           </el-input>
         </el-form-item>
       </el-form>
-      <el-button type="primary">登入</el-button>
+      <el-button type="primary" @click="login">登入</el-button>
     </el-card>
   </el-col>
 </el-row>

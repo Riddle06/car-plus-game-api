@@ -3,7 +3,7 @@ import * as Vue from 'vue/dist/vue.common'
 
 class MembersPage extends BasePage {
   async vueInit() {
-    const webSvc = this.webSvc;
+    const _this = this;
     
     new Vue({
       el: '#app',
@@ -20,12 +20,16 @@ class MembersPage extends BasePage {
         }
       },
       methods: {
+        async getMembers() {
+          const ret = await _this.adminSvc.adminMember.getMembers();
+          console.log(ret);
+        },
         handlePageChange() {
           
         }
       },
       created() {
-
+        this.getMembers();
       }
     })
   }

@@ -3,7 +3,7 @@ import * as Vue from 'vue/dist/vue.common'
 
 class GameHistoryPage extends BasePage {
   async vueInit() {
-    const webSvc = this.webSvc;
+    const _this = this;
     
     new Vue({
       el: '#app',

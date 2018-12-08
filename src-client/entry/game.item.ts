@@ -11,6 +11,8 @@ class ShopPage extends BasePage {
     private memberItem: MemberGameItemVM;
     private useableGameItem: UseGameItemVM;
 
+    private isProcessing: boolean = false;
+
     domEventBinding() {
         const _this = this;
 
@@ -18,25 +20,25 @@ class ShopPage extends BasePage {
         this.$info = this.$("#js-info");
         this.$character = this.$("#js-character");
         this.$prop = this.$("#js-prop");
-    } 
+    }
     async didMount() {
         await Promise.all([this.getMemberProfile(), this.getMemberItems(), this.getUsableGameItems()])
         this.render();
     }
-    
+
 
     async getMemberProfile(): Promise<void> {
-        
+
         const profileRet = await this.webSvc.member.getProfile()
 
         const { gamePoint, carPlusPoint, currentRoleGameItem } = profileRet.item;
         this.currentRoleGameItem = currentRoleGameItem;
         const { spriteFolderPath } = currentRoleGameItem;
-    
+
         this.$info.find("#js-gamePoint").text(gamePoint);
         this.$info.find("#js-carPlusPoint").text(carPlusPoint);
 
-        
+
     }
 
     async getMemberItems(): Promise<void> {
@@ -69,10 +71,10 @@ class ShopPage extends BasePage {
                     </div>
                     <div class="merch__info">${description}</div>
                     <div class="merch__status">
-                        <div class="status ${isCurrent ? '': 'show'}">
+                        <div class="status ${isCurrent ? '' : 'show'}">
                             <div id="js-use" class="button__use type-btn"><img src="/static/images/btn_use.png" alt=""></div>
                         </div>
-                        <div class="status ${isCurrent ? 'show': ''}">
+                        <div class="status ${isCurrent ? 'show' : ''}">
                             <div class="button__use"><img src="/static/images/btn_uselock.png" alt=""></div>
                         </div>
                     </div>
@@ -109,7 +111,7 @@ class ShopPage extends BasePage {
                         <div class="status ${isUsing ? '' : 'show'}">
                             <div id="js-use" class="button__use type-btn"><img src="/static/images/btn_use.png" alt=""></div>
                         </div>
-                        <div class="status ${isUsing ? 'show': ''}">
+                        <div class="status ${isUsing ? 'show' : ''}">
                             <div class="button__use"><img src="/static/images/btn_uselock.png" alt=""></div>
                         </div>
                     </div>
@@ -133,8 +135,16 @@ class ShopPage extends BasePage {
     }
 
     async useGameItem(id: string): Promise<void> {
+        if (this.isProcessing) return;
+        this.closeZoneMask();
+        this.toggleLoader(true);
+
+        this.isProcessing = true;
         const ret = await this.webSvc.member.useGameItem(id);
-        if(!ret.success) {
+        this.isProcessing = false;
+        this.toggleLoader(false);
+
+        if (!ret.success) {
             this.fakeAlert({
                 title: 'Oops',
                 text: ret.message

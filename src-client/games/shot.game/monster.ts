@@ -67,7 +67,7 @@ export class Monster {
     if (this.level > 10) {
       // 大於10等 對參數加成
       let { xSpeed, ySpeed, circleSpeed, radius } = this.moveModes[index];
-      let plus = Math.floor((this.level / 5));
+      let plus = Math.floor(((this.level - 1) / 5));
       radius = radius + (5 * plus);
       return {
         xSpeed: xSpeed * plus,
@@ -95,7 +95,6 @@ export class Monster {
     this.sprite.addChild(this.boomEffect);
     this.boomEffect.visible = false;
 
-    // window['monster'] = this
 
     return this;
   }
