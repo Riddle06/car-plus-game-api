@@ -123,4 +123,10 @@ export class GameItemEntity extends BaseEntity {
         default: "500"
     })
     spriteFolderPath: string = ''
+
+    @Column("nvarchar", {
+        name: "description_short",
+        default: "100"
+    })
+    descriptionShort: string = ''
 }

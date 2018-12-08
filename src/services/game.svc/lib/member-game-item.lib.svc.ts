@@ -41,10 +41,10 @@ export class MemberGameItemLibSvc extends BaseConnection {
 
         const useGameItems = gameItemEntities.map(entity => {
 
-            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath, levelMinLimit } = entity
+            const { id, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath, levelMinLimit, descriptionShort } = entity
             const gameItem: GameItemVM = {
                 id,
-                description,
+                description: descriptionShort,
                 name,
                 imageUrl,
                 gamePoint,
@@ -298,7 +298,7 @@ export class MemberGameItemLibSvc extends BaseConnection {
             }
         }
 
-        if (gameItemEntity.type === GameItemType.role && num > 1) { 
+        if (gameItemEntity.type === GameItemType.role && num > 1) {
             throw new AppError('角色只能買一筆')
         }
 
