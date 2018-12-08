@@ -29,7 +29,7 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 /**
  * [GET] /api/game/question
  *  取得問與答
- * */ 
+ * */
 router.get('/question', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     try {
@@ -40,6 +40,20 @@ router.get('/question', async (req: RequestExtension, res: ResponseExtension, ne
     next();
 })
 
+
+/**
+ * [GET] /api/game/variable
+ *  基本參數
+ * */
+router.get('/variable', async (req: RequestExtension, res: ResponseExtension, next) => {
+
+    try {
+        res.result = await gameSvc.getVariable()
+    } catch (error) {
+        res.appError = AppError.getAppError(error)
+    }
+    next();
+})
 
 
 export default router;

@@ -50,7 +50,8 @@ CAR_PLUS_TEST_ID_3 = 688103
 # 遊戲參數
 
 - 射擊參數
-    ```javascript
+
+```javascript
 
     // 砲管角度
     const degreeConfig = {
@@ -84,9 +85,10 @@ CAR_PLUS_TEST_ID_3 = 688103
     // 5等開始縮小怪物尺寸 scale *= (level * 0.01)  最小到0.5
     // 15等之後xSpeed、ySpeed會隨機 1~xSpeed、1~ySpeed
 
-    ```
+```
 - sample
-    ```json
+
+```json
         {
             "degreeConfig": {
                 "max": 100,
@@ -128,11 +130,11 @@ CAR_PLUS_TEST_ID_3 = 688103
                 }
             ]
         }
-    ```
+```
 
 
 - 接接樂參數
-    ```javascript
+```javascript
 
     // 遊戲時間（秒）
     const gameTime = 60; 
@@ -156,9 +158,9 @@ CAR_PLUS_TEST_ID_3 = 688103
 
     // 超人移動速度
     const moveSpeed = 3;
-    ```
+```
 - sample
-    ```json
+```json
     {
       "gameTime": 60,
       "types": [
@@ -183,4 +185,4 @@ CAR_PLUS_TEST_ID_3 = 688103
       "fallSpeed": 3,
       "moveSpeed": 3
     }
-    ```
+```

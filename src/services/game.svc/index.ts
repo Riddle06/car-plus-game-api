@@ -11,6 +11,8 @@ import { PlayGameParameterVM, StartGameHistoryVM, ReportPlayGameParameterVM, Poi
 import { MemberGameItemLibSvc } from "./lib/member-game-item.lib.svc";
 import { MemberGamePointLibSvc } from "./lib/member-game-point.lib.svc";
 import { CreateAdminMemberPointHistoryParameterVM } from '@view-models/admin.point.vm';
+import { Variable } from '@view-models/game.vm';
+import { variableSvc } from '@services/variable.svc';
 
 class GameSvc {
     async getGameList(): Promise<ListResult<GameVM>> {
@@ -201,6 +203,19 @@ class GameSvc {
 
     }
 
+
+    async getVariable(): Promise<Result<Variable>> {
+        const ret = new Result<Variable>(true)
+        const hostRet = await variableSvc.getHost();
+        const shareTextRet = await variableSvc.getShareText();
+
+        ret.item = {
+            host: hostRet.item,
+            shareText: shareTextRet.item
+        }
+
+        return ret.setResultValue(true)
+    }
 
 }
 

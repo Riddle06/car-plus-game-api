@@ -19,6 +19,17 @@ export class GameWebSvc extends BaseWebSvc {
         return res.data
     }
 
+      /**
+     * [GET] /api/game/variable
+     * 取得遊戲基本參數
+     * @returns {shareText} 分享文案
+     * @returns {host} 網址
+     */
+    async getGameVariable(): Promise<ListResult<GameVM>> {
+        const res = await this.axiosInstance.get<ListResult<GameVM>>('/api/game/variable');
+        return res.data
+    }
+
     /**
      * [GET] /api/game/question
      *  取得問與答

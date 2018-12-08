@@ -30,6 +30,21 @@ class VariableSvc {
         return ret.setResultValue(true);
     }
 
+    async getHost(): Promise<Result<string>> {
+        const queryRunner = await dbProvider.createQueryRunner();
+        const variableLibSvc = new VariableLibSvc(queryRunner);
+        return await variableLibSvc.getHost();
+    }
+
+
+    async getShareText(): Promise<Result<string>> {
+        const queryRunner = await dbProvider.createQueryRunner();
+        const variableLibSvc = new VariableLibSvc(queryRunner);
+        return await variableLibSvc.getShareText();
+    }
+
+  
+
     getTesterRegExp(): RegExp {
         const testCarPlusIdRegex = /^test__\S+/;
         return testCarPlusIdRegex

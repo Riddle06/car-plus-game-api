@@ -91,3 +91,12 @@ export interface UseGameItemVM {
     gameItem: GameItemVM
 
 }
+
+
+export interface Variable {
+    /**
+     * 分享文案 {{score}} 是要取代的參數
+     */
+    shareText: string
+    host: string
+}
