@@ -60,6 +60,7 @@ export class CatchGame extends BaseGame {
     }
     protected initElementsEvents(): Promise<boolean> {
         // 點擊畫面開始遊戲
+        this.tips.visible = true;
         this.application.stage.on('touchstart', this.play, this);
 
 
@@ -157,6 +158,7 @@ export class CatchGame extends BaseGame {
     }
 
     play(): void {
+        this.tips.visible = false;
         if (this.isPlaying || this.isGameEnd) return;
 
         this.isPlaying = true;

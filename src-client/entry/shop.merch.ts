@@ -99,7 +99,7 @@ class ShopMerchPage extends BasePage {
         } else {
             const isGamePoint = type === 3; // 用格上紅利買超人幣
             const isCarPlus = type === 4; // 是購買格上紅利
-            const enoughPoint = isGamePoint ? this.carPlusPoint >= carPlusPoint : this.gamePoint > this.count * gamePoint;
+            const enoughPoint = isGamePoint ? this.carPlusPoint >= carPlusPoint : this.gamePoint >= this.count * gamePoint;
             // console.log(this.gamePoint, this.count * gamePoint)
 
 

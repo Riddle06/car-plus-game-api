@@ -43,7 +43,7 @@ class GameIntroPage extends BasePage {
         // console.log('[startGameRet]', startGameRet);
 
         if (startGameRet.success && startGameRet.item.id) {
-            location.href = `/${this.gameCode}-game/${startGameRet.item.id}`;
+            window.location.replace(`/${this.gameCode}-game/${startGameRet.item.id}`);
         }
     }
 
@@ -122,8 +122,9 @@ class GameIntroPage extends BasePage {
         this.toggleLoader(true);
 
         this.isProcessing = true;
-
         const ret = await this.webSvc.member.useGameItem(id);
+        this.isProcessing = false;
+        
         if(!ret.success) {
             this.fakeAlert({
                 title: 'Oops',
@@ -131,6 +132,7 @@ class GameIntroPage extends BasePage {
             });
             return;
         }
+        
         this.getUsableGameItems();
     }
 }

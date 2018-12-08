@@ -24,11 +24,13 @@ class GameResultPage extends BasePage {
         const ret = await this.webSvc.member.getLevelInfo();
         this.levelList = ret.items;
 
+        this.getShareInfo();
         this.getGameResult();
     }
 
     async getGameResult(): Promise<void> {
         const ret = await this.webSvc.game.getGameHistory(this.gameId);
+        this.toggleLoader(false);
         if (!ret.success) {
             this.fakeAlert({
                 title: 'Oops',
@@ -57,7 +59,7 @@ class GameResultPage extends BasePage {
         this.$expIng.css('width', `${beforeExp}%`);
         this.$expPlus.css('width', `${afterExp}%`)
 
-        this.toggleLoader(false);
+        
 
         setTimeout(() => {
             this.$expIng.css('width', `${afterExp}%`);
@@ -83,6 +85,11 @@ class GameResultPage extends BasePage {
         }, 1000)
 
 
+    }
+
+    async getShareInfo(): Promise<void> {
+        const ret = await this.webSvc.game.getGameVariable();
+        console.log(ret);
     }
 
 }

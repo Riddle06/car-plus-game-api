@@ -91,6 +91,7 @@ export class ShotGame extends BaseGame {
       // console.log(`touchstart`)
 
       if (this.shotting || this.lifeStep >= 2 || !this.superMan.isReady) return;
+      this.tips.visible = false;
       this.cannon.isRotating = true;
     })
 
@@ -151,7 +152,9 @@ export class ShotGame extends BaseGame {
     if (this.lifeStep >= 2) return;
     this.superMan.ball = await this.superMan.initBall();
     this.cannon.addChild(this.superMan.ball);
-    this.application.ticker.add(this.superMan.ready, this.superMan);
+    
+    await this.superMan.ready();
+    this.tips.visible = true;
   }
 
   async fire(): Promise<void> {

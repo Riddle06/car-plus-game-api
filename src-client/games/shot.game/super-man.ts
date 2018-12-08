@@ -21,7 +21,7 @@ export class SuperMan {
   async initMan(): Promise<PIXI.extras.AnimatedSprite> {
     if (!PIXI.loader.resources['man']) await loaderHandler('super-man', '/static/images/img-superman01/img-superman01.json');
     const superManFrames: PIXI.Texture[] = Object.keys(PIXI.loader.resources['super-man'].data.frames)
-            .map(key => PIXI.Texture.fromFrame(key))
+      .map(key => PIXI.Texture.fromFrame(key))
 
     this.man = new PIXI.extras.AnimatedSprite(superManFrames);
     this.man.x = 0;
@@ -51,18 +51,25 @@ export class SuperMan {
     return this.ball;
   }
 
-  ready() {
-    if(this.man.alpha > 0) {
-      this.man.alpha -= 0.05;
-      return;
-    }
-
-    if(this.ball.x <= this.ball.width / 2) {
-      this.ball.x += 1;
-    } else {
-      this.isReady = true;
-      this.app.ticker.remove(this.ready, this)
-    }
+  ready(): Promise<void> {
+    return new Promise((reslove) => {
+      const animate = () => {
+        if (this.man.alpha > 0) {
+          this.man.alpha -= 0.05;
+          return;
+        }
+    
+        if (this.ball.x <= this.ball.width / 2) {
+          this.ball.x += 1;
+        } else {
+          this.isReady = true;
+          this.app.ticker.remove(animate, this)
+          reslove();
+          return;
+        }
+      }
+      this.app.ticker.add(animate, this);
+    })
   }
 
 }
