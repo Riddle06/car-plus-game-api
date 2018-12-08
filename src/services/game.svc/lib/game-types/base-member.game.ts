@@ -55,7 +55,7 @@ export abstract class BaseMemberGame extends BaseConnection {
                 }, 0)
         }
 
-        return gamePoint;
+        return parseInt(gamePoint.toFixed(0));
     }
 
     async init(): Promise<this> {
@@ -204,7 +204,7 @@ export abstract class BaseMemberGame extends BaseConnection {
             return totalScore * item.addScoreRate
         }, oriScore)
 
-        return ret;
+        return parseInt(ret.toFixed(0));
     }
 
 
