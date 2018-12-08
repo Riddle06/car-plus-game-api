@@ -30,7 +30,7 @@ export class MemberInformationLibSvc extends BaseConnection {
         let { carPlusPoint } = memberEntity;
 
         // 是否需要同步格上紅利
-        const needSyncCarPlusPoint: boolean = false;
+        const needSyncCarPlusPoint: boolean = true;
 
         if (needSyncCarPlusPoint) {
             const carPlusSystemPoint = await this.getCarPlusPoint(memberEntity.carPlusMemberId);
