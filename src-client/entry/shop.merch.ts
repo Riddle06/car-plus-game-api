@@ -11,6 +11,7 @@ class ShopMerchPage extends BasePage {
     private count: number = 1;
     private gamePoint: number = 0;
     private carPlusPoint: number = 0;
+    private memberLevel: number = 0;
     private memberItem: MemberGameItemVM;
 
     private isProcessing = false;
@@ -33,9 +34,10 @@ class ShopMerchPage extends BasePage {
 
         const profileRet = await this.webSvc.member.getProfile()
 
-        const { gamePoint, carPlusPoint, currentRoleGameItem } = profileRet.item;
+        const { gamePoint, carPlusPoint, currentRoleGameItem, level } = profileRet.item;
         const { spriteFolderPath } = currentRoleGameItem;
 
+        this.memberLevel = level;
         this.gamePoint = gamePoint;
         this.carPlusPoint = carPlusPoint;
         this.$info.find("#js-gamePoint").text(gamePoint);
@@ -59,8 +61,9 @@ class ShopMerchPage extends BasePage {
     }
 
     render(): void {
-        const { type, name, description, gamePoint, carPlusPoint, spriteFolderPath } = this.item;
+        const { type, name, description, gamePoint, carPlusPoint, spriteFolderPath, levelMinLimit } = this.item;
         const isHave = !!this.memberItem && !!this.memberItem.memberGameItemIds.length;
+        const isLock = this.memberLevel < levelMinLimit;
 
         if (type === 1) {
             // 角色
@@ -68,21 +71,21 @@ class ShopMerchPage extends BasePage {
                 <div class="button__back type-btn" onclick="history.back()"><img src="/static/images/btn_back.png" alt=""></div>
                 <div class="header"></div>
                 <div class="content">
-                <div class="merch__title">${name}</div>
-                <div class="merch__graph">
-                    <div class="photo"><img src="${spriteFolderPath}/default.png" alt=""></div>
-                </div>
-                <div class="merch__price type-shop"><span>${gamePoint}</span></div>
-                <div class="merch__info">${description}</div>
-                <div class="merch__status">
-                    <div class="status ${isHave ? '' : 'show'}">
-                    <div id="js-buy" class="button__buy type-btn" data-btn="merch-char"><img src="/static/images/btn_buy.png" alt=""></div>
+                    <div class="merch__title">${name}</div>
+                    <div class="merch__graph">
+                        <div class="photo"><img src="${spriteFolderPath}/default.png" alt=""></div>
                     </div>
-                    <div class="status ${isHave ? 'show' : ''}">
-                    <div class="title">已擁有</div>
-                    <div class="tips">使用角色請前往首頁個人資訊頁替換。</div>
+                    <div class="merch__price type-shop"><span>${gamePoint}</span></div>
+                    <div class="merch__info">${description}</div>
+                    <div class="merch__status">
+                        <div class="status ${isHave || isLock ? '' : 'show'}">
+                        <div id="js-buy" class="button__buy type-btn" data-btn="merch-char"><img src="/static/images/btn_buy.png" alt=""></div>
+                        </div>
+                        <div class="status ${isHave ? 'show' : ''}">
+                        <div class="title">已擁有</div>
+                        <div class="tips">使用角色請前往首頁個人資訊頁替換。</div>
+                        </div>
                     </div>
-                </div>
                 </div>
                 <div class="footer"></div>
             `).show();

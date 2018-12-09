@@ -24,7 +24,8 @@ class QuestionPage extends BasePage {
                 this.currentId = undefined;
             }
 
-        })
+        });
+        this.toggleLoader(false);
     }
     didMount() {
         this.getMemberProfile();
@@ -42,7 +43,7 @@ class QuestionPage extends BasePage {
         this.$info.find("#js-carPlusPoint").text(carPlusPoint);
         this.$(".js-superMan").attr('src', `${spriteFolderPath}/default.png`)
 
-        this.toggleLoader(false);
+        
     }
 
 }
