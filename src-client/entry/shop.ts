@@ -60,7 +60,7 @@ class ShopPage extends BasePage {
 
             return `
                 <!-- 左上角狀態: item (一般狀態) | item--lock (鎖住狀態) -->
-                <div class="item js-buy ${enable ? '' : 'item--lock'}" data-id="${obj.id}">
+                <div class="item js-buy type-btn ${enable ? '' : 'item--lock'}" data-id="${obj.id}">
                     <div class="item__icon icon"></div>
                     <div class="item__main">
                         <div class="goods"><img src="${obj.spriteFolderPath}/default.png" alt=""></div>
@@ -81,7 +81,7 @@ class ShopPage extends BasePage {
             const isCarPlus = obj.type === 4;
 
             return `
-                <div class="item ${enable ? 'js-buy' : 'item--lock'}" data-id="${obj.id}">
+                <div class="item type-btn ${enable ? 'js-buy' : 'item--lock'}" data-id="${obj.id}">
                     <div class="item__main">
                     <div class="goods"><img src="${obj.spriteFolderPath}list.png" alt=""></div>
                     </div>

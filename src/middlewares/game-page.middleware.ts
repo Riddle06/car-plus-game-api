@@ -9,9 +9,11 @@ import { checker } from "@utilities";
 export const gamePageMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
   const windowWidth = req.cookies.windowWidth;
   if (checker.isNullOrUndefinedOrWhiteSpace(windowWidth)) {
-    // res.redirect('/')
+    res.redirect('/tutorial');
+    return;
+  } else {
+    const scale = +windowWidth / 640;
+    req._scale = scale < 0 || !scale ? 1 : scale;
+    next();
   }
-  const scale = +windowWidth / 640;
-  req._scale = scale < 0 || !scale ? 1 : scale;
-  next();
 }

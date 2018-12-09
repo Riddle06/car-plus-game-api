@@ -7,10 +7,10 @@
         <div class="content itok">
             <a href="/"><div class="button__back type-btn"><img src="/static/images/btn_back.png" alt=""></div></a>
             <div class="faq__title">遊戲說明</div>
-            <div class="faq__list">
+            <div class="faq__list type-actual">
                 {{#each questions}}
                 <div class="faq__item">
-                    <div class="item-q js-question" data-index="{{@index}}">{{question}}</div>
+                    <div class="item-q type-btn js-question" data-index="{{@index}}">{{question}}</div>
                     <div id="js-answer-{{@index}}" class="item-a" style="display: none">{{answer}}</div>
                 </div>
                 {{/each}}

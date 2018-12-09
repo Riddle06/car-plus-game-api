@@ -42,14 +42,18 @@ class ShotGamePage extends BasePage {
             gameHistoryId: this.gameId,
             scoreEncryptString: btoa(btoa(scores.toString())),
             gamePintEncryptString: btoa(btoa(gamePoints.toString())),
-            // scoreEncryptString: btoa(btoa('60000')),
-            // gamePintEncryptString: btoa(btoa('10000'))
+            // scoreEncryptString: btoa(btoa('1500')),
+            // gamePintEncryptString: btoa(btoa('35'))
         })
         
         if (!ret.success) {
+            this.toggleLoader(false);
             this.fakeAlert({
-                title: 'Oops',
-                text: ret.message
+                title: ret.message,
+                text: '',
+                closeCallback() {
+                    window.location.replace(`/shot-game`);
+                }
             });
             return;
         }

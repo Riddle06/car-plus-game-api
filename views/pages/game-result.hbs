@@ -1,5 +1,5 @@
-<!-- 遊戲一bg: wrap-bg03 | 遊戲二bg: wrap-bg04 -->
-<div class="wrapper {{#if isCatchGame}}wrap-bg03{{else}}wrap-bg04{{/if}}">
+<!-- 遊戲一bg: wrap-bg03 | 遊戲二bg: wrap-bg05 -->
+<div class="wrapper {{#if isCatchGame}}wrap-bg03{{else}}wrap-bg05{{/if}}">
   <!-- 遊戲結果 start -->
   <div class="wrap-result">
     <div class="header">
@@ -44,7 +44,7 @@
     <div class="footer__button">
       <a href="{{#if isCatchGame}}/catch-game{{else}}/shot-game{{/if}}"><div class="button__again type-btn"><img src="/static/images/btn_again.png" alt=""></div></a>
       <a href="/"><div class="button__home type-btn"><img src="/static/images/btn_home.png" alt=""></div></a>
-      <div class="button__partake type-btn"><img src="/static/images/btn_partake.png" alt=""></div>
+      <div id="js-share" class="button__partake type-btn"><img src="/static/images/btn_partake.png" alt=""></div>
     </div>
   </div>
   <!-- 遊戲結果 end -->

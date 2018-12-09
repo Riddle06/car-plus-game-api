@@ -11,9 +11,15 @@ import { RequestExtension, ResponseExtension } from "@view-models/extension";
 
 const router = Router();
 
-router.get('/', gamePageMiddleware, async (req: RequestExtension, res: ResponseExtension) => {
+router.get('/', gamePageMiddleware, (req: RequestExtension, res: ResponseExtension) => {
     res.render('pages/index', {
         scale: req._scale
+    })
+});
+
+router.get('/tutorial', (req: RequestExtension, res: ResponseExtension) => {
+    res.render('pages/tutorial', {
+        scale: 1
     })
 });
 

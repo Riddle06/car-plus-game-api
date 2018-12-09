@@ -14,6 +14,7 @@ module.exports = {
         "shop": "./src-client/entry/shop.ts",
         "shop.merch": "./src-client/entry/shop.merch.ts",
         "game.item": "./src-client/entry/game.item.ts",
+        "tutorial": "./src-client/entry/tutorial.ts",
         "admin.login": "./src-client/entry-admin/login.ts",
         "admin.index": "./src-client/entry-admin/index.ts",
         "admin.members": "./src-client/entry-admin/members.ts",

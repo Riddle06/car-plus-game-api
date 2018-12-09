@@ -115,7 +115,8 @@ class ShopMerchPage extends BasePage {
                     <div class="merch__graph">
                         <div class="photo"><img src="${spriteFolderPath}details.png" alt=""></div>
                     </div>
-                    <div class="merch__price type-shop"><span>${isGamePoint ? carPlusPoint : gamePoint}</span></div>
+                    <!-- merch__bouns單獨加上 或 替換merch__price 都可以 -->
+                    <div class="${isGamePoint ? 'merch__bouns' : 'merch__price'} type-shop"><span>${isGamePoint ? carPlusPoint : gamePoint}</span></div>
                     <div class="merch__info">${description}</div>
                     <div class="merch__amount">
                         ${isCarPlus ? '' : '<div id="js-less" class="button__less type-btn"><img src="/static/images/brn_less.png" alt=""></div>'}

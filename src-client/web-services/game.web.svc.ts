@@ -1,7 +1,7 @@
 import { MemberBuyGameItemParameter } from './../../src/view-models/game.vm';
 import { ReportPlayGameParameterVM } from '@view-models/game-history.vm';
 import { StartGameHistoryVM, PlayGameParameterVM } from '@view-models/game-history.vm';
-import { GameVM } from '@view-models/game.vm';
+import { GameVM, Variable } from '@view-models/game.vm';
 import { GameItemVM } from '@view-models/game.vm';
 import { GameQuestionVM } from '@view-models/game-question.vm';
 import { ListResult, BaseResult } from '@view-models/common.vm';
@@ -25,8 +25,8 @@ export class GameWebSvc extends BaseWebSvc {
      * @returns {shareText} 分享文案
      * @returns {host} 網址
      */
-    async getGameVariable(): Promise<ListResult<GameVM>> {
-        const res = await this.axiosInstance.get<ListResult<GameVM>>('/api/game/variable');
+    async getGameVariable(): Promise<Result<Variable>> {
+        const res = await this.axiosInstance.get<Result<Variable>>('/api/game/variable');
         return res.data
     }
 

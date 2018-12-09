@@ -87,8 +87,8 @@ class ProfilePage extends BasePage {
                 const isCurrent = this.currentRoleGameItem.id === item.id;
                 // 角色
                 return `
-                    <a href="/profile/game-item/${item.id}">
-                        <div class="item item-char">
+                    <a href="/profile/game-item/${item.id}" class="type-btn">
+                        <div class="item item-char type-btn">
                             <div class="item__icon ${isCurrent ? 'icon__accept': '' }"></div>
                             <div class="item__main">
                                 <div class="goods"><img src="${item.spriteFolderPath}/default.png" alt=""></div>
@@ -99,8 +99,8 @@ class ProfilePage extends BasePage {
             }
 
             return `
-                <a href="/profile/game-item/${item.id}">
-                    <div class="item item-prop">
+                <a href="/profile/game-item/${item.id}" class="type-btn">
+                    <div class="item item-prop type-btn">
                         <div class="item__icon icon__amount"><span>x${item.memberGameItemIds.length}</span></div>
                         <div class="item__main">
                             <div class="goods"><img src="${item.spriteFolderPath}list.png" alt=""></div>

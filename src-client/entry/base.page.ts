@@ -101,7 +101,7 @@ export abstract class BasePage {
         const { title = '', text = '', showCancelButton = false, closeCallback } = options;
 
         let html = `
-            <div class="zoneMask" style="z-index: 9999">
+            <div class="zoneMask type-actual" style="z-index: 9999">
                 <div class="attrBox">
                     <div class="content">
                         <div class="inputList">
@@ -113,7 +113,7 @@ export abstract class BasePage {
                         ${showCancelButton ? '<div class="button__x type-btn" fake-alert="close"><img src="/static/images/btn_x.png" alt=""></div>' : ''}
                         <div class="button__accept type-btn" fake-alert="accept"><img src="/static/images/btn_accept.png" alt=""></div>
                     </div>
-                    <div class="item-bg"><img src="/static/images/img_attrPanel.png" alt=""></div>
+                    <div class="item-bg type-actual"><img src="/static/images/img_attrPanel.png" alt=""></div>
                 </div>
             </div>
         `

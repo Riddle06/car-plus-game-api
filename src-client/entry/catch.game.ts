@@ -44,9 +44,13 @@ class CatchGamePage extends BasePage {
         })
 
         if (!ret.success) {
+            this.toggleLoader(false);
             this.fakeAlert({
-                title: 'Oops',
-                text: ret.message
+                title: ret.message,
+                text: '',
+                closeCallback() {
+                    window.location.replace(`/catch-game`);
+                }
             });
             return;
         }
