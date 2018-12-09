@@ -7,7 +7,7 @@ export class SuperMan {
         y: number
     } = null
     private moveSpeed: number;
-    private animationSpeed: number  = 0.1;
+    private animationSpeed: number = 0.1;
     private app: PIXI.Application = null
     private currentDirection: SuperManDirection = SuperManDirection.right;
     private rightSprite: PIXI.extras.AnimatedSprite = null;
@@ -15,8 +15,8 @@ export class SuperMan {
     private spriteFolderPath: string;
 
     public sprite: PIXI.Graphics = null;
-    
-    
+
+
     constructor(app: PIXI.Application, parameters: CatchGameParameters, spriteFolderPath: string) {
         this.app = app;
         this.spriteFolderPath = spriteFolderPath;
@@ -27,16 +27,16 @@ export class SuperMan {
         await loaderHandler('super-man', `${this.spriteFolderPath || '/static/images/superman00'}/config.json`);
 
         const superManFrames: PIXI.Texture[] = Object.keys(PIXI.loader.resources['super-man'].data.frames)
-                .map(key => PIXI.Texture.fromFrame(key))
+            .map(key => PIXI.Texture.fromFrame(key))
 
-        
+
         this.sprite = new PIXI.Graphics();
         this.rightSprite = new PIXI.extras.AnimatedSprite(superManFrames);
         this.leftSprite = new PIXI.extras.AnimatedSprite(superManFrames);
         this.sprite.addChild(this.leftSprite);
         this.sprite.addChild(this.rightSprite);
-        this.sprite.height = (this.rightSprite.height / this.rightSprite.width) * (this.app.screen.width / 5);
-        this.sprite.width = this.app.screen.width / 5;
+        this.sprite.width = (this.rightSprite.width / 150) * (this.app.screen.width / 5);
+        this.sprite.height = (this.rightSprite.height / this.rightSprite.width) * this.sprite.width;
 
         // 轉向製作向左邊的圖
         this.leftSprite.scale.x *= -1;
@@ -46,16 +46,16 @@ export class SuperMan {
         this.leftSprite.animationSpeed = this.animationSpeed;
         this.leftSprite.visible = false;
 
-        
+
         this.sprite.x = this.app.screen.width / 2 - (this.sprite.width / 2);
         this.sprite.y = this.app.screen.height - this.sprite.height - 30;
-        
+
 
         return this;
     }
 
     protected movingHandler(deltaTime: number): void {
-        if (this.sprite.x + this.sprite.width  > this.app.screen.width) {
+        if (this.sprite.x + this.sprite.width > this.app.screen.width) {
             this.currentDirection = SuperManDirection.left;
         } else if (this.sprite.x < 0) {
             this.currentDirection = SuperManDirection.right;
@@ -63,12 +63,12 @@ export class SuperMan {
 
         switch (this.currentDirection) {
             case SuperManDirection.right:
-                this.rightSprite.visible = true;    
+                this.rightSprite.visible = true;
                 this.leftSprite.visible = false;
                 this.goRight();
                 break;
             case SuperManDirection.left:
-                this.rightSprite.visible = false;    
+                this.rightSprite.visible = false;
                 this.leftSprite.visible = true;
                 this.goLeft();
                 break;
