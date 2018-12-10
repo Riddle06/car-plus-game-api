@@ -20,7 +20,7 @@ export class Monster {
   private app: PIXI.Application = null
 
   private boomEffect: PIXI.Sprite = null; // 炸裂特效
-  private monster: PIXI.Sprite = null; // 怪物
+  private monster: PIXI.extras.AnimatedSprite = null; // 怪物
   private currentDirectionX: Direction = Direction.right; // 水平移動方向
   private currentDirectionY: Direction = Direction.down; // 垂直移動方向
   private level: number = 1; // 等級
@@ -87,16 +87,15 @@ export class Monster {
     // const superManFrames: PIXI.Texture[] =
     //   ["img-superman010.png", "img-superman011.png", "img-superman012.png"]
     //     .map(x => PIXI.Texture.fromFrame(x))
-    if (!PIXI.loader.resources['monster00']) await loaderHandler('monster00', '/static/images/img-monster00.png');
-    if (!PIXI.loader.resources['monster01']) await loaderHandler('monster01', '/static/images/img-monster01.png');
-    if (!PIXI.loader.resources['monster02']) await loaderHandler('monster02', '/static/images/img-monster02.png');
+    if (!PIXI.loader.resources['monster00']) await loaderHandler('monster00', '/static/images/img-monster00/config.json');
+    if (!PIXI.loader.resources['monster01']) await loaderHandler('monster01', '/static/images/img-monster01/config.json');
+    if (!PIXI.loader.resources['monster02']) await loaderHandler('monster02', '/static/images/img-monster02/config.json');
     if (!PIXI.loader.resources['boom']) await loaderHandler('boom', '/static/images/img-boom.png');
 
     this.sprite = new PIXI.Graphics();
     this.boomEffect = new PIXI.Sprite(PIXI.loader.resources['boom'].texture);
     this.sprite.addChild(this.boomEffect);
     this.boomEffect.visible = false;
-
 
     return this;
   }
@@ -179,16 +178,27 @@ export class Monster {
   setMonster(level: number): void {
     this.level = level;
 
-    this.monster = new PIXI.Sprite(PIXI.loader.resources[`monster0${(this.level - 1) % 3}`].texture);
+    const monster = `monster0${(this.level - 1) % 3}`
+    const frames: PIXI.Texture[] = Object.keys(PIXI.loader.resources[monster].data.frames)
+      .map(key => PIXI.Texture.fromFrame(key))
+    this.monster = new PIXI.extras.AnimatedSprite(frames);
+    this.monster.animationSpeed = 0.1;
+    this.monster.play();
 
     // 加入怪物、隱藏爆炸效果
     this.sprite.addChild(this.monster);
     this.sprite.alpha = 1;
     this.boomEffect.visible = false;
 
+
     // 根據等級調整怪物大小
     let scale = this.level >= 5 ? 1 - (this.level * 0.01) : 1;
     if (scale <= 0.5) scale = 0.5;
+
+    if (monster === 'monster01') {
+      // 這隻怪物比較狹長一點，微調大小
+      scale *= 0.85;
+    }
 
     this.sprite.height = (this.sprite.height / this.sprite.width) * (this.app.screen.width / 3);
     this.sprite.width = this.app.screen.width / 3;
@@ -208,8 +218,8 @@ export class Monster {
   boom(): Promise<void> {
     this.stop();
     this.boomEffect.visible = true;
-    this.boomEffect.x = this.monster.x;
-    this.boomEffect.y = this.monster.y;
+    this.boomEffect.x = this.monster.x - Math.abs((this.boomEffect.width / 2 - this.monster.width / 2) /2);
+    this.boomEffect.y = this.monster.y - Math.abs((this.boomEffect.height / 2 - this.monster.height / 2) / 2);
     // this.boomEffect.height = (this.boomEffect.height / this.boomEffect.width) * this.monster.width;
     // this.boomEffect.width = this.monster.width;
 
