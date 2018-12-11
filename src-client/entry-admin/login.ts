@@ -1,4 +1,5 @@
 import { BasePage } from "./base.page";
+import * as cookie from "js-cookie";
 import * as Vue from 'vue/dist/vue.common'
 
 class LoginPage extends BasePage {
@@ -28,6 +29,9 @@ class LoginPage extends BasePage {
             });
             return;
           }
+          cookie.set('admin', ret.item, { expires: 1 });
+          window.location.href = '/administration'
+
         }
       },
       created() {

@@ -1,6 +1,7 @@
 import webSvc from "../web-services";
 import * as $ from "jquery";
 import * as jsCookie from 'js-cookie';
+import device from 'current-device'
 
 export abstract class BasePage {
     protected webSvc = webSvc;
@@ -11,6 +12,15 @@ export abstract class BasePage {
     public $loader: JQuery<HTMLElement>;
 
     constructor() {
+
+        if (device.desktop()) {
+            // 是桌機
+            this.fakeAlert({
+                title: '要使用手機才能進行遊戲唷',
+                text: '',
+                showConfirmButton: false,
+            });
+        }
 
         this.setInitialScale();
         this.setStopMask();
@@ -98,10 +108,10 @@ export abstract class BasePage {
     }
 
     fakeAlert(options: AlertOptions): void {
-        const { title = '', text = '', showCancelButton = false, closeCallback } = options;
+        const { title = '', text = '', showCancelButton = false, closeCallback, showConfirmButton = true } = options;
 
         let html = `
-            <div class="zoneMask type-actual" style="z-index: 9999">
+            <div class="zoneMask type-actual" style="z-index: 999998">
                 <div class="attrBox">
                     <div class="content">
                         <div class="inputList">
@@ -111,7 +121,7 @@ export abstract class BasePage {
                     </div>
                     <div class="attrBox__button">
                         ${showCancelButton ? '<div class="button__x type-btn" fake-alert="close"><img src="/static/images/btn_x.png" alt=""></div>' : ''}
-                        <div class="button__accept type-btn" fake-alert="accept"><img src="/static/images/btn_accept.png" alt=""></div>
+                        ${showConfirmButton ? '<div class="button__accept type-btn" fake-alert="accept"><img src="/static/images/btn_accept.png" alt=""></div>' : ''}
                     </div>
                     <div class="item-bg type-actual"><img src="/static/images/img_attrPanel.png" alt=""></div>
                 </div>
@@ -131,10 +141,11 @@ export abstract class BasePage {
 }
 
 interface AlertOptions {
-    title: String,
-    text: String,
-    showCancelButton?: Boolean,
-    closeCallback?: Function,
+    title: String
+    text: String
+    showCancelButton?: Boolean
+    showConfirmButton?: Boolean
+    closeCallback?: Function
 }
 
 export enum PlusItem {

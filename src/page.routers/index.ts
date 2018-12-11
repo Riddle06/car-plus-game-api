@@ -6,6 +6,7 @@ import ProfileRouter from "./profile.router";
 import ShopRouter from "./shop.router";
 import AdministrationRouter from "./administration.router";
 import { gamePageMiddleware } from '../middlewares/game-page.middleware';
+import { adminClientMiddleware } from '../middlewares/client.middleware';
 import { RequestExtension, ResponseExtension } from "@view-models/extension";
 
 
@@ -28,6 +29,6 @@ router.use('/catch-game', gamePageMiddleware, CatchGameRouter);
 router.use('/question', gamePageMiddleware, QuestionRouter);
 router.use('/profile', gamePageMiddleware, ProfileRouter);
 router.use('/shop', gamePageMiddleware, ShopRouter);
-router.use('/administration', AdministrationRouter)
+router.use('/administration', adminClientMiddleware, AdministrationRouter)
 
 export default router;

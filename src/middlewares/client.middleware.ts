@@ -11,7 +11,7 @@ import { NextFunction } from "express";
  */
 export const clientMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
 
-    const ignorePaths = ['no-token', '/admin/api', '/api'];
+    const ignorePaths = ['no-token', '/admin/api', '/api', '/administration'];
 
     if (ignorePaths.some(ignorePath => req.path.indexOf(ignorePath) > -1)) {
         next();
@@ -55,6 +55,22 @@ export const clientMiddleware = async (req: RequestExtension, res: ResponseExten
     next();
 }
 
+
+export const adminClientMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
+    
+    console.log(req.originalUrl)
+    if (req.originalUrl.indexOf('/administration/login') > -1) {
+        next();
+        return;
+    }
+
+    const token = req.cookies.admin;
+    if (checker.isNullOrUndefinedOrWhiteSpace(token)) {
+        res.redirect('/administration/login'); return;
+    }
+    
+    next();
+}
 
 
 function getToken(req: RequestExtension): string {
