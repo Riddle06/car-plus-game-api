@@ -3,8 +3,8 @@ export type QueryCountDbModel = {
 }[]
 
 export interface PageInfo {
-    index: number
-    size: number
+    pageIndex: number
+    pageSize: number
     dateStart?: Date | string
     dateEnd?: Date | string
 }

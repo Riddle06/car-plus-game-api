@@ -10,13 +10,13 @@ export class AdminMemberWebSvc extends BaseWebSvc {
      * 取得遊戲紀錄
      */
     async getGameHistories(pageInfo: PageInfo = {
-        index: 1,
-        size: 10
+        pageIndex: 1,
+        pageSize: 10
     }, param: { memberId?: string } = {
         memberId: ''
     }): Promise<ListResult<AdminMemberGameHistoryVM>> {
         const res = await this.axiosAdminInstance.get('/admin/api/member/game/history', {
-            data: {
+            params: {
                 ...pageInfo,
                 mi: param.memberId
             }
@@ -38,8 +38,8 @@ export class AdminMemberWebSvc extends BaseWebSvc {
      * 取得新增遊戲幣紀錄
      */
     async getManualGamePointHistories(pageInfo: PageInfo = {
-        index: 1,
-        size: 10
+        pageIndex: 1,
+        pageSize: 10
     }): Promise<ListResult<AdminMemberPointHistoryVM>> {
 
         const res = await this.axiosAdminInstance.post('/admin/api/member/point/history/manual', {
@@ -53,8 +53,8 @@ export class AdminMemberWebSvc extends BaseWebSvc {
      * 取得紅利兌換紀錄
      */
     async getGamePointExchangeHistories(pageInfo: PageInfo = {
-        index: 1,
-        size: 10
+        pageIndex: 1,
+        pageSize: 10
     }, param: { memberId: string } = { memberId: "" }) {
         const res = await this.axiosAdminInstance.post('/admin/api/member/point/history/exchange', {
             ...pageInfo,
@@ -84,12 +84,12 @@ export class AdminMemberWebSvc extends BaseWebSvc {
      * 取得黑名單列表
      */
     async getBlockMember(pageInfo: PageInfo = {
-        index: 1,
-        size: 10
+        pageIndex: 1,
+        pageSize: 10
     }, param: { memberId: string } = { memberId: "" }): Promise<ListResult<AdminMemberBlockHistoryVM>> {
         const res = await this.axiosAdminInstance.get(`/admin/api/member/block-history`,
             {
-                data: {
+                params: {
                     ...pageInfo,
                     mi: param.memberId
                 }
@@ -101,9 +101,9 @@ export class AdminMemberWebSvc extends BaseWebSvc {
      * 會員總覽：取得消費者列表
      * @param {param.keyword} 關鍵字
      */
-    async getMembers(pageInfo: PageInfo = { index: 1, size: 10 }, param: { memberId: string, keyword?: string } = { memberId: "" }): Promise<ListResult<AdminMemberVM>> {
+    async getMembers(pageInfo: any = { pageIndex: 1, pageSize: 10 }, param: { memberId: string, keyword?: string } = { memberId: "" }): Promise<ListResult<AdminMemberVM>> {
         const res = await this.axiosAdminInstance.get<ListResult<AdminMemberVM>>(`/admin/api/member`, {
-            data: {
+            params: {
                 ...pageInfo,
                 mi: param.memberId,
                 keyword: param.keyword

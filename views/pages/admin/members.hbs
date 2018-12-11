@@ -16,14 +16,14 @@
       </el-col>
       <el-col>
         <el-pagination :currentPage.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
-          :total="page.dataAmount" @currentChange="handlePageChange">
+          :total="page.dataAmount" @current-change="handlePageChange">
         </el-pagination>
       </el-col>
     </el-row>
   </div>
 
   <el-table :data="members" row-key="id" header-align="center" stripe border highlight-current-row>
-    <el-table-column label="id" prop="carPlusMemberId"></el-table-column>
+    <el-table-column label="會員ID" prop="carPlusMemberId"></el-table-column>
     <el-table-column label="暱稱" prop="nickName"></el-table-column>
     <el-table-column label="等級" prop="level"></el-table-column>
     <el-table-column label="經驗值" prop="experience"></el-table-column>
@@ -34,7 +34,7 @@
         \{{ scope.row.gameItems }}
       </template>
     </el-table-column>
-    <el-table-column label="操作">
+    <el-table-column label="操作" align="center">
       <template slot-scope="scope">
         <el-button type="danger" size="mini">封鎖</el-button>
       </template>
