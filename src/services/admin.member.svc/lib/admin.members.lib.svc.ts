@@ -11,7 +11,7 @@ import { GameItemEntity } from '@entities/game-item.entity';
 
 const baseSql = `select 
 m.id as id,
-m.id as nickName,
+m.nick_name as nickName,
 m.car_plus_point as carPlusPoint,
 m.game_point as gamePoint,
 m.level as level,
