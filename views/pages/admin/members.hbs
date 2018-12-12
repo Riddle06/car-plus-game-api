@@ -1,9 +1,9 @@
 <div>
   <h2>會員總覽</h2>
-  <div style="max-width: 550px">
-    <el-form>
+  <div class="form-wrap">
+    <el-form label-position="right" label-width="100px" @submit.native.prevent>
       <el-form-item label="會員Id">
-        <el-input placeholder="請輸入會員Id"></el-input>
+        <el-input placeholder="請輸入會員Id" v-model="memberId" @keyup.enter.native="getMembers(true)"></el-input>
       </el-form-item>
     </el-form>
   </div>
@@ -11,8 +11,8 @@
   <div class="text-right row-block">
     <el-row type="flex" align="middle" justify="space-between">
       <el-col class="text-left">
-        <el-button type="primary" icon="el-icon-search">搜尋</el-button>
-        <el-button type="info">匯出Excel</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="getMembers(true)">搜尋</el-button>
+        <el-button type="info" @click="exportExcel">匯出Excel</el-button>
       </el-col>
       <el-col>
         <el-pagination :currentPage.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
@@ -29,17 +29,79 @@
     <el-table-column label="經驗值" prop="experience"></el-table-column>
     <el-table-column label="超人幣" prop="gamePoint"></el-table-column>
     <el-table-column label="格上紅利" prop="carPlusPoint"></el-table-column>
-    <el-table-column label="道具">
+    <el-table-column label="操作" align="center" width="200">
       <template slot-scope="scope">
-        \{{ scope.row.gameItems }}
-      </template>
-    </el-table-column>
-    <el-table-column label="操作" align="center">
-      <template slot-scope="scope">
-        <el-button type="danger" size="mini">封鎖</el-button>
+        <el-button type="primary" icon="el-icon-info" size="mini" @click="openMemberDetail(scope.row)">詳細</el-button>
+        <el-button type="danger" icon="el-icon-error" size="mini" @click="openBlockDialog(scope.row)">封鎖</el-button>
       </template>
     </el-table-column>
   </el-table>
+
+  <div class="text-right row-block">
+    <el-row type="flex" align="middle" justify="space-between">
+      <el-col class="text-left">
+      </el-col>
+      <el-col>
+        <el-pagination :currentPage.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
+          :total="page.dataAmount" @current-change="handlePageChange">
+        </el-pagination>
+      </el-col>
+    </el-row>
+  </div>
 </div>
+
+<el-dialog title="會員資料" center :visible.sync="isDialogOpen" width="80%">
+  <div>
+    <el-row :gutter="15">
+      <el-col :sm="10" :xs="24">
+        <el-form class="fake-table">
+          <el-form-item label="格上會員ID">\{{ member.carPlusMemberId }}</el-form-item>
+          <el-form-item label="暱稱">\{{ member.nickName }}</el-form-item>
+          <el-form-item label="等級">\{{ member.level }}</el-form-item>
+          <el-form-item label="經驗值">\{{ member.experience }}</el-form-item>
+          <el-form-item label="超人幣">\{{ member.gamePoint }}</el-form-item>
+          <el-form-item label="格上紅利">\{{ member.carPlusPoint }}</el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :sm="14" :xs="24">
+        <table class="carplus-table">
+          <caption>擁有遊戲物品</caption>
+          <thead>
+            <tr>
+              <th>類型</th>
+              <th>名稱</th>
+              <th>數量</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in member.gameItems" :key="item.id">
+              <td>\{{ getGameItemTypeName(item.type) }}</td>
+              <td>\{{ item.name }}</td>
+              <td>\{{ item.num }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </el-col>
+    </el-row>
+  </div>
+</el-dialog>
+
+<el-dialog title="封鎖會員" center :visible.sync="isBlockDialogOpen" width="60%">
+  <el-form :model="blockForm" ref="form" label-position="right" label-width="100px" @submit.native.prevent>
+    <el-form-item label="會員">
+      <span>\{{ member.carPlusMemberId }}（暱稱: \{{ member.nickName }}）</span>
+    </el-form-item>
+    <el-form-item label="封鎖理由" prop="reason" required>
+      <el-input type="textarea" placeholder="請輸入封鎖理由" v-model="blockForm.reason"></el-input>
+    </el-form-item>
+    <el-form-item label="處理人" prop="adminUserName" required>
+      <el-input type="text" placeholder="請輸入您的名字" v-model="blockForm.adminUserName"></el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer">
+    <el-button type="danger" @click="addBlockMember">確認</el-button>
+    <el-button type="default" @click="isBlockDialogOpen = false">取消</el-button>
+  </div>
+</el-dialog>
 
 <script src="/static/js/admin.members.bundle.js"></script>

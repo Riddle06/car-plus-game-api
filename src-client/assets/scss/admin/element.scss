@@ -28,23 +28,40 @@
 //   }
 // }
 
-.el-form-item {
-  display: flex;
-  align-items: center;
+// .el-form-item {
+//   display: flex;
+//   align-items: center;
 
-  &__label {
-    font-weight: bold;
-    width: 120px;
-    text-align: right;
+//   &__label {
+//     font-weight: bold;
+//     width: 120px;
+//     text-align: right;
+//   }
+
+//   &__content {
+//     flex: 1;
+//   }
+// }
+
+// .el-input{
+//   width: 100%;;
+// }
+
+.fake-table {
+  .el-form-item__label {
+    background-color: #ddd;
+    padding: 0 15px;
+    border-radius: 5px;
+    margin-right: 10px;
+    line-height: 30px;
   }
-
-  &__content {
-    flex: 1;
+  .el-form-item__content {
+    line-height: 30px;
   }
 }
 
-.el-input{
-  width: 100%;;
+.form-wrap {
+  max-width: 550px;
 }
 
 .el-table {

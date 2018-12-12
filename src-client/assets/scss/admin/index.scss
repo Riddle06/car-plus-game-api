@@ -52,6 +52,34 @@ h2 {
   border-bottom: 1px solid black;
 }
 
+.carplus-table {
+  border: 1px solid #888;
+  width: 100%;
+  text-align: center;
+  border-spacing: 0;
+  caption {
+    padding: 10px;
+    background-color: #888;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  thead tr th {
+    line-height: 30px;
+    border-bottom: 1px solid #333;
+  }
+
+  tbody tr {
+    &:nth-child(odd) {
+      background-color: #eee;
+    }
+
+    td {
+      padding: 10px;
+    }
+  }
+}
+
 
 @import '../tool.scss';
 @import './element.scss';
