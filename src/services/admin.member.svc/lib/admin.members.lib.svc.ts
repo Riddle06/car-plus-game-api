@@ -6,7 +6,7 @@ import { AdminMemberVM, AdminMemberListQueryParameterVM, AdminMemberGameItemVM }
 import { BaseConnection } from '@services/base-connection';
 import { ExportResult, exporter } from '@utilities/exporter';
 import { checker, uniqueId } from '@utilities';
-import { GameItemVM } from '@view-models/game.vm';
+import { GameItemVM, GameItemType } from '@view-models/game.vm';
 import { GameItemEntity } from '@entities/game-item.entity';
 
 const baseSql = `select 
@@ -145,7 +145,7 @@ export class AdminMembersLibSvc extends BaseConnection {
 
         const gameItemAggregations: { gameItemId: string, count: number }[] = await memberGameItemRepository.createQueryBuilder(`memberGameItem`)
             .select(`memberGameItem.game_item_id`, 'gameItemId')
-            .select(`sum(memberGameItem.remain_times)`, `count`)
+            .addSelect(`count(memberGameItem.remain_times)`, `count`)
             .where(`memberGameItem.member_id = :memberId`)
             .groupBy('memberGameItem.game_item_id')
             .setParameters({ memberId: id })
@@ -153,29 +153,32 @@ export class AdminMembersLibSvc extends BaseConnection {
 
         const gameItems = await this.getGameItems();
 
-        ret.item.gameItems = gameItems.items.map(item => {
-            const { id, description, name, imageUrl, type, enableBuy, addScoreRate, addGamePointRate, spriteFolderPath, levelMinLimit } = item
-            const memberGameItem: AdminMemberGameItemVM = {
-                id,
-                description,
-                name,
-                imageUrl,
-                gamePoint,
-                carPlusPoint,
-                type,
-                enableBuy,
-                addScoreRate,
-                addGamePointRate,
-                num: 0,
-                spriteFolderPath,
-                levelMinLimit
-            }
-            const gameItemAggregation = gameItemAggregations.find(gameItemAggregation => gameItemAggregation.gameItemId === id)
-            if (!checker.isNullOrUndefinedObject(gameItemAggregation)) {
-                memberGameItem.num = gameItemAggregation.count
-            }
-            return memberGameItem;
-        });
+        const enableTypes: GameItemType[] = [GameItemType.role, GameItemType.tool]
+        ret.item.gameItems = gameItems.items
+            .filter(item => enableTypes.includes(item.type))
+            .map(item => {
+                const { id, description, name, imageUrl, type, enableBuy, addScoreRate, addGamePointRate, spriteFolderPath, levelMinLimit } = item
+                const memberGameItem: AdminMemberGameItemVM = {
+                    id,
+                    description,
+                    name,
+                    imageUrl,
+                    gamePoint,
+                    carPlusPoint,
+                    type,
+                    enableBuy,
+                    addScoreRate,
+                    addGamePointRate,
+                    num: 0,
+                    spriteFolderPath,
+                    levelMinLimit
+                }
+                const gameItemAggregation = gameItemAggregations.find(gameItemAggregation => gameItemAggregation.gameItemId === id)
+                if (!checker.isNullOrUndefinedObject(gameItemAggregation)) {
+                    memberGameItem.num = gameItemAggregation.count
+                }
+                return memberGameItem;
+            });
 
         return ret;
     }
@@ -202,31 +205,31 @@ export class AdminMembersLibSvc extends BaseConnection {
             isnull(game_item_7.count,0) as gameItem7Count
                 from [member] m 
                 left join (
-                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
+                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '一般上班族'
                 group by i.member_id ) as game_item_1 on game_item_1.member_id = m.id
                 
                 left join (
-                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
+                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '實習超人'
                 group by i.member_id ) as game_item_2 on game_item_2.member_id = m.id
                 
                 left join (
-                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
+                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '超人隊員'
                 group by i.member_id ) as game_item_3 on game_item_3.member_id = m.id
                 
                 left join (
-                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
+                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '超人隊長'
                 group by i.member_id ) as game_item_4 on game_item_4.member_id = m.id
                 
                 left join (
-                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
+                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
                 where gi.name = '力霸超人'
                 group by i.member_id ) as game_item_5 on game_item_5.member_id = m.id
@@ -286,7 +289,7 @@ export class AdminMembersLibSvc extends BaseConnection {
 
         const ret = new ListResult<GameItemVM>();
         ret.items = gameItemEntities.map(gameItemEntity => {
-            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath,levelMinLimit } = gameItemEntity
+            const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath, levelMinLimit } = gameItemEntity
             const gameItemVM: GameItemVM = {
                 id,
                 description,

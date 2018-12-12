@@ -86,11 +86,12 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
         newMemberBlockHistoryEntity.adminUserId = this.adminUserToken.payload.id
         newMemberBlockHistoryEntity.dateCreated = new Date()
         newMemberBlockHistoryEntity.dateUpdated = new Date();
-
         await memberBlockHistoryRepository.insert(newMemberBlockHistoryEntity);
-        memberEntity.dateUpdated = new Date()
-        memberEntity.isBlock = true;
-        await memberEntity.save();
+
+        await this.entityManager.getRepository(MemberEntity).update({ id: memberEntity.id }, {
+            dateUpdated: new Date(),
+            isBlock: true
+        })
 
         const ret = new Result<AdminMemberBlockHistoryVM>(true)
         ret.item = {
