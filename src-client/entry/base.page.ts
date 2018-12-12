@@ -8,6 +8,8 @@ export abstract class BasePage {
     protected $: JQueryStatic = $
     protected mql: MediaQueryList = window.matchMedia("(orientation: portrait)");
 
+    private isInputFocus: Boolean = false;
+
     public $zoneMask: JQuery<HTMLElement>;
     public $loader: JQuery<HTMLElement>;
 
@@ -23,7 +25,7 @@ export abstract class BasePage {
         }
 
         this.setInitialScale();
-        this.setStopMask();
+        this.setWindowChecker();
         this.setZoneMask();
 
         this.domEventBinding();
@@ -34,11 +36,13 @@ export abstract class BasePage {
 
     abstract didMount()
 
-    private setStopMask(): void {
+    private setWindowChecker(): void {
         const $meta: HTMLMetaElement = document.querySelector('[name=viewport]');
         const $stopMask: JQuery<HTMLElement> = $("#js-stop-mask");
+        const _this = this;
 
         if (!this.mql.matches) {
+            // 手機是橫的
             $stopMask.addClass('is-active');
             $meta.content = 'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no';
         }
@@ -47,21 +51,22 @@ export abstract class BasePage {
             if (m.matches) {
                 window.location.reload();
             }
-            else {
-                // 手機是橫的
+            else if (!_this.isInputFocus) {
+                // 手機是橫的 且 不是正在使用鍵盤
                 $meta.content = 'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no';
                 $stopMask.addClass('is-active');
             }
         });
         // https://stackoverflow.com/questions/37808180/disable-viewport-zooming-ios-10-safari
 
-        // window.addEventListener('orientationchange', function (event) {
-        //     if (window.screen.width > window.screen.height) {
-        //         $stopMask.addClass('is-active');
-        //     } else {
-        //         window.location.reload();
-        //     }
-        // }, false)
+        this.$('input').focus(() => {
+            // console.log('input focus')
+            this.isInputFocus = true;
+        });
+        this.$('input').blur(() => {
+            // console.log('input blur')
+            this.isInputFocus = false;
+        })
     }
 
     private setInitialScale(): void {
