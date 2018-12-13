@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import * as cookie from "js-cookie";
+import { Notification } from 'element-ui';
 
 export abstract class BaseWebSvc {
 
@@ -27,6 +28,21 @@ export abstract class BaseWebSvc {
                 clientId,
                 Authorization: `Bearer ${adminToken}`
             }
+        })
+
+        this.axiosAdminInstance.interceptors.response.use(response => {
+            const { data } = response;
+            const { success, message } = data;
+
+            if (!success) {
+                Notification({
+                    type: 'error',
+                    title: '發生錯誤',
+                    message: message
+                });
+            }
+
+            return response
         })
     }
 

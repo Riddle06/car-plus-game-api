@@ -15,7 +15,7 @@
         <el-button type="info" @click="exportExcel">匯出Excel</el-button>
       </el-col>
       <el-col>
-        <el-pagination :currentPage.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
+        <el-pagination :current-page.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
           :total="page.dataAmount" @current-change="handlePageChange">
         </el-pagination>
       </el-col>
@@ -42,7 +42,7 @@
       <el-col class="text-left">
       </el-col>
       <el-col>
-        <el-pagination :currentPage.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
+        <el-pagination :current-page.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
           :total="page.dataAmount" @current-change="handlePageChange">
         </el-pagination>
       </el-col>

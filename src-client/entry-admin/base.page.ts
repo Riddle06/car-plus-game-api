@@ -1,12 +1,15 @@
 import { adminSvc } from "../web-services";
 import { GameItemType } from '@view-models/game.vm';
+import { PointType } from '@view-models/admin.point.vm';
 import * as Vue from 'vue/dist/vue.common'
 import ElementUI from 'element-ui';
 import * as cookie from "js-cookie";
+import * as moment from 'moment';
 import '../assets/scss/admin/index.scss';
 
 export abstract class BasePage {
     protected adminSvc = adminSvc;
+    protected moment = moment;
     protected loadingInstance = null;
 
     protected messageBoxOption = {
@@ -20,6 +23,15 @@ export abstract class BasePage {
     
     constructor() {
       Vue.use(ElementUI);
+
+      Vue.mixin({
+        methods: {
+          $g_formatDateTime(date: any): string {
+            return moment(date).format('YYYY/MM/DD HH:ss')
+          }
+        }
+      })
+
       this.vueInit();
     }
 
@@ -29,7 +41,7 @@ export abstract class BasePage {
       return token;
   }
 
-    getGameItemTypeName(type: number): Number | String {
+    getGameItemTypeName(type: number): number | string {
       switch(type) {
         case GameItemType.role:
           return '角色';
@@ -41,6 +53,15 @@ export abstract class BasePage {
           return '格上紅利'
         default:
           return type;
+      }
+    }
+
+    getPointTypeText(type: number): number | string {
+      switch(type) {
+        case PointType.carPlus:
+          return '格上紅利';
+        case PointType.gamePoint:
+          return '超人幣'
       }
     }
     

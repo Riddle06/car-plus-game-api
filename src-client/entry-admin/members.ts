@@ -51,6 +51,10 @@ class MembersPage extends BasePage {
             pageSize: this.page.size
           }, { memberId: this.memberId });
 
+          if (!ret.success) {
+            return;
+          }
+
           this.members = ret.items;
           this.page = { ...this.page, ...ret.page };
         },
@@ -59,7 +63,9 @@ class MembersPage extends BasePage {
           _this.openLoader();
           const ret = await _this.adminSvc.adminMember.getMemberDetail(member.id);
           _this.closeLoader();
-          console.log(ret)
+          if (!ret.success) {
+            return;
+          }
 
           this.member = ret.item;
           this.isDialogOpen = true;
@@ -78,11 +84,6 @@ class MembersPage extends BasePage {
           }
           const ret = await _this.adminSvc.adminMember.blockMember(this.blockForm);
           if (!ret.success) {
-            this.$notify({
-              type: 'error',
-              title: '封鎖失敗',
-              message: ret.message
-            });
             return;
           }
           this.$notify({
@@ -103,7 +104,6 @@ class MembersPage extends BasePage {
         },
 
         handlePageChange(index) {
-          console.log(index);
           this.page.index = index;
           this.getMembers();
         }

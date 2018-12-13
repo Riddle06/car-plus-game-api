@@ -48,8 +48,12 @@ export abstract class BasePage {
         }
 
         this.mql.addListener(function (m) {
+            const pathname = window.location.pathname;
             if (m.matches) {
-                window.location.reload();
+                if (pathname.includes('/shot-game/') || pathname.includes('/catch-game/')) {
+                    // 只有遊戲頁面轉正需要再次reload
+                    window.location.reload();
+                }
             }
             else if (!_this.isInputFocus) {
                 // 手機是橫的 且 不是正在使用鍵盤

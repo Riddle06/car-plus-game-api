@@ -42,8 +42,10 @@ export class AdminMemberWebSvc extends BaseWebSvc {
         pageSize: 10
     }): Promise<ListResult<AdminMemberPointHistoryVM>> {
 
-        const res = await this.axiosAdminInstance.post('/admin/api/member/point/history/manual', {
-            ...pageInfo
+        const res = await this.axiosAdminInstance.get('/admin/api/member/point/history/manual', {
+            params: {
+                ...pageInfo
+            }
         })
 
         return res.data;
@@ -56,9 +58,11 @@ export class AdminMemberWebSvc extends BaseWebSvc {
         pageIndex: 1,
         pageSize: 10
     }, param: { memberId: string } = { memberId: "" }) {
-        const res = await this.axiosAdminInstance.post('/admin/api/member/point/history/exchange', {
-            ...pageInfo,
-            mi: param.memberId
+        const res = await this.axiosAdminInstance.get('/admin/api/member/point/history/exchange', {
+            params: {
+                ...pageInfo,
+                mi: param.memberId
+            }
         })
         return res.data;
     }
