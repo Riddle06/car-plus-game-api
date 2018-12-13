@@ -35,7 +35,7 @@ type MemberGameItemOrderViewDbModel = {
     memberId: string
     memberNickName: string
     memberCarPlusPoint: number
-    memberCarPlusMemberId: number
+    memberCarPlusMemberId: string
     gameItemName: string
     gameItemType: number
     dateCreated: Date
@@ -57,7 +57,7 @@ export class AdminExchangeLibSvc extends BaseConnection {
         const parameters: any = {};
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
-            conditions.push(`m.id = :memberId`);
+            conditions.push(`m.car_plus_member_id = :memberId`);
             parameters.memberId = param.params.memberId
         }
 

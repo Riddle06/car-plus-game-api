@@ -55,7 +55,7 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
 
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
-            conditions.push(`m.id = :memberId`);
+            conditions.push(`m.car_plus_member_id = :memberId`);
             parameters.memberId = param.params.memberId
         }
 
@@ -88,7 +88,7 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
         const countRet: QueryCountDbModel = await this.entityManager.query(countQueryParam.sql, countQueryParam.parameters);
         const memberGameItemOrderEntities = listRet
         const dataAmount = countRet[0].count
-        const ret = new ListResult<AdminMemberGameHistoryVM>();
+        const ret = new ListResult<AdminMemberGameHistoryVM>(true);
 
         ret.items = memberGameItemOrderEntities.map(entity => {
             const { id, memberId, dateCreated, gameScore, gamePoint, dateFinished } = entity

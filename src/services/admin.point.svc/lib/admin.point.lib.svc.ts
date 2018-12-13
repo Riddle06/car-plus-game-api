@@ -17,6 +17,7 @@ history.id as id,
 history.member_id as memberId,
 history.game_item_id as gameItemId,
 m.nick_name as memberNickName,
+m.car_plus_member_id as carPlusMemberId,
 gi.name as gameItemName,
 history.type as historyType,
 history.before_game_point as beforeGamePoint,
@@ -40,6 +41,7 @@ type MemberGamePointHistoryViewDbModel = {
     memberId: string
     gameItemId: string
     memberNickName: string
+    carPlusMemberId: string
     gameItemName: string
     historyType: number
     beforeGamePoint: number
@@ -76,7 +78,7 @@ export class AdminPointLibSvc extends BaseConnection {
 
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
-            conditions.push(`m.id = :memberId`);
+            conditions.push(`m.car_plus_member_id = :memberId`);
             parameters.memberId = param.params.memberId
         }
 

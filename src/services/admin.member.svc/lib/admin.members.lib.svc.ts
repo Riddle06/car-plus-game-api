@@ -58,7 +58,7 @@ export class AdminMembersLibSvc extends BaseConnection {
         const parameters: any = {};
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
-            conditions.push(`m.id = :memberId`)
+            conditions.push(`m.car_plus_member_id = :memberId`)
             parameters.memberId = param.params.memberId
         }
 
@@ -147,6 +147,7 @@ export class AdminMembersLibSvc extends BaseConnection {
             .select(`memberGameItem.game_item_id`, 'gameItemId')
             .addSelect(`count(memberGameItem.remain_times)`, `count`)
             .where(`memberGameItem.member_id = :memberId`)
+            .andWhere(`memberGameItem.enabled = 1`)
             .groupBy('memberGameItem.game_item_id')
             .setParameters({ memberId: id })
             .getRawMany()
@@ -235,15 +236,15 @@ export class AdminMembersLibSvc extends BaseConnection {
                 group by i.member_id ) as game_item_5 on game_item_5.member_id = m.id
                 
                 left join (
-                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
+                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
-                where gi.name = '富翁果實'
+                where gi.name = '富翁果實' and i.remain_times > 0
                 group by i.member_id ) as game_item_6 on game_item_6.member_id = m.id
                 
                 left join (
-                select i.member_id, sum(i.remain_times) as [count] from member_game_item i 
+                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
                 left join game_item gi on gi.id = i.game_item_id 
-                where gi.name = '能量果實'
+                where gi.name = '能量果實' and i.remain_times > 0
             group by i.member_id ) as game_item_7 on game_item_7.member_id = m.id
             order by m.car_plus_member_id asc
        `)

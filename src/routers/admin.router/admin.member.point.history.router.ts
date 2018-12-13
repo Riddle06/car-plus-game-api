@@ -11,6 +11,7 @@ router.get('/history/exchange', async (req: RequestExtension, res: ResponseExten
     try {
         const param = new PageQuery<AdminMemberGameItemQueryParameterVM>(req.listQuery, {
             memberId: req.query.mi
+            
         })
         res.result = await adminPointSvc.getExchangeOrders(param)
     } catch (error) {
