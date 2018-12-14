@@ -5,13 +5,14 @@ export interface AdminMemberGameHistoryVM {
     id: string
     memberId: string
     game: {
-        id:string
-        name:string
+        id: string
+        name: string
     }
     dateCreated: Date
     member: {
         id: string
         nickName: string
+        carPlusMemberId: string
     }
     score: number
     point: number
@@ -25,20 +26,20 @@ export interface AdminMemberGameHistoryParameterVM {
 }
 
 export interface AdminGameDashboardVM {
-      
-      /**
-       * 登入人數
-       */
-      memberCount: number
-      
-      /**
-       * 遊戲場次
-       */
-      gameCount: number
-      
-      /**
-       * 總遊戲人次
-       */
-      memberHasPlayGameCount: number
-    
+
+    /**
+     * 登入人數
+     */
+    memberCount: number
+
+    /**
+     * 遊戲場次
+     */
+    gameCount: number
+
+    /**
+     * 總遊戲人次
+     */
+    memberHasPlayGameCount: number
+
 }

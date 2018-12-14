@@ -1,6 +1,7 @@
-import { Result, PageInfo } from '@view-models/common.vm';
+import { Result, PageInfo, ListResult } from '@view-models/common.vm';
 import { BaseWebSvc } from "./base-web.svc";
 import { AdminGameDashboardVM } from '@view-models/admin.game.vm';
+import { GameVM } from '@view-models/game.vm';
 export class AdminGameWebSvc extends BaseWebSvc {
 
     /**
@@ -13,6 +14,19 @@ export class AdminGameWebSvc extends BaseWebSvc {
             data: {
                 ...pageInfo,
             }
+        })
+        return res.data;
+    }
+
+
+    async getGameList(): Promise<ListResult<GameVM>> {
+        const res = await this.axiosAdminInstance.get('/admin/api/game')
+        return res.data;
+    }
+
+    async updateGame(id: string, parameter: object): Promise<Result<GameVM>> {
+        const res = await this.axiosAdminInstance.put(`/admin/api/game/${id}`, {
+            ...parameter
         })
         return res.data;
     }

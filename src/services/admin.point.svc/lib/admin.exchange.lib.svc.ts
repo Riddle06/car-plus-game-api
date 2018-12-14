@@ -104,7 +104,9 @@ export class AdminExchangeLibSvc extends BaseConnection {
                 dateCreated: entity.dateCreated,
                 member: {
                     id: entity.memberId,
-                    nickName: entity.memberNickName
+                    nickName: entity.memberNickName,
+                    carPlusMemberId: entity.memberCarPlusMemberId
+                    
                 },
                 gameItem: {
                     id: entity.gameItemId,

@@ -12,6 +12,7 @@ const baseSql = `
 select 
 history.id as id,
 history.member_id as memberId,
+m.car_plus_member_id as carPlusMemberId,
 g.id as gameId,
 history.date_created as dateCreated,
 history.game_score as gameScore,
@@ -29,6 +30,7 @@ join game as g on g.id = history.game_id
 type MemberGameHistoryDbViewModel = {
     id: string
     memberId: string
+    carPlusMemberId: string
     gameId: string
     dateCreated: Date
     gameScore: number
@@ -107,6 +109,7 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
                 member: {
                     id: entity.memberId,
                     nickName: entity.memberNickName,
+                    carPlusMemberId: entity.carPlusMemberId
                 }
             }
 

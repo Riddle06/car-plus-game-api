@@ -67,6 +67,7 @@ class AdminPointSvc {
         try {
             const adminPointLibSvc = new AdminPointLibSvc(adminUserToken, queryRunner);
             const ret = await adminPointLibSvc.addPoint(param);
+            await queryRunner.commitTransaction();
             return ret
         } catch (error) {
             await queryRunner.rollbackTransaction();

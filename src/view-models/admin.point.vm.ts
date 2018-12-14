@@ -10,6 +10,7 @@ export interface AdminMemberGameItemOrderVM {
     member: {
         id: string
         nickName: string
+        carPlusMemberId: string
     }
 
     gameItem: {
@@ -33,7 +34,9 @@ export interface AdminMemberPointHistoryVM {
     gameItemId: string
     member: {
         id: string
+        carPlusMemberId: string
         nickName: string
+
     }
     gameItem: {
         id: string
@@ -68,7 +71,8 @@ export enum PointType {
 
 export interface CreateAdminMemberPointHistoryParameterVM {
     adminUserName: string
-    memberId: string
+    carPlusMemberId: string
+    memberId?: string
     gamePoint: number
     reason: string
 }

@@ -13,6 +13,7 @@ history.id as id,
 history.member_id as memberId,
 history.date_created as dateCreated,
 m.nick_name as memberNickName,
+m.car_plus_member_id as carPlusMemberId,
 history.date_updated as dateUpdated,
 history.reason as reason,
 history.admin_user_id as adminUserId,
@@ -20,6 +21,7 @@ history.admin_user_name as adminUserName,
 history.delete_admin_user_id as deleteAdminUserId,
 history.delete_admin_user_name as deleteAdminUserName,
 history.is_deleted as isDeleted,
+
 ROW_NUMBER () OVER ( order by history.date_created desc) as row
 from member_block_history as history
 join member as m on m.id = history.member_id`
@@ -29,6 +31,7 @@ type MemberBlockHistoryDbViewModel = {
     memberId: string
     dateCreated: Date
     memberNickName: string
+    carPlusMemberId: string
     dateUpdated: Date
     reason: string
     adminUserId: string
@@ -49,9 +52,9 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
 
     async addMemberBlockHistory(param: AdminMemberBlockParameter): Promise<Result<AdminMemberBlockHistoryVM>> {
 
-        const { memberId, reason, adminUserName } = param;
+        const { carPlusMemberId, reason, adminUserName } = param;
 
-        if (checker.isNullOrUndefinedOrWhiteSpace(memberId)) {
+        if (checker.isNullOrUndefinedOrWhiteSpace(carPlusMemberId)) {
             throw new AppError('請選擇會員')
         }
 
@@ -67,7 +70,11 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
         const memberRepository = this.entityManager.getRepository(MemberEntity)
         const memberBlockHistoryRepository = this.entityManager.getRepository(MemberBlockHistoryEntity)
 
-        const memberEntity = await memberRepository.findOne(memberId)
+        const memberEntity = await memberRepository.findOne({
+            where: {
+                carPlusMemberId
+            }
+        })
 
         if (checker.isNullOrUndefinedObject(memberEntity)) {
             throw new AppError('查無此會員')
@@ -79,7 +86,7 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
 
         const newMemberBlockHistoryEntity = new MemberBlockHistoryEntity()
         newMemberBlockHistoryEntity.id = uniqueId.generateV4UUID();
-        newMemberBlockHistoryEntity.memberId = memberId
+        newMemberBlockHistoryEntity.memberId = memberEntity.id
         newMemberBlockHistoryEntity.reason = reason
         newMemberBlockHistoryEntity.isDeleted = false
         newMemberBlockHistoryEntity.adminUserName = adminUserName
@@ -102,7 +109,8 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
             id: newMemberBlockHistoryEntity.id,
             memberId: newMemberBlockHistoryEntity.memberId,
             isDeleted: newMemberBlockHistoryEntity.isDeleted,
-            reason: newMemberBlockHistoryEntity.reason
+            reason: newMemberBlockHistoryEntity.reason,
+            carPlusMemberId
         }
         return ret;
     }
@@ -153,7 +161,8 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
             isDeleted: memberBlockHistoryEntity.isDeleted,
             reason: memberBlockHistoryEntity.reason,
             deleteAdminUserId: memberBlockHistoryEntity.deleteAdminUserId,
-            deleteAdminUserName: memberBlockHistoryEntity.deleteAdminUserName
+            deleteAdminUserName: memberBlockHistoryEntity.deleteAdminUserName,
+            carPlusMemberId: memberEntity.carPlusMemberId
         }
 
         return ret;
@@ -217,6 +226,7 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
                 deleteAdminUserId: entity.deleteAdminUserId,
                 deleteAdminUserName: entity.deleteAdminUserName,
                 memberNickName: entity.memberNickName,
+                carPlusMemberId: entity.carPlusMemberId
             }
             return adminMemberBlockHistoryVM
         })

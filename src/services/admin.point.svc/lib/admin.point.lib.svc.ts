@@ -131,10 +131,10 @@ export class AdminPointLibSvc extends BaseConnection {
 
 
 
-        const { memberId, gamePoint, adminUserName, reason } = param;
+        const { carPlusMemberId, gamePoint, adminUserName, reason } = param;
 
-        if (checker.isNullOrUndefinedObject(memberId)) {
-            throw new AppError('請選擇會員')
+        if (checker.isNullOrUndefinedObject(carPlusMemberId)) {
+            throw new AppError('請輸入會員')
         }
 
         if (!checker.isNaturalInteger(gamePoint)) {
@@ -151,7 +151,11 @@ export class AdminPointLibSvc extends BaseConnection {
 
         const memberRepository = this.entityManager.getRepository(MemberEntity)
 
-        const memberEntity = await memberRepository.findOne(memberId);
+        const memberEntity = await memberRepository.findOne({
+            where: {
+                carPlusMemberId
+            }
+        });
 
         if (checker.isNullOrUndefinedObject(memberEntity)) {
             throw new AppError('查無此會員')
@@ -159,7 +163,8 @@ export class AdminPointLibSvc extends BaseConnection {
 
         const memberAddPointRet = await gameSvc.memberAddPointByManual(this.adminUserToken.payload.id, {
             adminUserName,
-            memberId,
+            memberId: memberEntity.id,
+            carPlusMemberId,
             gamePoint,
             reason
         }, this.queryRunner);
@@ -224,6 +229,7 @@ export class AdminPointLibSvc extends BaseConnection {
             member: {
                 id: member.id,
                 nickName: member.nickName,
+                carPlusMemberId: member.carPlusMemberId
             },
             gameItem: null,
             dateCreated
@@ -267,6 +273,7 @@ export class AdminPointLibSvc extends BaseConnection {
             memberNickName,
             gameItemName,
             dateCreated,
+            carPlusMemberId
         } = param
 
         const ret: AdminMemberPointHistoryVM = {
@@ -284,7 +291,8 @@ export class AdminPointLibSvc extends BaseConnection {
             adminUserName,
             member: {
                 id: memberId,
-                nickName: memberNickName
+                nickName: memberNickName,
+                carPlusMemberId
             },
             gameItem: gameItemId ? {
                 id: gameItemId,

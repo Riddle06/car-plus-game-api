@@ -1,3 +1,5 @@
+import { AdminGameLibSvc } from './lib/admin.game.lib.svc';
+import { GameVM } from '@view-models/game.vm';
 import { AdminGameDashboardLibSvc } from './lib/admin.game.dashboard.lib.svc';
 import { AdminGameHistoryLibSvc } from './lib/admin.game.history.lib.svc';
 import { AdminMemberGameHistoryParameterVM, AdminMemberGameHistoryVM, AdminGameDashboardVM } from '@view-models/admin.game.vm';
@@ -6,6 +8,38 @@ import { dbProvider } from '@utilities';
 import { ExportResult } from '@utilities/exporter';
 
 class AdminGameSvc {
+
+
+    async getGameList(): Promise<ListResult<GameVM>> {
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const adminGameLibSvc = new AdminGameLibSvc(queryRunner)
+            const ret = await adminGameLibSvc.getGameList()
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async updateGame(id: string, parameter: object): Promise<Result<GameVM>> {
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const adminGameLibSvc = new AdminGameLibSvc(queryRunner)
+            const ret = await adminGameLibSvc.updateGameParameter(id, parameter)
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
 
     /**
      * 
@@ -25,7 +59,7 @@ class AdminGameSvc {
         }
     }
 
-    async exportGameHistory(param: PageQuery<AdminMemberGameHistoryParameterVM>): Promise<ExportResult> { 
+    async exportGameHistory(param: PageQuery<AdminMemberGameHistoryParameterVM>): Promise<ExportResult> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const adminGameHistoryLibSvc = new AdminGameHistoryLibSvc(queryRunner)

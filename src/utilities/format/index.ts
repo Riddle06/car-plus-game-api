@@ -1,6 +1,7 @@
 
 import * as luxon from "luxon";
 import { checker } from "../type-checker";
+import * as moment from "moment";
 
 class Format {
 
@@ -50,16 +51,23 @@ class Format {
     }
 
     tryParseToDate(d: string, defaultValue: Date): Date {
-
+        
         if (checker.isNullOrUndefinedOrWhiteSpace(d)) {
             return defaultValue;
         }
-        
-        const m = luxon.DateTime.fromISO(d);
 
-        if (m.isValid) {
-            return m.toJSDate();
-        } else {
+        d = d.replace('.999Z', '.998Z')
+        
+        try {
+            const m = moment(d);
+            if (m.isValid()) {
+                return m.toDate()
+            } else {
+                return defaultValue
+            }
+
+        } catch (error) {
+            console.log(`tryParseToDate error`,error)
             return defaultValue
         }
     }

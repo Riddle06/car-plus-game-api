@@ -20,4 +20,40 @@ router.get('/dashboard', async (req: RequestExtension, res: ResponseExtension, n
 })
 
 
+// 取得遊戲列表
+router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
+
+    try {
+        const ret = await adminGameSvc.getGameList()
+        res.result = ret;
+    } catch (error) {
+        res.appError = error;
+    }
+
+    next();
+})
+
+
+
+// 更新遊戲參數
+router.put('/:id', async (req: RequestExtension, res: ResponseExtension, next) => {
+
+    try {
+        const id = req.params.id;
+        if (['dashboard'].includes(id)) {
+            next();
+            return;
+        }
+        const ret = await adminGameSvc.updateGame(id, req.body)
+        res.result = ret;
+    } catch (error) {
+        res.appError = error;
+    }
+
+    next();
+})
+
+
+
+
 export default router;

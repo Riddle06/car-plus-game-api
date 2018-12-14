@@ -14,7 +14,7 @@ export interface AdminMemberEntityQueryParameterVM {
 }
 
 export interface AdminMemberBlockParameter {
-    memberId: string
+    carPlusMemberId: string
     reason: string
     adminUserName: string
 }
@@ -22,6 +22,7 @@ export interface AdminMemberBlockParameter {
 export interface AdminMemberBlockHistoryVM {
     id: string
     memberId: string
+    carPlusMemberId: string
     adminUserId: string
     reason: string
     dateCreated: Date
