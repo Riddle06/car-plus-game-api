@@ -1,9 +1,9 @@
 <div>
   <h2>營運報表</h2>
-  <div style="max-width: 550px">
+  <div class="form-wrap">
     <el-form>
       <el-form-item label="日期">
-        <el-date-picker type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        <el-date-picker type="daterange" v-model="dateGap" range-separator="至" start-placeholder="開始日期" end-placeholder="结束日期">
         </el-date-picker>
       </el-form-item>
     </el-form>
@@ -17,8 +17,8 @@
         <el-button type="info">匯出Excel</el-button>
       </el-col>
       <el-col>
-        <el-pagination :currentPage.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
-          :total="page.dataAmount" @currentChange="handlePageChange">
+        <el-pagination :current-page.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
+          :total="page.dataAmount" @current-change="handlePageChange">
         </el-pagination>
       </el-col>
     </el-row>
@@ -35,6 +35,18 @@
       </template>
     </el-table-column>
   </el-table>
+
+  <div class="text-right row-block">
+    <el-row type="flex" align="middle" justify="space-between">
+      <el-col class="text-left">
+      </el-col>
+      <el-col>
+        <el-pagination :current-page.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
+          :total="page.dataAmount" @current-change="handlePageChange">
+        </el-pagination>
+      </el-col>
+    </el-row>
+  </div>
 </div>
 
 <script src="/static/js/admin.report.bundle.js"></script>

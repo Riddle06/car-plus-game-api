@@ -9,9 +9,9 @@ class ReportPage extends BasePage {
       el: '#app',
       data() {
         return {
-          reports: [
-            { id: 1, name: '無名', level: 10, coin: 100, }
-          ],
+          dateGap: [],
+          reports: [],
+
           page: {
             index: 1,
             size: 10,
@@ -20,8 +20,9 @@ class ReportPage extends BasePage {
         }
       },
       methods: {
-        handlePageChange() {
-          
+        handlePageChange(index) {
+          this.page.index = index;
+          // this.getGameHistory();
         }
       },
       created() {

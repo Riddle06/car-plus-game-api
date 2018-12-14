@@ -1,42 +1,72 @@
 <div>
   <h2>客訴補幣</h2>
-  <div style="max-width: 550px">
-    <el-form>
-      <el-form-item label="補點會員Id">
-        <el-input placeholder="請輸入會員Id"></el-input>
-      </el-form-item>
-      <el-form-item label="補入超人幣">
-        <el-input type="number" placeholder="請輸入超人幣"></el-input>
-      </el-form-item>
-      <el-form-item label="經手人">
-        <el-input placeholder="請輸入經手人"></el-input>
-      </el-form-item>
-      <el-form-item label=" ">
-        <el-button type="warning" size="small">送出</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
+  {{!-- <div class="form-wrap">
+
+  </div> --}}
 
 
   <div class="text-right row-block">
     <el-row type="flex" align="middle" justify="space-between">
       <el-col class="text-left">
-
+        <el-button type="primary" icon="el-icon-plus" @click="isDialogOpen = true">補幣</el-button>
       </el-col>
       <el-col>
         <el-pagination :currentPage.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
-          :total="page.dataAmount" @currentChange="handlePageChange">
+          :total="page.dataAmount" @current-change="handlePageChange">
         </el-pagination>
       </el-col>
     </el-row>
   </div>
 
   <el-table :data="history" row-key="id" header-align="center" stripe border highlight-current-row>
-    <el-table-column label="id" prop="id"></el-table-column>
-    <el-table-column label="暱稱" prop="name"></el-table-column>
-    <el-table-column label="等級" prop="level"></el-table-column>
-    <el-table-column label="金幣" prop="coin"></el-table-column>
+    <el-table-column label="會員Id" prop="member.carPlusMemberId"></el-table-column>
+    <el-table-column label="會員暱稱" prop="member.nickName"></el-table-column>
+    <el-table-column label="異動前超人幣" prop="beforeGamePoint"></el-table-column>
+    <el-table-column label="補幣金額" prop="changeGamePoint"></el-table-column>
+    <el-table-column label="異動後超人幣" prop="afterGamePoint"></el-table-column>
+    <el-table-column label="經手帳號" prop="adminUserId"></el-table-column>
+    <el-table-column label="經手人" prop="adminUserName"></el-table-column>
+    <el-table-column label="異動後超人幣" prop="afterGamePoint"></el-table-column>
+
+    <el-table-column label="補幣時間">
+      <template slot-scope="scope">
+        \{{ $g_formatDateTime(scope.row.dateCreated) }}
+      </template>
+    </el-table-column>
   </el-table>
+
+  <div class="text-right row-block">
+    <el-row type="flex" align="middle" justify="space-between">
+      <el-col class="text-left">
+      </el-col>
+      <el-col>
+        <el-pagination :current-page.sync="page.index" background layout="prev, pager, next" :pageSize="page.size"
+          :total="page.dataAmount" @current-change="handlePageChange">
+        </el-pagination>
+      </el-col>
+    </el-row>
+  </div>
 </div>
+
+<el-dialog title="客訴補幣" center :visible.sync="isDialogOpen" width="60%">
+  <el-form :model="form" ref="form" label-position="right" label-width="100px" @submit.native.prevent>
+    <el-form-item label="補點會員Id" prop="carPlusMemberId" required>
+      <el-input placeholder="請輸入會員Id" v-model="form.carPlusMemberId"></el-input>
+    </el-form-item>
+    <el-form-item label="補入超人幣" prop="gamePoint" required>
+      <el-input-number label="請輸入超人幣" :min="1" :max="100000" v-model="form.gamePoint"></el-input-number>
+    </el-form-item>
+    <el-form-item label="補幣理由" prop="reason" required>
+      <el-input type="textarea" placeholder="請輸入補幣理由" v-model="form.reason"></el-input>
+    </el-form-item>
+    <el-form-item label="經手人" prop="adminUserName" required>
+      <el-input placeholder="請輸入經手人" v-model="form.adminUserName"></el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer">
+    <el-button type="primary" @click="addGamePoint">確認</el-button>
+    <el-button type="default" @click="isDialogOpen = false">取消</el-button>
+  </div>
+</el-dialog>
 
 <script src="/static/js/admin.supplement.bundle.js"></script>

@@ -1,4 +1,5 @@
 .el-header {
+  position: relative;
   background-color: #409EFF;
   display: flex;
   align-items: center;
@@ -9,6 +10,35 @@
     margin: 0;
     font-size: 1.2rem;
     color: #fff;
+  }
+
+  .account-info {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    border-radius: 5px;
+    border: 1px solid #fff;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    line-height: 30px;
+
+    &__name {
+      padding: 0 15px;
+      border-right: 1px solid #fff;
+    }
+
+    &__logout {
+      padding: 0 15px;
+      transition: .3s all;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: #fff;
+        color: #409EFF;
+      }
+    }
   }
 }
 

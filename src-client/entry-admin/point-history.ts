@@ -23,11 +23,11 @@ class PointHistoryPage extends BasePage {
       computed: {
         dateStart() {
           if (!this.dateGap || !this.dateGap.length) return ''
-          return _this.moment(this.dateGap[0]);
+          return _this.moment(this.dateGap[0]).toISOString();
         },
         dateEnd() {
           if (!this.dateGap || !this.dateGap.length) return ''
-          return _this.moment(this.dateGap[1]).endOf('day');
+          return _this.moment(this.dateGap[1]).add(1, 'days').toISOString();
         }
       },
       methods: {
@@ -37,7 +37,7 @@ class PointHistoryPage extends BasePage {
 
           const ret = await _this.adminSvc.adminMember.getGamePointExchangeHistories({
             pageIndex: this.page.index,
-            pageSize: this.pageSize,
+            pageSize: this.page.size,
             dateStart: this.dateStart,
             dateEnd: this.dateEnd,
           }, { memberId: this.memberId })

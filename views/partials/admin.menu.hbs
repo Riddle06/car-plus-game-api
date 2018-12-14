@@ -23,7 +23,7 @@
       <span slot="title">客訴補幣</span>
     </el-menu-item>
   </a>
-  <a href="/administration/report">
+  <a href="/administration/report" v-if="$g_isAdmin">
     <el-menu-item index="4">
       <i class="el-icon-document"></i>
       <span slot="title">營運報表</span>

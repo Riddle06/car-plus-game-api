@@ -28,7 +28,7 @@
   </div>
 
   <el-table :data="history" row-key="id" header-align="center" stripe border highlight-current-row>
-    <el-table-column label="會員Id" prop="memberId"></el-table-column>
+    <el-table-column label="會員Id" prop="member.carPlusMemberId"></el-table-column>
     <el-table-column label="遊戲狀態" align="center">
       <template slot-scope="scope">
         <el-tag :type="scope.row.isFinish ? 'success' : 'warning'">\{{ scope.row.isFinish ? '完成' : '未完成' }}</el-tag>

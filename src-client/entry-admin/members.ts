@@ -11,9 +11,7 @@ class MembersPage extends BasePage {
         return {
           memberId: '',
           member: {},
-          members: [
-            { id: 1, name: '無名', level: 10, coin: 100, }
-          ],
+          members: [],
           page: {
             index: 1,
             size: 10,

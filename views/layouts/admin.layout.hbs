@@ -31,6 +31,12 @@
         <a href="/administration">
           <h1>格上會員小遊戲後台</h1>
         </a>
+        {{#if showMenu}}
+          <div class="account-info">
+            <div class="account-info__name">Hi, \{{ profile.account }}</div>
+            <div id="js-logout" class="account-info__logout">登出</div>
+          </div>
+        {{/if }}
       </el-header>
       <el-container>
         {{#if showMenu}}
