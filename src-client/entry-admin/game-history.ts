@@ -49,6 +49,8 @@ class GameHistoryPage extends BasePage {
         exportExcel() {
           window.open(_this.adminSvc.adminExport.getExportGameHistoryLink({
             token: _this.getAdminToken(),
+            dateStart: this.dateStart,
+            dateEnd: this.dateEnd,
           }))
         },
 

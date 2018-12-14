@@ -29,11 +29,11 @@
 
   <el-table :data="history" row-key="id" header-align="center" stripe border highlight-current-row>
     <el-table-column label="會員Id" prop="member.carPlusMemberId"></el-table-column>
-    <el-table-column label="遊戲狀態" align="center">
+    {{!-- <el-table-column label="遊戲狀態" align="center">
       <template slot-scope="scope">
         <el-tag :type="scope.row.isFinish ? 'success' : 'warning'">\{{ scope.row.isFinish ? '完成' : '未完成' }}</el-tag>
       </template>
-    </el-table-column>
+    </el-table-column> --}}
     <el-table-column label="會員暱稱" prop="member.nickName"></el-table-column>
     <el-table-column label="遊戲項目" prop="game.name"></el-table-column>
     <el-table-column label="獲得分數" prop="score"></el-table-column>

@@ -53,6 +53,8 @@ class PointHistoryPage extends BasePage {
         exportExcel() {
           window.open(_this.adminSvc.adminExport.getExportGamePointHistoryLink({
             token: _this.getAdminToken(),
+            dateStart: this.dateStart,
+            dateEnd: this.dateEnd,
           }))
         },
 

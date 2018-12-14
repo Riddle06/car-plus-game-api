@@ -117,10 +117,15 @@ export abstract class BasePage {
     }
 
     fakeAlert(options: AlertOptions): void {
-        const { title = '', text = '', showCancelButton = false, closeCallback, showConfirmButton = true } = options;
+        __fakeAlert(options);
+    }
+}
 
-        let html = `
-            <div class="zoneMask type-actual" style="z-index: 999998">
+function __fakeAlert(options: AlertOptions): void {
+    const { title = '', text = '', showCancelButton = false, closeCallback, showConfirmButton = true } = options;
+
+    let html = `
+            <div class="zoneMask type-actual" style="z-index: 1000000">
                 <div class="attrBox">
                     <div class="content">
                         <div class="inputList">
@@ -137,17 +142,17 @@ export abstract class BasePage {
             </div>
         `
 
-        const $alert = this.$(html);
-        this.$('body').append($alert);
-        $alert.find("[fake-alert='close']").click(() => {
-            $alert.remove();
-        })
-        $alert.find("[fake-alert='accept']").click(() => {
-            $alert.remove();
-            if (!!closeCallback) closeCallback();
-        })
-    }
+    const $alert = $(html);
+    $('body').append($alert);
+    $alert.find("[fake-alert='close']").click(() => {
+        $alert.remove();
+    })
+    $alert.find("[fake-alert='accept']").click(() => {
+        $alert.remove();
+        if (!!closeCallback) closeCallback();
+    })
 }
+window['__fakeAlert'] = __fakeAlert;
 
 interface AlertOptions {
     title: String

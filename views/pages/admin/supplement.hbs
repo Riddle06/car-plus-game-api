@@ -50,7 +50,7 @@
 
 <el-dialog title="客訴補幣" center :visible.sync="isDialogOpen" width="60%">
   <el-form :model="form" ref="form" label-position="right" label-width="100px" @submit.native.prevent>
-    <el-form-item label="補點會員Id" prop="carPlusMemberId" required>
+    <el-form-item label="補幣會員Id" prop="carPlusMemberId" required>
       <el-input placeholder="請輸入會員Id" v-model="form.carPlusMemberId"></el-input>
     </el-form-item>
     <el-form-item label="補入超人幣" prop="gamePoint" required>

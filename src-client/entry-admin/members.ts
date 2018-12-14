@@ -19,7 +19,7 @@ class MembersPage extends BasePage {
           },
 
           blockForm: {
-            memberId: '',
+            carPlusMemberId: '',
             reason: '',
             adminUserName: '',
           },
@@ -71,7 +71,7 @@ class MembersPage extends BasePage {
 
         openBlockDialog(member) {
           this.member = member;
-          this.blockForm.memberId = member.id;
+          this.blockForm.carPlusMemberId = member.carPlusMemberId;
           this.isBlockDialogOpen = true;
         },
 
@@ -94,6 +94,7 @@ class MembersPage extends BasePage {
         exportExcel() {
           window.open(_this.adminSvc.adminExport.getExportMemberWithGameItems({
             token: _this.getAdminToken(),
+            mi: this.memberId
           }))
         },
 

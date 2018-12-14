@@ -24,14 +24,17 @@ export abstract class BasePage {
     center: true,
     showConfirmButton: true,
     showCancelButton: true,
+    closeOnClickModal: false,
     confirmButtonText: '確定',
     cancelButtonText: '取消'
   }
 
+  get isAdmin() {
+    return this.profile.account === 'carplus';
+  }
+
   constructor() {
     this.init();
-
-
   }
 
   async init() {

@@ -44,6 +44,19 @@ export abstract class BaseWebSvc {
 
             return response
         })
+
+        this.axiosInstance.interceptors.response.use(response => {
+            const { success, code, message } = response.data;
+
+            if(!success && code === 403 && message.includes('封鎖') && response.config.url.indexOf('api/member')) {
+                window['__fakeAlert']({
+                    title: message,
+                    text: '',
+                    showConfirmButton: false,
+                });
+            }
+            return response;
+        })
     }
 
     private getToken(): string {

@@ -11,7 +11,7 @@ export class AdminGameWebSvc extends BaseWebSvc {
      */
     async getDashboard(pageInfo: PageInfo): Promise<Result<AdminGameDashboardVM>> {
         const res = await this.axiosAdminInstance.get('/admin/api/game/dashboard', {
-            data: {
+            params: {
                 ...pageInfo,
             }
         })
