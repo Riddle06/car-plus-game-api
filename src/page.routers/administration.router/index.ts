@@ -65,4 +65,11 @@ router.get('/blacklist', async (req, res, next) => {
   })
 })
 
+router.get('/game-config', async (req, res, next) => {
+  res.render('pages/admin/game-config', {
+    ...defaultOptions,
+    menuActive: '6'
+  })
+})
+
 export default router;

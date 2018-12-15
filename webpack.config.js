@@ -23,6 +23,7 @@ module.exports = {
         "admin.supplement": "./src-client/entry-admin/supplement.ts",
         "admin.report": "./src-client/entry-admin/report.ts",
         "admin.blacklist": "./src-client/entry-admin/blacklist.ts",
+        "admin.game-config": "./src-client/entry-admin/game-config.ts",
     },
     output: {
         path: path.resolve(__dirname, 'client-dist/js'),

@@ -2,13 +2,6 @@ import { BasePage } from "./base.page";
 import * as Vue from 'vue/dist/vue.common'
 
 class ReportPage extends BasePage {
-  constructor() {
-    super();
-
-    if(!this.isAdmin) {
-      window.location.replace('/administration')
-    }
-  }
 
   async vueInit() {
     const _this = this;
@@ -78,7 +71,9 @@ class ReportPage extends BasePage {
         }
       },
       created() {
-
+        if(!this.$g_isAdmin) {
+          window.location.replace('/administration')
+        }
       }
     })
   }
