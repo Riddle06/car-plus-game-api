@@ -3,6 +3,7 @@ import { MemberInformationVM } from "./member.vm";
 
 export interface AdminMemberVM extends MemberInformationVM {
     gameItems?: AdminMemberGameItemVM[]
+    isBlock: boolean
 
 }
 

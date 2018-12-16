@@ -141,14 +141,19 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
         if (!memberEntity.isBlock) {
             throw new AppError('此會員已是正常狀態')
         }
+        
+        await memberRepository.update({ id: memberEntity.id }, {
+            isBlock: false,
+            dateUpdated: new Date()
+        });
 
-        memberEntity.isBlock = false
-        memberEntity.dateUpdated = new Date();
-        await memberEntity.save();
-
-        memberBlockHistoryEntity.deleteAdminUserId = this.adminUserToken.payload.id
-        memberBlockHistoryEntity.deleteAdminUserName = '無紀錄'
-        await memberBlockHistoryEntity.save()
+        await memberBlockHistoryRepository.update({
+            id: memberBlockHistoryEntity.id
+        }, {
+            deleteAdminUserId: this.adminUserToken.payload.id,
+            deleteAdminUserName : '無紀錄',
+            isDeleted: true
+        });
 
         const ret = new Result<AdminMemberBlockHistoryVM>(true)
         ret.item = {
@@ -170,7 +175,7 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
 
     async getMemberBlockHistories(param: PageQuery<AdminMemberBlockListQueryParameterVM>): Promise<ListResult<AdminMemberBlockHistoryVM>> {
 
-        const conditions: string[] = ['1 = 1'];
+        const conditions: string[] = ['1 = 1','history.is_deleted = 0'];
         const parameters: any = {};
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {

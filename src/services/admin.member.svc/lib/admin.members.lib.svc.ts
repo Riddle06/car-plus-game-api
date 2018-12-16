@@ -17,6 +17,7 @@ m.game_point as gamePoint,
 m.level as level,
 m.experience as experience,
 m.car_plus_member_id as carPlusMemberId,
+m.is_block as isBlock,
 ROW_NUMBER () OVER ( order by m.car_plus_member_id asc) as row
 from member as m`
 
@@ -90,7 +91,7 @@ export class AdminMembersLibSvc extends BaseConnection {
         const ret = new ListResult<AdminMemberVM>(true);
 
         ret.items = memberEntities.map(entity => {
-            const { id, carPlusMemberId, dateCreated, level, gamePoint, nickName, experience, carPlusPoint } = entity
+            const { id, carPlusMemberId, dateCreated, level, gamePoint, nickName, experience, carPlusPoint, isBlock } = entity
             const item: AdminMemberVM = {
                 id,
                 nickName,
@@ -100,7 +101,8 @@ export class AdminMembersLibSvc extends BaseConnection {
                 experience,
                 carPlusMemberId,
                 gameItems: [],
-                currentRoleGameItem: null
+                currentRoleGameItem: null,
+                isBlock
             }
             return item
         })
@@ -127,7 +129,7 @@ export class AdminMembersLibSvc extends BaseConnection {
         }
 
         const ret = new Result<AdminMemberVM>(true);
-        const { carPlusMemberId, level, gamePoint, nickName, experience, carPlusPoint } = memberEntity
+        const { carPlusMemberId, level, gamePoint, nickName, experience, carPlusPoint, isBlock } = memberEntity
 
         ret.item = {
             id,
@@ -138,7 +140,8 @@ export class AdminMembersLibSvc extends BaseConnection {
             experience,
             carPlusMemberId,
             gameItems: [],
-            currentRoleGameItem: null
+            currentRoleGameItem: null,
+            isBlock
         }
 
         const memberGameItemRepository = this.entityManager.getRepository(MemberGameItemEntity);
