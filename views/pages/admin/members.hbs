@@ -23,6 +23,11 @@
   </div>
 
   <el-table :data="members" row-key="id" header-align="center" stripe border highlight-current-row>
+    <el-table-column label="狀態" align="center">
+      <template slot-scope="scope">
+        <el-tag :type="scope.row.isBlock ? 'danger' : 'success'">\{{ scope.row.isBlock ? '已封鎖' : '正常' }}</el-tag>
+      </template>
+    </el-table-column>
     <el-table-column label="會員ID" prop="carPlusMemberId"></el-table-column>
     <el-table-column label="暱稱" prop="nickName"></el-table-column>
     <el-table-column label="等級" prop="level"></el-table-column>
@@ -31,8 +36,10 @@
     <el-table-column label="格上紅利" prop="carPlusPoint"></el-table-column>
     <el-table-column label="操作" align="center" width="200">
       <template slot-scope="scope">
-        <el-button type="primary" icon="el-icon-info" size="mini" @click="openMemberDetail(scope.row)">詳細</el-button>
-        <el-button type="danger" icon="el-icon-error" size="mini" @click="openBlockDialog(scope.row)">封鎖</el-button>
+        <el-button-group>
+          <el-button type="primary" icon="el-icon-info" size="mini" @click="openMemberDetail(scope.row)">詳細</el-button>
+          <el-button v-if="!scope.row.isBlock" type="danger" icon="el-icon-error" size="mini" @click="openBlockDialog(scope.row)">封鎖</el-button>
+        </el-button-group>
       </template>
     </el-table-column>
   </el-table>
