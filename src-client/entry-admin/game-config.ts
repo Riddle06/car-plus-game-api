@@ -48,7 +48,13 @@ class GameConfigPage extends BasePage {
       computed: {
         isCatchGame() {
           return this.activeTab === 'catch';
-        }
+        },
+        catchGameId() {
+          return this.gameList.find(game => game.code === 'catch').id;
+        },
+        shotGameId() {
+          return this.gameList.find(game => game.code === 'shot').id;
+        },
       },
       watch: {
         isEdit(bool) {
@@ -93,7 +99,7 @@ class GameConfigPage extends BasePage {
           }
 
           const params = this.isCatchGame ? this.catchGame : this.shotGame;
-          const ret = await _this.adminSvc.adminGame.updateGame(this.activeTab, params)
+          const ret = await _this.adminSvc.adminGame.updateGame(this.isCatchGame ? this.catchGameId : this.shotGameId, params)
           console.log(ret);
           if (!ret.success) return;
 
