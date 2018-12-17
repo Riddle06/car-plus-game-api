@@ -4,14 +4,14 @@
   <div class="row-block">
     <el-button v-show="!isEdit" type="info" icon="el-icon-edit-outline" @click="isEdit = true">編輯</el-button>
     <div v-show="isEdit">
-      <el-button type="primary" icon="el-icon-circle-check">確認</el-button>
+      <el-button type="primary" icon="el-icon-circle-check" @click="updateGameData">確認</el-button>
       <el-button type="default" icon="el-icon-circle-close" @click="isEdit = false">取消</el-button>
     </div>  
   </div>
 
   
-  <el-tabs type="border-card">
-    <el-tab-pane label="超人接接樂">
+  <el-tabs type="border-card" v-model="activeTab">
+    <el-tab-pane label="超人接接樂" name="catch" v-if="!isEdit || activeTab === 'catch'">
       <el-row :gutter="15">
         <el-col :span="12">
           <el-form :model="catchGame" ref="catchGameForm" label-position="right" label-width="150px" :disabled="!isEdit"
@@ -46,7 +46,7 @@
         </el-col>
       </el-row>
     </el-tab-pane>
-    <el-tab-pane label="射擊吧！超人">
+    <el-tab-pane label="射擊吧！超人" name="shot" v-if="!isEdit || activeTab === 'shot'">
       <el-row :gutter="15">
         <el-col :span="12">
           <el-form :model="shotGame" ref="shotGameForm" label-position="right" label-width="180px" :disabled="!isEdit"

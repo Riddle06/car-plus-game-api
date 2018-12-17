@@ -9,6 +9,9 @@ class GameConfigPage extends BasePage {
       el: '#app',
       data() {
         return {
+          activeTab: 'catch',
+          gameList: [],
+
           shotGame: {
             degreeConfig: {
               max: 100,
@@ -42,8 +45,69 @@ class GameConfigPage extends BasePage {
           isEdit: false,
         }
       },
-      created() {
+      computed: {
+        isCatchGame() {
+          return this.activeTab === 'catch';
+        }
+      },
+      watch: {
+        isEdit(bool) {
+          if (!bool) this.initData();
+        },
+      },
+      methods: {
+        async getGameList() {
+          const ret = await _this.adminSvc.adminGame.getGameList();
+          console.log(ret);
+          if (!ret.success) return;
 
+          this.gameList = ret.items;
+        },
+
+        initData() {
+          this.gameList.forEach(game => {
+            if (game.code === 'shot') {
+              this.shotGame = { ...this.shotGame, ...JSON.parse(JSON.stringify(game.parameters)) };
+            }
+            if (game.code === 'catch') {
+              this.catchGame = { ...this.catchGame, ...JSON.parse(JSON.stringify(game.parameters)) };
+            }
+          })
+        },
+
+        async updateGameData() {
+          console.log(this.isCatchGame ? 'catchGameForm' : 'shotGameForm')
+          const isValid = await this.$refs[this.isCatchGame ? 'catchGameForm' : 'shotGameForm'].validate().catch(() => false);
+          if (!isValid) {
+            return;
+          }
+
+          const bool = await this.$msgbox({
+            ..._this.messageBoxOption,
+            type: 'info',
+            title: '確定要送出嗎？',
+            message: ``
+          }).catch(err => false);
+          if (!bool) {
+            return;
+          }
+
+          const params = this.isCatchGame ? this.catchGame : this.shotGame;
+          const ret = await _this.adminSvc.adminGame.updateGame(this.activeTab, params)
+          console.log(ret);
+          if (!ret.success) return;
+
+          this.$notify({
+            type: 'success',
+            title: '修改成功'
+          });
+          await this.getGameList();
+          this.isEdit = false;
+        }
+      },
+      async created() {
+        await this.getGameList();
+        this.initData();
       }
     })
   }
