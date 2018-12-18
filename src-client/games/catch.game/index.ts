@@ -101,6 +101,12 @@ export class CatchGame extends BaseGame {
 
     private checkHitItem(): void {
         this.fallItems.filter(item => hitTestRectangle(this.superMan.sprite, item.sprite)).forEach(item => {
+            
+            // 如果掉落高度大於超人身高就不算   
+            if (item.sprite.y > this.superMan.sprite.y + (this.superMan.sprite.height / 2)) {
+                return;
+            }
+
             // 檢查掉落物與超人是否碰撞，是 -> 隱藏+移除
             item.sprite.visible = false
             item.sprite.removeChild(item.sprite);
