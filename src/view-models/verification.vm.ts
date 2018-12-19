@@ -34,4 +34,6 @@ export interface MemberTokenPayload {
      * car plus member id
      */
     cpmi: string
+
+    nickName?: string
 }

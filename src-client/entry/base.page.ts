@@ -53,6 +53,11 @@ export abstract class BasePage {
                 if (pathname.includes('/shot-game/') || pathname.includes('/catch-game/')) {
                     // 只有遊戲頁面轉正需要再次reload
                     window.location.reload();
+                } else {
+                    const windowWidth = jsCookie.get('windowWidth');
+                    $stopMask.removeClass('is-active');
+                    _this.setInitialScale();
+                    _this.setViewportMeta(+windowWidth);
                 }
             }
             else if (!_this.isInputFocus) {
@@ -76,7 +81,7 @@ export abstract class BasePage {
     private setInitialScale(): void {
         const windowWidth = jsCookie.get('windowWidth');
 
-        if (!windowWidth && this.mql.matches) {
+        if (this.mql.matches) {
             jsCookie.set('windowWidth', `${window.screen.width}`)
         }
 
@@ -118,6 +123,15 @@ export abstract class BasePage {
 
     fakeAlert(options: AlertOptions): void {
         __fakeAlert(options);
+    }
+
+    protected setViewportMeta(windowWidth: number) {
+
+        const $meta: HTMLMetaElement = document.querySelector('[name=viewport]');
+
+        const scale = windowWidth / 640;
+
+        $meta.content = `width=device-width, initial-scale=${scale}, minimum-scale=${scale}, maximum-scale=${scale}, user-scalable=no`;
     }
 }
 

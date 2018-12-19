@@ -48,6 +48,7 @@ export class VerificationLibSvc extends BaseConnection {
             throw new AppError(`此裝置已被封鎖`)
         }
 
+        tokenVM.payload.nickName = memberLoginEntity.member.nickName;
         ret.item = tokenVM;
 
         return ret.setResultValue(true, ResultCode.success)
