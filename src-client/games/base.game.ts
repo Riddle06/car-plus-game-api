@@ -1,5 +1,6 @@
 import { Application, Texture, loader, Sprite, Text } from "pixi.js";
 import * as pad from "pad-left";
+import { Sound } from 'pixi-sound';
 
 interface LoaderResponse {
     animatedSprite: PIXI.extras.AnimatedSprite
@@ -37,6 +38,9 @@ export abstract class BaseGame {
     protected effectContainer: PIXI.Container = null; // 特效使用的容器
     protected tips: PIXI.Sprite = null; // 開始提示
 
+    protected boomSound: Sound = null; // 爆炸音效
+    protected getSound: Sound = null; // 獲得道具音效
+
     private dashboardContainer: PIXI.Container = null; // 儀表板用舞台
 
     private _eventListeners = {};
@@ -59,6 +63,7 @@ export abstract class BaseGame {
         this.setApplication();
         this.setStage();
         
+        this.setGameSound(); // 載入音樂&音效
         await this.initCommonImages(); // 載入共用圖片
         await this.initImages(); // 載入圖片
         await this.setDashboard(); // 建立計數計時文字
@@ -96,6 +101,23 @@ export abstract class BaseGame {
         this.stage = stage
 
         this.application.stage.addChild(this.stage)
+    }
+
+    private setGameSound(): void {
+        Sound.from({
+            url: '/static/audio/bgm.mp3',
+            autoPlay: true,
+            loop: true,
+        });
+
+        this.boomSound = Sound.from({
+            url: '/static/audio/boom.mp3',
+            preload: true,
+        })
+        this.getSound = Sound.from({
+            url: '/static/audio/get.mp3',
+            preload: true,
+        })
     }
 
     private async initCommonImages(): Promise<void> {

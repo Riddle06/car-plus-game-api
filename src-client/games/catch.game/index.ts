@@ -107,6 +107,13 @@ export class CatchGame extends BaseGame {
                 return;
             }
 
+            if (item.score > 0) {
+                // 接到禮物音效
+                this.getSound.play();
+            } else {
+                // this.boomSound.play();
+            }
+
             // 檢查掉落物與超人是否碰撞，是 -> 隱藏+移除
             item.sprite.visible = false
             item.sprite.removeChild(item.sprite);
