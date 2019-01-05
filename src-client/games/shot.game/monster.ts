@@ -225,12 +225,12 @@ export class Monster {
 
     this.sprite.removeChild(this.monster);
     // 炸裂
-    return new Promise((reslove) => {
+    return new Promise((resolve) => {
 
       const effect = () => {
         if (this.sprite.alpha <= 0) {
           this.app.ticker.remove(effect, this);
-          reslove();
+          resolve();
           return;
         }
         this.sprite.alpha -= 0.01;

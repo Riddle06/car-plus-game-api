@@ -1,6 +1,7 @@
 import { Application, Texture, loader, Sprite, Text } from "pixi.js";
 import * as pad from "pad-left";
 import { Sound } from 'pixi-sound';
+import * as moment from "moment";
 
 interface LoaderResponse {
     animatedSprite: PIXI.extras.AnimatedSprite
@@ -10,6 +11,8 @@ export interface GameConfig {
     screenWidth: number,
     screenHeight: number,
     superManSpriteFolderPath: string,
+    usedScoreUp: Boolean,
+    usedCoinUp: Boolean
 }
 
 export interface BaseShape {
@@ -26,6 +29,8 @@ export interface BaseShape {
 export abstract class BaseGame {
     protected isPlaying: Boolean = false; // 遊戲正在進行
     protected isGameEnd: Boolean = false; // 遊戲已結束
+    protected usedScoreUp: Boolean = false // 使用能量果實
+    protected usedCoinUp: Boolean = false // 使用富翁果實
 
     public scores: number = 0; // 獲得分數
     public gamePoints: number = 0; // 獲得的超人幣
@@ -58,22 +63,25 @@ export abstract class BaseGame {
             height: config.screenHeight
         }
         this.superManSpriteFolderPath = config.superManSpriteFolderPath;
+        this.usedScoreUp = config.usedScoreUp;
+        this.usedCoinUp = config.usedCoinUp;
     }
     async init(): Promise<this> {
         this.setApplication();
         this.setStage();
-        
+
         this.setGameSound(); // 載入音樂&音效
         await this.initCommonImages(); // 載入共用圖片
         await this.initImages(); // 載入圖片
         await this.setDashboard(); // 建立計數計時文字
         this.setStartTips();
         await this.initElements();
-        await this.initElementsEvents();
-        await this.initElementsOffset();
-
         this.application.stage.addChild(this.effectContainer); // 放入特效容器
         this.application.stage.addChild(this.dashboardContainer); // 放入儀表板容器
+        await this.setUsedItemsEffect(); // 建立使用道具的效果
+
+        await this.initElementsEvents();
+        await this.initElementsOffset();
 
         return this;
     }
@@ -118,6 +126,62 @@ export abstract class BaseGame {
             url: '/static/audio/get.mp3',
             preload: true,
         })
+    }
+
+    private async setUsedItemsEffect(): Promise<any> {
+        if (!this.usedScoreUp && !this.usedCoinUp) {
+            // 沒有使用道具
+            return Promise.resolve();
+        }
+        if (this.usedScoreUp) {
+            await loaderHandler('scoreup', '/static/images/scoreup/list.png');
+            await loaderHandler('scoreup-effect', '/static/images/img_addition_score.png');
+        }
+        if (this.usedCoinUp) {
+            await loaderHandler('coinup', '/static/images/coinup/list.png');
+            await loaderHandler('coinup-effect', '/static/images/img_addition_coin.png');
+        }
+
+        let scoreupEffect: Sprite = null;
+        let coinupEffect: Sprite = null;
+        const dh = this.dashboardContainer.height;
+        let i = 0;
+        // 設置使用道具的特效
+        if (this.usedScoreUp) {
+            scoreupEffect = this.generateAdditionEffect(i, 'scoreup', 'scoreup-effect', dh);
+            i++;
+        }
+        if (this.usedCoinUp) {
+            coinupEffect = this.generateAdditionEffect(i, 'coinup', 'coinup-effect', dh);
+        }
+
+        const additionAnimation = (s: Sprite): Promise<void> => {
+            return new Promise((resolve) => {
+                let doneTime = null;
+                const animation = () => {
+                    if (s) {
+                        const endX = this.application.screen.width / 2 - s.width / 2;
+                        if (s.x < endX) {
+                            s.x += 13;
+                        } else if (!doneTime) {
+                            doneTime = moment();
+                        } else if (moment().subtract(1.5, 'second').isAfter(doneTime)) {
+                            s.x += 13;
+                            if (s.x >= this.application.screen.width) {
+                                this.application.ticker.remove(animation, this);
+                                resolve();
+                            }
+                        }
+                    } else {
+                        resolve();
+                    }
+                }
+                this.application.ticker.add(animation, this);
+            });
+        }
+
+        return Promise.all([additionAnimation(scoreupEffect), additionAnimation(coinupEffect)])
+
     }
 
     private async initCommonImages(): Promise<void> {
@@ -184,6 +248,24 @@ export abstract class BaseGame {
 
         this.dashboardContainer.addChild(bg);
         return text;
+    }
+
+    protected generateAdditionEffect(index: number, iconName: string, additionName: string, dashboardHeight: number): Sprite {
+        const s = new Sprite(loader.resources[iconName].texture);
+        s.scale.x = .4;
+        s.scale.y = .4;
+        s.x = 15 + ((s.width + 5) * index);
+        s.y = dashboardHeight + 15;
+        this.dashboardContainer.addChild(s);
+
+        const se = new Sprite(loader.resources[additionName].texture);
+        se.height = (se.height / se.width) * (this.application.screen.width * 0.7);
+        se.width = (this.application.screen.width * 0.7);
+        se.x = -se.width;
+        se.y = (this.application.screen.height / 2 - se.height / 2) - ((se.height + 5) * index);
+        this.effectContainer.addChild(se);
+
+        return se;
     }
 
     protected handleEffect(x: number, y: number, score: number = 0, gamePoint: number = 0, time: number = 0): void {

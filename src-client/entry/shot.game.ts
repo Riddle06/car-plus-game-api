@@ -1,4 +1,4 @@
-import { BasePage } from "./base.page";
+import { BasePage, PlusItem } from "./base.page";
 import { ShotGame } from '../games/shot.game'
 import { GameCode } from "@view-models/game.vm";
 
@@ -15,24 +15,49 @@ class ShotGamePage extends BasePage {
     }
 
     async initGame(): Promise<void> {
-        const ganeListRet = await this.webSvc.game.getGameList();
+        const [ganeListRet, profileRet, gameHistoryRet] = await Promise.all([
+            this.webSvc.game.getGameList(),
+            this.webSvc.member.getProfile(),
+            this.webSvc.game.getGameHistory(this.gameId)
+        ]);
+        // 遊戲參數
         const { parameters } = ganeListRet.items.find(item => item.code === GameCode.shot);
 
-        const profileRet = await this.webSvc.member.getProfile()
-
-        const {  currentRoleGameItem } = profileRet.item;
+        // 玩家資料
+        const { currentRoleGameItem } = profileRet.item;
         const { spriteFolderPath } = currentRoleGameItem;
+
+        // 該場遊戲使用的道具
+        const { usedItems } = gameHistoryRet.item;
+        let usedScoreUp = false;
+        let usedCoinUp = false;
+        usedItems.forEach(item => {
+            switch(item.id) {
+                case PlusItem.pointPlus:
+                    // 使用了能量果實
+                    usedScoreUp = true;
+                    break;
+                case PlusItem.coinPlus:
+                    // 使用了富翁果實
+                    usedCoinUp = true;
+                    break;
+            }
+        });
+        
+        this.toggleLoader(false);
 
         this.shotGame = await new ShotGame({
             screenWidth: window.innerWidth,
             screenHeight: window.innerHeight,
             superManSpriteFolderPath: spriteFolderPath,
             parameters,
+            usedScoreUp,
+            usedCoinUp
         }).init();
 
         this.shotGame.addEventListener('gameEnd', this.reportGameResult.bind(this));
 
-        this.toggleLoader(false);
+        
     }
 
     async reportGameResult(): Promise<void> {

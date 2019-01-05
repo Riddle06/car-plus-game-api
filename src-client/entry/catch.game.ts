@@ -1,5 +1,5 @@
 import { CatchGame } from '../games/catch.game';
-import { BasePage } from "./base.page";
+import { BasePage, PlusItem } from "./base.page";
 import { GameCode } from "@view-models/game.vm";
 
 class CatchGamePage extends BasePage {
@@ -8,30 +8,54 @@ class CatchGamePage extends BasePage {
 
     async domEventBinding() {
         this.gameId = this.$('#hidden_game_id').val() as string;
-        
+
     }
     didMount() {
         this.initGame();
     }
 
     async initGame(): Promise<void> {
-        const ganeListRet = await this.webSvc.game.getGameList();
+        const [ganeListRet, profileRet, gameHistoryRet] = await Promise.all([
+            this.webSvc.game.getGameList(),
+            this.webSvc.member.getProfile(),
+            this.webSvc.game.getGameHistory(this.gameId)
+        ]);
+        // 遊戲參數
         const { parameters } = ganeListRet.items.find(item => item.code === GameCode.catch);
 
-        const profileRet = await this.webSvc.member.getProfile();
-        const {  currentRoleGameItem } = profileRet.item;
+        // 玩家資料
+        const { currentRoleGameItem } = profileRet.item;
         const { spriteFolderPath } = currentRoleGameItem;
+
+        // 該場遊戲使用的道具
+        const { usedItems } = gameHistoryRet.item;
+        let usedScoreUp = false;
+        let usedCoinUp = false;
+        usedItems.forEach(item => {
+            switch(item.id) {
+                case PlusItem.pointPlus:
+                    // 使用了能量果實
+                    usedScoreUp = true;
+                    break;
+                case PlusItem.coinPlus:
+                    // 使用了富翁果實
+                    usedCoinUp = true;
+                    break;
+            }
+        })
+
+        this.toggleLoader(false);
 
         this.catchGame = await new CatchGame({
             screenWidth: window.innerWidth,
             screenHeight: window.innerHeight,
             superManSpriteFolderPath: spriteFolderPath,
-            parameters: parameters
+            parameters: parameters,
+            usedScoreUp,
+            usedCoinUp
         }).init();
-        
-        this.catchGame.addEventListener('gameEnd', this.reportGameResult.bind(this));
 
-        this.toggleLoader(false);
+        this.catchGame.addEventListener('gameEnd', this.reportGameResult.bind(this));
     }
 
     async reportGameResult(): Promise<void> {
