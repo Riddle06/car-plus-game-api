@@ -10,6 +10,7 @@ import * as path from "path";
 import * as expressHandlebars from "express-handlebars";
 import * as cors from "cors";
 import AdminRouter from './routers/admin.router';
+import { memberSvc } from "@services";
 
 const app = express();
 
@@ -58,6 +59,9 @@ app.use('/admin/api', [
 
 app.listen(configurations.app.port, async () => {
     console.log(`Car Plus Game API  is Starting on port ${configurations.app.port} , environment is ${configurations.app.env}`);
+
+    // fix empty shortId
+    await memberSvc.handleEmptyShortIdMembers();
 });
 
 process.on('unhandledRejection', console.dir);

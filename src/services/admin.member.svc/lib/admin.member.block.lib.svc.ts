@@ -21,7 +21,7 @@ history.admin_user_name as adminUserName,
 history.delete_admin_user_id as deleteAdminUserId,
 history.delete_admin_user_name as deleteAdminUserName,
 history.is_deleted as isDeleted,
-
+m.short_id as shortId,
 ROW_NUMBER () OVER ( order by history.date_created desc) as row
 from member_block_history as history
 join member as m on m.id = history.member_id`
@@ -40,6 +40,7 @@ type MemberBlockHistoryDbViewModel = {
     deleteAdminUserName: string
     isDeleted: boolean
     row: number
+    shortId: string
 }
 
 
@@ -52,10 +53,10 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
 
     async addMemberBlockHistory(param: AdminMemberBlockParameter): Promise<Result<AdminMemberBlockHistoryVM>> {
 
-        const { carPlusMemberId, reason, adminUserName } = param;
+        const { shortId, reason, adminUserName } = param;
 
-        if (checker.isNullOrUndefinedOrWhiteSpace(carPlusMemberId)) {
-            throw new AppError('請選擇會員')
+        if (checker.isNullOrUndefinedOrWhiteSpace(shortId)) {
+            throw new AppError('請輸入遊戲ID')
         }
 
         if (checker.isNullOrUndefinedOrWhiteSpace(reason)) {
@@ -72,7 +73,7 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
 
         const memberEntity = await memberRepository.findOne({
             where: {
-                carPlusMemberId
+                shortId
             }
         })
 
@@ -110,7 +111,8 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
             memberId: newMemberBlockHistoryEntity.memberId,
             isDeleted: newMemberBlockHistoryEntity.isDeleted,
             reason: newMemberBlockHistoryEntity.reason,
-            carPlusMemberId
+            carPlusMemberId: memberEntity.carPlusMemberId,
+            memberShortId: memberEntity.shortId
         }
         return ret;
     }
@@ -141,7 +143,7 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
         if (!memberEntity.isBlock) {
             throw new AppError('此會員已是正常狀態')
         }
-        
+
         await memberRepository.update({ id: memberEntity.id }, {
             isBlock: false,
             dateUpdated: new Date()
@@ -150,10 +152,10 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
         await memberBlockHistoryRepository.update({
             id: memberBlockHistoryEntity.id
         }, {
-            deleteAdminUserId: this.adminUserToken.payload.id,
-            deleteAdminUserName : '無紀錄',
-            isDeleted: true
-        });
+                deleteAdminUserId: this.adminUserToken.payload.id,
+                deleteAdminUserName: '無紀錄',
+                isDeleted: true
+            });
 
         const ret = new Result<AdminMemberBlockHistoryVM>(true)
         ret.item = {
@@ -167,7 +169,8 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
             reason: memberBlockHistoryEntity.reason,
             deleteAdminUserId: memberBlockHistoryEntity.deleteAdminUserId,
             deleteAdminUserName: memberBlockHistoryEntity.deleteAdminUserName,
-            carPlusMemberId: memberEntity.carPlusMemberId
+            carPlusMemberId: memberEntity.carPlusMemberId,
+            memberShortId: memberEntity.shortId
         }
 
         return ret;
@@ -175,12 +178,17 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
 
     async getMemberBlockHistories(param: PageQuery<AdminMemberBlockListQueryParameterVM>): Promise<ListResult<AdminMemberBlockHistoryVM>> {
 
-        const conditions: string[] = ['1 = 1','history.is_deleted = 0'];
+        const conditions: string[] = ['1 = 1', 'history.is_deleted = 0'];
         const parameters: any = {};
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
             conditions.push(`m.car_plus_member_id = :memberId`);
             parameters.memberId = param.params.memberId
+        }
+
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
+            conditions.push(`m.short_id = :shortId`);
+            parameters.shortId = param.params.shortId
         }
 
         if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
@@ -231,7 +239,8 @@ export class AdminMemberBlockLibSvc extends BaseConnection {
                 deleteAdminUserId: entity.deleteAdminUserId,
                 deleteAdminUserName: entity.deleteAdminUserName,
                 memberNickName: entity.memberNickName,
-                carPlusMemberId: entity.carPlusMemberId
+                carPlusMemberId: entity.carPlusMemberId,
+                memberShortId: entity.shortId
             }
             return adminMemberBlockHistoryVM
         })

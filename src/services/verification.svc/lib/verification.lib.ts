@@ -45,7 +45,7 @@ export class VerificationLibSvc extends BaseConnection {
         }
 
         if (memberLoginEntity.member.isBlock) {
-            throw new AppError(`此裝置已被封鎖`)
+            throw new AppError(`您的帳號停權中，詳情請洽格上客服。`)
         }
 
         tokenVM.payload.nickName = memberLoginEntity.member.nickName;

@@ -14,6 +14,7 @@ export interface RequestExtension extends Request {
         orderField: string,
         keyword: string
         mi: string
+        shortId: string
         [key: string]: string | number | Array<string | number>
     }
 

@@ -3,6 +3,7 @@ import { MemberInformationVM } from './member.vm';
 
 export interface AdminMemberGameItemQueryParameterVM {
     memberId: string
+    shortId: string
 }
 
 export interface AdminMemberGameItemOrderVM {
@@ -11,6 +12,7 @@ export interface AdminMemberGameItemOrderVM {
         id: string
         nickName: string
         carPlusMemberId: string
+        shortId: string
     }
 
     gameItem: {
@@ -36,7 +38,7 @@ export interface AdminMemberPointHistoryVM {
         id: string
         carPlusMemberId: string
         nickName: string
-
+        shortId: string
     }
     gameItem: {
         id: string
@@ -71,8 +73,17 @@ export enum PointType {
 
 export interface CreateAdminMemberPointHistoryParameterVM {
     adminUserName: string
-    carPlusMemberId: string
-    memberId?: string
+    shortId: string
     gamePoint: number
     reason: string
+
+    /**
+     * client side 不需要帶
+     */
+    carPlusMemberId?: string
+    /**
+     * client side 不需要帶
+     */
+    memberId?: string
+    
 }

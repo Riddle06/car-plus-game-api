@@ -383,3 +383,5 @@ INSERT INTO carPlusGame.dbo.vars ([key],description,meta_str_1,meta_str_2,meta_i
 ,('share-text','分享文案','我在超人大挑戰裡獲得 {{score}} 分，快來跟我一起玩 https://{{host}}',NULL,NULL,NULL,NULL,NULL,NULL)
 ,('test-data','測試資料',NULL,NULL,3,NULL,NULL,NULL,NULL)
 ;
+
+ALTER TABLE carPlusGame.dbo.[member] ADD short_id varchar(50) DEFAULT '' NOT NULL;

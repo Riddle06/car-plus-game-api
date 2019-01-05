@@ -18,7 +18,8 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
 
     const pageQuery = new PageQuery<AdminMemberListQueryParameterVM>(req.listQuery, {
         memberId: req.query.mi,
-        keyword: req.query.keyword
+        keyword: req.query.keyword,
+        shortId: req.query.shortId
     })
 
     try {
@@ -52,7 +53,8 @@ router.get('/block-history', async (req: RequestExtension, res: ResponseExtensio
     try {
 
         const pageQuery = new PageQuery<AdminMemberBlockListQueryParameterVM>(req.listQuery, {
-            memberId: req.query.mi
+            memberId: req.query.mi,
+            shortId: req.query.shortId
         })
         res.result = await adminMemberSvc.getMemberBlockHistories(req.adminUserToken, pageQuery)
     } catch (error) {

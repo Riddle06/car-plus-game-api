@@ -18,6 +18,7 @@ history.member_id as memberId,
 history.game_item_id as gameItemId,
 m.nick_name as memberNickName,
 m.car_plus_member_id as carPlusMemberId,
+m.short_id as memberShortId,
 gi.name as gameItemName,
 history.type as historyType,
 history.before_game_point as beforeGamePoint,
@@ -39,6 +40,7 @@ left join game_item as gi on gi.id = history.game_item_id
 type MemberGamePointHistoryViewDbModel = {
     id: string
     memberId: string
+    memberShortId: string
     gameItemId: string
     memberNickName: string
     carPlusMemberId: string
@@ -80,6 +82,11 @@ export class AdminPointLibSvc extends BaseConnection {
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
             conditions.push(`m.car_plus_member_id = :memberId`);
             parameters.memberId = param.params.memberId
+        }
+
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
+            conditions.push(`m.short_id = :shortId`);
+            parameters.shortId = param.params.shortId
         }
 
         if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
@@ -129,12 +136,10 @@ export class AdminPointLibSvc extends BaseConnection {
 
     async addPoint(param: CreateAdminMemberPointHistoryParameterVM): Promise<Result<AdminMemberPointHistoryVM>> {
 
+        const { shortId, gamePoint, adminUserName, reason } = param;
 
-
-        const { carPlusMemberId, gamePoint, adminUserName, reason } = param;
-
-        if (checker.isNullOrUndefinedObject(carPlusMemberId)) {
-            throw new AppError('請輸入會員')
+        if (checker.isNullOrUndefinedObject(shortId)) {
+            throw new AppError('請輸入遊戲ID')
         }
 
         if (!checker.isNaturalInteger(gamePoint)) {
@@ -153,7 +158,7 @@ export class AdminPointLibSvc extends BaseConnection {
 
         const memberEntity = await memberRepository.findOne({
             where: {
-                carPlusMemberId
+                shortId
             }
         });
 
@@ -164,7 +169,8 @@ export class AdminPointLibSvc extends BaseConnection {
         const memberAddPointRet = await gameSvc.memberAddPointByManual(this.adminUserToken.payload.id, {
             adminUserName,
             memberId: memberEntity.id,
-            carPlusMemberId,
+            carPlusMemberId: memberEntity.carPlusMemberId,
+            shortId: shortId,
             gamePoint,
             reason
         }, this.queryRunner);
@@ -229,7 +235,8 @@ export class AdminPointLibSvc extends BaseConnection {
             member: {
                 id: member.id,
                 nickName: member.nickName,
-                carPlusMemberId: member.carPlusMemberId
+                carPlusMemberId: member.carPlusMemberId,
+                shortId: member.shortId
             },
             gameItem: null,
             dateCreated
@@ -273,7 +280,8 @@ export class AdminPointLibSvc extends BaseConnection {
             memberNickName,
             gameItemName,
             dateCreated,
-            carPlusMemberId
+            carPlusMemberId,
+            memberShortId
         } = param
 
         const ret: AdminMemberPointHistoryVM = {
@@ -292,7 +300,8 @@ export class AdminPointLibSvc extends BaseConnection {
             member: {
                 id: memberId,
                 nickName: memberNickName,
-                carPlusMemberId
+                carPlusMemberId,
+                shortId: memberShortId
             },
             gameItem: gameItemId ? {
                 id: gameItemId,

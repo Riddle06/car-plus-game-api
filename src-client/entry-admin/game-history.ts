@@ -51,6 +51,7 @@ class GameHistoryPage extends BasePage {
             token: _this.getAdminToken(),
             dateStart: this.dateStart,
             dateEnd: this.dateEnd,
+            
           }))
         },
 

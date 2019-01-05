@@ -9,7 +9,8 @@ import { PointHistoryType } from '@view-models/game-history.vm';
 import { ExportResult, exporter } from '@utilities/exporter';
 
 const baseSql = `
-select o.id as id,
+select 
+o.id as id,
 o.game_item_id as gameItemId,
 o.point_type as pointType,
 o.point_amount as pointAmount,
@@ -18,6 +19,7 @@ o.member_id as memberId,
 m.nick_name  as memberNickName,
 m.car_plus_point as memberCarPlusPoint,
 m.car_plus_member_id as memberCarPlusMemberId,
+m.short_id as memberShortId,
 gi.name  as gameItemName,
 gi.type  as gameItemType,
 o.date_created as dateCreated,
@@ -36,6 +38,7 @@ type MemberGameItemOrderViewDbModel = {
     memberNickName: string
     memberCarPlusPoint: number
     memberCarPlusMemberId: string
+    memberShortId: string
     gameItemName: string
     gameItemType: number
     dateCreated: Date
@@ -43,6 +46,9 @@ type MemberGameItemOrderViewDbModel = {
 
 type ExportExchangeOrderItem = {
     memberId: string
+    memberShortId: string
+    carPlusMemberId: string
+    memberNickName: string
     gameItemName: string
     pointTypeName: string
     pointAmount: number
@@ -58,7 +64,11 @@ export class AdminExchangeLibSvc extends BaseConnection {
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
             conditions.push(`m.car_plus_member_id = :memberId`);
-            parameters.memberId = param.params.memberId
+            parameters.memberId = param.params.memberId;
+        }
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
+            conditions.push(`m.short_id = :shortId`);
+            parameters.memberId = param.params.shortId;
         }
 
         if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
@@ -105,8 +115,8 @@ export class AdminExchangeLibSvc extends BaseConnection {
                 member: {
                     id: entity.memberId,
                     nickName: entity.memberNickName,
-                    carPlusMemberId: entity.memberCarPlusMemberId
-                    
+                    carPlusMemberId: entity.memberCarPlusMemberId,
+                    shortId: entity.memberShortId
                 },
                 gameItem: {
                     id: entity.gameItemId,
@@ -126,37 +136,41 @@ export class AdminExchangeLibSvc extends BaseConnection {
     }
 
     async exportExchangeOrders(param: PageQuery<AdminMemberGameItemQueryParameterVM>): Promise<ExportResult> {
-        const conditions: FindConditions<MemberGameItemOrderEntity> = {};
+
+
+        const conditions: string[] = ['1 = 1'];
+        const parameters: any = {};
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
-            conditions.memberId = param.params.memberId
+            conditions.push(`m.car_plus_member_id = :memberId`);
+            parameters.memberId = param.params.memberId;
+        }
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
+            conditions.push(`m.short_id = :shortId`);
+            parameters.memberId = param.params.shortId;
         }
 
         if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
-            conditions.dateCreated = Between<Date>(param.listQueryParam.dateStart, param.listQueryParam.dateEnd)
+            conditions.push(`o.date_created between :dateStart and :dateEnd`);
+            parameters.dateStart = param.listQueryParam.dateStart
+            parameters.dateEnd = param.listQueryParam.dateEnd
         } else if (checker.isDate(param.listQueryParam.dateStart)) {
-            conditions.dateCreated = MoreThan(param.listQueryParam.dateStart)
+            conditions.push(`o.date_created >= :dateStart`);
+            parameters.dateStart = param.listQueryParam.dateStart;
         } else if (checker.isDate(param.listQueryParam.dateEnd)) {
-            conditions.dateCreated = LessThan(param.listQueryParam.dateEnd)
+            conditions.push(`o.date_created >= :dateEnd`);
+            parameters.dateEnd = param.listQueryParam.dateEnd
         }
 
+        const sqlWithConditions = `${baseSql} where ${conditions.join(' and ')}`;
 
-        const memberGameItemOrderRepository = await this.entityManager.getRepository(MemberGameItemOrderEntity)
+        const queryParam = this.parseSql(sqlWithConditions, parameters);
 
-        const findAndCountRet = await memberGameItemOrderRepository.findAndCount({
-            relations: ['member', 'gameItem'],
-            where: {
-                ...conditions
-            },
-            order: {
-                dateCreated: 'DESC'
-            }
-        })
-
-        const memberGameItemOrderEntities = findAndCountRet[0]
+        const listRet: MemberGameItemOrderViewDbModel[] = await this.entityManager.query(queryParam.sql, queryParam.parameters);
+        const memberGameItemOrderEntities = listRet
 
         const data = memberGameItemOrderEntities.map(entity => {
-            const { member, gameItem, pointAmount, pointType, dateCreated, gameItemCount } = entity
+            const { pointAmount, pointType, dateCreated, gameItemCount, memberCarPlusMemberId, memberCarPlusPoint, memberShortId, memberId, gameItemName, memberNickName } = entity
             let pointTypeName = '';
             switch (pointType) {
                 case PointType.carPlus:
@@ -168,8 +182,11 @@ export class AdminExchangeLibSvc extends BaseConnection {
             }
 
             const item: ExportExchangeOrderItem = {
-                memberId: member.carPlusMemberId,
-                gameItemName: gameItem.name,
+                memberShortId,
+                carPlusMemberId: memberCarPlusMemberId,
+                memberNickName,
+                memberId,
+                gameItemName,
                 pointTypeName,
                 pointAmount,
                 gameItemCount,
@@ -182,8 +199,10 @@ export class AdminExchangeLibSvc extends BaseConnection {
         return exporter.exportByFieldDicAndData({
             data,
             fieldNameDic: {
-                memberId: "ID",
-                gameItemName: "購買道具及角色",
+                memberShortId: '遊戲ID',
+                carPlusMemberId: '格上會員ID',
+                memberNickName: '會員暱稱',
+                gameItemName: "購買道具或角色",
                 pointTypeName: "花費單位",
                 pointAmount: "總金額",
                 gameItemCount: "數量",

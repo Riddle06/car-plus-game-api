@@ -6,6 +6,7 @@ import { MemberEntity } from "@entities/member.entity";
 import { checker } from "@utilities";
 import { carPlusSvc } from '../../car-plus.svc/index';
 import { gameSvc } from "@services";
+import { variableSvc } from "@services/variable.svc";
 
 export class MemberInformationLibSvc extends BaseConnection {
 
@@ -25,7 +26,7 @@ export class MemberInformationLibSvc extends BaseConnection {
             throw new AppError(`不存在此會員`, ResultCode.resourceNotFound);
         }
 
-        const { id, nickName, gamePoint, level, experience, carPlusMemberId } = memberEntity;
+        const { id, nickName, gamePoint, level, experience, carPlusMemberId, shortId } = memberEntity;
 
         let { carPlusPoint } = memberEntity;
 
@@ -42,6 +43,8 @@ export class MemberInformationLibSvc extends BaseConnection {
                 carPlusPoint = carPlusSystemPoint;
             }
         }
+        const levelInfo = await variableSvc.getLevelInformation()
+        const experienceLimit = variableSvc.getExperienceLimit(level, levelInfo.items);
         const currentRoleRet = await gameSvc.memberGetCurrentRole(this.memberId, this.queryRunner)
         ret.item = {
             id,
@@ -51,7 +54,9 @@ export class MemberInformationLibSvc extends BaseConnection {
             level,
             experience,
             carPlusMemberId,
-            currentRoleGameItem: currentRoleRet.item
+            currentRoleGameItem: currentRoleRet.item,
+            shortId,
+            experienceLimit
         };
 
         return ret.setResultValue(true);

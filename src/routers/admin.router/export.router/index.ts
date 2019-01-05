@@ -37,7 +37,8 @@ router.get('/member/game/history', async (req: RequestExtension, res: ResponseEx
 router.get('/member/point/history', async (req: RequestExtension, res: ResponseExtension, next) => {
     try {
         const param = new PageQuery<AdminMemberGameItemQueryParameterVM>(req.listQuery, {
-            memberId: req.query.mi
+            memberId: req.query.mi,
+            shortId: req.query.shortId
         })
         res.exportResult = await adminPointSvc.exportExchangeOrders(param)
     } catch (error) {
@@ -52,7 +53,8 @@ router.get('/member/with-game-items', async (req: RequestExtension, res: Respons
     try {
         const param = new PageQuery<AdminMemberListQueryParameterVM>(req.listQuery, {
             memberId: req.query.mi ? req.query.mi : "",
-            keyword: req.query.keyword
+            keyword: req.query.keyword,
+            shortId: req.query.shortId
         })
         res.exportResult = await adminMemberSvc.exportAdminMemberWidthGameItemsListExcel(param)
 

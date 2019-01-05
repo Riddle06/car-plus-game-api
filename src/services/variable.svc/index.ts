@@ -43,11 +43,20 @@ class VariableSvc {
         return await variableLibSvc.getShareText();
     }
 
-  
+
 
     getTesterRegExp(): RegExp {
         const testCarPlusIdRegex = /^test__\S+/;
         return testCarPlusIdRegex
+    }
+
+    getExperienceLimit(level: number, information: LevelUpInformation[]): number {
+        const info = information.find(info => info.level === level + 1);
+        if (info) { 
+            return info.experience
+        }
+
+        return 0;
     }
 }
 

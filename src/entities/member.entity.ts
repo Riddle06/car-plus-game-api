@@ -84,4 +84,12 @@ export class MemberEntity extends BaseEntity {
         name: 'id'
     })
     memberGameItems: MemberGameItemEntity[]
+
+    @Column("varchar", {
+        length: 50,
+        nullable: false,
+        default: '',
+        name: 'short_id'
+    })
+    shortId: string = "";
 }

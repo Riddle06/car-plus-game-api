@@ -4,7 +4,7 @@ import { AppError, Result } from '@view-models/common.vm';
 import { BaseConnection } from '../../base-connection';
 import { MemberInformationVM } from '@view-models/member.vm';
 import { MemberEntity } from '../../../entities/member.entity';
-import { uniqueId, checker } from '@utilities';
+import { uniqueId, checker, system } from '@utilities';
 import { gameSvc } from '@services';
 export class RegisterLibSvc extends BaseConnection {
 
@@ -53,6 +53,11 @@ export class RegisterLibSvc extends BaseConnection {
         await gameSvc.memberInitGameItem(newMemberEntity.id, this.queryRunner)
 
         const currentRoleRet = await gameSvc.memberGetCurrentRole(newMemberEntity.id, this.queryRunner)
+
+        const levelInfo = await variableSvc.getLevelInformation()
+        const experienceLimit = variableSvc.getExperienceLimit(newMemberEntity.level, levelInfo.items);
+
+        const shortId: string = await this.getMemberShortId();
         ret.item = {
             carPlusMemberId: newMemberEntity.carPlusMemberId,
             carPlusPoint: newMemberEntity.carPlusPoint,
@@ -61,13 +66,53 @@ export class RegisterLibSvc extends BaseConnection {
             id: newMemberEntity.id,
             level: newMemberEntity.level,
             nickName: newMemberEntity.nickName,
-            currentRoleGameItem: currentRoleRet.item
+            currentRoleGameItem: currentRoleRet.item,
+            shortId,
+            experienceLimit
         }
 
         return ret.setResultValue(true);
     }
 
 
+    async handleEmptyShortIdMembers(): Promise<void> {
+        const memberRepository = await this.entityManager.getRepository(MemberEntity);
+        const memberEntities = await memberRepository.find({
+            shortId: ''
+        })
+
+        console.log(`need update empty shortId : ${memberEntities.length} rows`)
+
+        for (const member of memberEntities) {
+            const shortId = await this.getMemberShortId();
+            await memberRepository.update({ id: member.id }, {
+                shortId: shortId
+            })
+
+        }
+
+        return;
+    }
+
+    async getMemberShortId(): Promise<string> {
+
+        const memberRepository = await this.entityManager.getRepository(MemberEntity)
+        const count = await memberRepository.count();
+
+        do {
+            const shortId = await uniqueId.getRandomCode(count);
+            const existCount = await memberRepository.count({
+                where: {
+                    shortId
+                }
+            });
+            if (existCount === 0) {
+                return shortId;
+            }
+            await system.sleep(1);
+        } while (true);
+
+    }
 
 
 } 

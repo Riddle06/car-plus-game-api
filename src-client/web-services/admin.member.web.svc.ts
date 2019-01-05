@@ -12,13 +12,15 @@ export class AdminMemberWebSvc extends BaseWebSvc {
     async getGameHistories(pageInfo: PageInfo = {
         pageIndex: 1,
         pageSize: 10
-    }, param: { memberId?: string } = {
-        memberId: ''
+    }, param: { memberId?: string, shortId?: string } = {
+        memberId: '',
+        shortId: ''
     }): Promise<ListResult<AdminMemberGameHistoryVM>> {
         const res = await this.axiosAdminInstance.get('/admin/api/member/game/history', {
             params: {
                 ...pageInfo,
-                mi: param.memberId
+                mi: param.memberId,
+                shortId: param.shortId
             }
         })
         return res.data;
@@ -90,12 +92,13 @@ export class AdminMemberWebSvc extends BaseWebSvc {
     async getBlockMember(pageInfo: PageInfo = {
         pageIndex: 1,
         pageSize: 10
-    }, param: { memberId: string } = { memberId: "" }): Promise<ListResult<AdminMemberBlockHistoryVM>> {
+    }, param: { memberId?: string, shortId?: string } = { memberId: "", shortId: "" }): Promise<ListResult<AdminMemberBlockHistoryVM>> {
         const res = await this.axiosAdminInstance.get(`/admin/api/member/block-history`,
             {
                 params: {
                     ...pageInfo,
-                    mi: param.memberId
+                    mi: param.memberId,
+                    shortId: param.shortId
                 }
             })
         return res.data
@@ -105,12 +108,13 @@ export class AdminMemberWebSvc extends BaseWebSvc {
      * 會員總覽：取得消費者列表
      * @param {param.keyword} 關鍵字
      */
-    async getMembers(pageInfo: any = { pageIndex: 1, pageSize: 10 }, param: { memberId: string, keyword?: string } = { memberId: "" }): Promise<ListResult<AdminMemberVM>> {
+    async getMembers(pageInfo: any = { pageIndex: 1, pageSize: 10 }, param: { memberId: string, keyword?: string, shortId?: string } = { memberId: "", shortId: "" }): Promise<ListResult<AdminMemberVM>> {
         const res = await this.axiosAdminInstance.get<ListResult<AdminMemberVM>>(`/admin/api/member`, {
             params: {
                 ...pageInfo,
                 mi: param.memberId,
-                keyword: param.keyword
+                keyword: param.keyword,
+                shortId: param.shortId
             }
         })
         return res.data

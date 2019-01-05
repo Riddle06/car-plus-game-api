@@ -10,8 +10,8 @@ const router = Router();
 router.get('/history/exchange', async (req: RequestExtension, res: ResponseExtension, next) => {
     try {
         const param = new PageQuery<AdminMemberGameItemQueryParameterVM>(req.listQuery, {
-            memberId: req.query.mi
-            
+            memberId: req.query.mi,
+            shortId: req.query.shortId
         })
         res.result = await adminPointSvc.getExchangeOrders(param)
     } catch (error) {
@@ -26,7 +26,8 @@ router.get('/history/manual', async (req: RequestExtension, res: ResponseExtensi
         // const param = new PageQuery(req.listQuery);
 
         const param = new PageQuery<AdminMemberGameItemQueryParameterVM>(req.listQuery, {
-            memberId: req.query.mi
+            memberId: req.query.mi,
+            shortId: req.query.shortId
         })
 
         res.result = await adminPointSvc.getManualGamePointHistories(req.adminUserToken, param)

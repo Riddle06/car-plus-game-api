@@ -13,6 +13,7 @@ export interface AdminMemberGameHistoryVM {
         id: string
         nickName: string
         carPlusMemberId: string
+        shortId: string
     }
     score: number
     point: number
@@ -23,6 +24,7 @@ export interface AdminMemberGameHistoryVM {
 
 export interface AdminMemberGameHistoryParameterVM {
     memberId?: string
+    shortId?: string
 }
 
 export interface AdminGameDashboardVM {

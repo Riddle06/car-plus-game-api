@@ -1,5 +1,6 @@
 import { GameItemVM } from './game.vm';
 import { MemberInformationVM } from "./member.vm";
+import shortid = require('shortid');
 
 export interface AdminMemberVM extends MemberInformationVM {
     gameItems?: AdminMemberGameItemVM[]
@@ -15,7 +16,7 @@ export interface AdminMemberEntityQueryParameterVM {
 }
 
 export interface AdminMemberBlockParameter {
-    carPlusMemberId: string
+    shortId: string
     reason: string
     adminUserName: string
 }
@@ -24,6 +25,7 @@ export interface AdminMemberBlockHistoryVM {
     id: string
     memberId: string
     carPlusMemberId: string
+    memberShortId: string
     adminUserId: string
     reason: string
     dateCreated: Date
@@ -38,10 +40,11 @@ export interface AdminMemberBlockHistoryVM {
 
 export interface AdminMemberBlockListQueryParameterVM {
     memberId: string
+    shortId: string
 }
 
 export interface AdminMemberListQueryParameterVM {
     memberId: string
     keyword: string
-
+    shortId: string
 }

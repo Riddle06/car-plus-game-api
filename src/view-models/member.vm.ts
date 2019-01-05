@@ -8,6 +8,8 @@ export interface MemberInformationVM {
     experience: number
     carPlusMemberId: string
     currentRoleGameItem: GameItemVM
+    shortId: string
+    experienceLimit: number
 }
 
 export interface MemberUpdateInformationParameterVM {

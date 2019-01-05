@@ -63,7 +63,20 @@ class MemberSvc {
             await queryRunner.release();
         }
     }
-
+    async handleEmptyShortIdMembers(): Promise<void> {
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const registerLibSvc = new RegisterLibSvc(queryRunner)
+            await registerLibSvc.handleEmptyShortIdMembers()
+            await queryRunner.commitTransaction();
+            return;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
+    }
 }
 
 

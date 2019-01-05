@@ -14,6 +14,12 @@ type ExportParameter = {
      * 關鍵字，用在會員列表
      */
     keyword?: string
+
+    /**
+     * 遊戲ID(短的)
+     */
+
+    shortId?: string
 }
 
 /**
@@ -55,7 +61,7 @@ export class AdminExportWebSvc extends BaseWebSvc {
 
     getQueryString(param: ExportParameter): string {
 
-        const { token, dateEnd, dateStart, mi, keyword } = param;
+        const { token, dateEnd, dateStart, mi, keyword, shortId } = param;
 
         const queryStringList: string[] = [`token=${token}`];
 
@@ -69,6 +75,10 @@ export class AdminExportWebSvc extends BaseWebSvc {
 
         if (mi) {
             queryStringList.push(`mi=${mi}`)
+        }
+
+        if (shortId) { 
+            queryStringList.push(`shortId=${shortId}`)
         }
 
         if (keyword) {

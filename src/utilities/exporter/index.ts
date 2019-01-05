@@ -31,7 +31,7 @@ class Exporter {
 
         const newFieldWithData: any[] = []
 
-
+        const headers: string[] = []
         for (const d of data) {
             const newItem: any = {};
 
@@ -39,9 +39,13 @@ class Exporter {
                 throw new AppError('欄位與資料不符合')
             }
 
-            for (const key in d) {
-                const fieldName = fieldNameDic[key] ? fieldNameDic[key] : key;
-                newItem[fieldName] = d[key]
+            for (const field in fieldNameDic) {
+                if (d[field] !== undefined) {
+                    const fieldName = fieldNameDic[field];
+                    newItem[fieldName] = d[field];
+                } else {
+                    newItem[fileName] = '';
+                }
             }
             newFieldWithData.push(newItem)
         }
@@ -54,7 +58,15 @@ class Exporter {
             newFieldWithData.push(row)
         }
 
-        const sheet = xlsx.utils.json_to_sheet(newFieldWithData)
+        for (const field in fieldNameDic) {
+            const fieldName = fieldNameDic[field];
+            headers.push(fieldName)
+        }
+
+        const sheet = xlsx.utils.json_to_sheet(newFieldWithData, {
+            header: headers
+        });
+
         const workbook = xlsx.utils.book_new()
         xlsx.utils.book_append_sheet(workbook, sheet, sheetName)
 

@@ -8,6 +8,7 @@ import { ExportResult, exporter } from '@utilities/exporter';
 import { checker, uniqueId } from '@utilities';
 import { GameItemVM, GameItemType } from '@view-models/game.vm';
 import { GameItemEntity } from '@entities/game-item.entity';
+import { variableSvc } from '@services/variable.svc';
 
 const baseSql = `select 
 m.id as id,
@@ -18,6 +19,7 @@ m.level as level,
 m.experience as experience,
 m.car_plus_member_id as carPlusMemberId,
 m.is_block as isBlock,
+m.short_id as shortId,
 ROW_NUMBER () OVER ( order by m.car_plus_member_id asc) as row
 from member as m`
 
@@ -31,6 +33,7 @@ type MemberDbViewModel = {
     experience: number
     level: number
     isBlock: boolean
+    shortId: string
 }
 
 type MemberWithGameItem = {
@@ -41,8 +44,10 @@ type MemberWithGameItem = {
     dateCreated: Date
     carPlusMemberId: string
     experience: number
+    experienceLimit?: number
     level: number
     isBlock: boolean
+    shortId: string
     gameItem1Count: number
     gameItem2Count: number
     gameItem3Count: number
@@ -68,6 +73,11 @@ export class AdminMembersLibSvc extends BaseConnection {
             parameters.keyword = `%${param.params.keyword}%`;
         }
 
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
+            conditions.push(`m.shortId = :shortId`)
+            parameters.shortId = param.params.shortId
+        }
+
         const sqlWithConditions = `${baseSql} where ${conditions.join(' and ')}`
 
         const paginationSql = this.getPaginationSql(sqlWithConditions);
@@ -90,8 +100,13 @@ export class AdminMembersLibSvc extends BaseConnection {
 
         const ret = new ListResult<AdminMemberVM>(true);
 
+        const levelInfo = await variableSvc.getLevelInformation()
+
+
         ret.items = memberEntities.map(entity => {
-            const { id, carPlusMemberId, dateCreated, level, gamePoint, nickName, experience, carPlusPoint, isBlock } = entity
+
+            const { id, carPlusMemberId, dateCreated, level, gamePoint, nickName, experience, carPlusPoint, isBlock, shortId } = entity
+            const experienceLimit = variableSvc.getExperienceLimit(level, levelInfo.items);
             const item: AdminMemberVM = {
                 id,
                 nickName,
@@ -102,7 +117,9 @@ export class AdminMembersLibSvc extends BaseConnection {
                 carPlusMemberId,
                 gameItems: [],
                 currentRoleGameItem: null,
-                isBlock
+                isBlock,
+                shortId,
+                experienceLimit
             }
             return item
         })
@@ -129,8 +146,9 @@ export class AdminMembersLibSvc extends BaseConnection {
         }
 
         const ret = new Result<AdminMemberVM>(true);
-        const { carPlusMemberId, level, gamePoint, nickName, experience, carPlusPoint, isBlock } = memberEntity
-
+        const { carPlusMemberId, level, gamePoint, nickName, experience, carPlusPoint, isBlock, shortId } = memberEntity
+        const levelInfo = await variableSvc.getLevelInformation()
+        const experienceLimit = variableSvc.getExperienceLimit(level, levelInfo.items);
         ret.item = {
             id,
             nickName,
@@ -141,7 +159,9 @@ export class AdminMembersLibSvc extends BaseConnection {
             carPlusMemberId,
             gameItems: [],
             currentRoleGameItem: null,
-            isBlock
+            isBlock,
+            shortId,
+            experienceLimit
         }
 
         const memberGameItemRepository = this.entityManager.getRepository(MemberGameItemEntity);
@@ -200,6 +220,7 @@ export class AdminMembersLibSvc extends BaseConnection {
             m.experience as experience,
             m.level as level,
             m.is_block as isBlock,
+            m.short_id as shortId,
             isnull(game_item_1.count,0) as gameItem1Count,
             isnull(game_item_2.count,0) as gameItem2Count,
             isnull(game_item_3.count,0) as gameItem3Count,
@@ -252,18 +273,26 @@ export class AdminMembersLibSvc extends BaseConnection {
             order by m.car_plus_member_id asc
        `)
 
+        const levelInfo = await variableSvc.getLevelInformation()
+
+
+        for (const d of data) {
+            const experienceLimit = variableSvc.getExperienceLimit(d.level, levelInfo.items);
+            d.experienceLimit = experienceLimit
+        }
 
         return exporter.exportByFieldDicAndData({
             data,
             fieldNameDic: {
-                id: "ID",
+                shortId: "遊戲ID",
+                carPlusMemberId: "格上會員ID",
                 nickName: "暱稱",
+                level: "等級",
+                experience: "經驗值",
+                experienceLimit: '升級所需經驗值',
                 gamePoint: "超人幣",
                 carPlusPoint: "格上紅利",
                 dateCreated: "遊戲帳號建立時間",
-                carPlusMemberId: "格上ID",
-                experience: "目前經驗值",
-                level: "等級",
                 isBlock: "是否為黑名單",
                 gameItem1Count: "一般上班族",
                 gameItem2Count: "實習超人",

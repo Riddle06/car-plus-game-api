@@ -13,6 +13,7 @@ select
 history.id as id,
 history.member_id as memberId,
 m.car_plus_member_id as carPlusMemberId,
+m.short_id as memberShortId,
 g.id as gameId,
 history.date_created as dateCreated,
 history.game_score as gameScore,
@@ -32,6 +33,7 @@ type MemberGameHistoryDbViewModel = {
     memberId: string
     carPlusMemberId: string
     gameId: string
+    memberShortId: string
     dateCreated: Date
     gameScore: number
     gamePoint: number
@@ -43,8 +45,12 @@ type MemberGameHistoryDbViewModel = {
 
 type ExportGameHistoryItem = {
     id: string
+    carPlusMemberId: string
+    memberShortId: string
+    memberNickName: string
     gameName: string
     dateCreated: Date
+    dateFinished: Date
     gameScore: number
     gamePoint: number
 }
@@ -59,6 +65,11 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
             conditions.push(`m.car_plus_member_id = :memberId`);
             parameters.memberId = param.params.memberId
+        }
+
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
+            conditions.push(`m.short_id = :shortId`);
+            parameters.shortId = param.params.shortId
         }
 
         if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
@@ -109,7 +120,8 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
                 member: {
                     id: entity.memberId,
                     nickName: entity.memberNickName,
-                    carPlusMemberId: entity.carPlusMemberId
+                    carPlusMemberId: entity.carPlusMemberId,
+                    shortId: entity.memberShortId
                 }
             }
 
@@ -157,14 +169,18 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
 
 
         const items = memberGameHistoryEntities.map(entity => {
-            const { id, memberId, dateCreated, gameScore, gamePoint, dateFinished } = entity
+            const { dateCreated, gameScore, gamePoint, dateFinished } = entity
 
             const item: ExportGameHistoryItem = {
                 id: entity.memberVM.carPlusMemberId,
+                carPlusMemberId: entity.memberVM.carPlusMemberId,
+                memberNickName: entity.memberVM.nickName,
                 dateCreated: dateCreated,
                 gameName: entity.gameVM.name,
                 gameScore,
-                gamePoint
+                gamePoint,
+                dateFinished,
+                memberShortId: entity.memberVM.shortId
             }
 
             return item
@@ -173,11 +189,14 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
         const ret = exporter.exportByFieldDicAndData({
             data: items,
             fieldNameDic: {
-                id: "ID",
+                memberShortId: "遊戲ID",
+                carPlusMemberId: "格上會員ID",
+                memberNickName: "會員暱稱",
                 gameName: "遊戲項目",
-                dateCreated: "發生時間",
-                gameScore: "該場分數",
-                gamePoint: "該場超人幣"
+                gameScore: "獲得分數",
+                gamePoint: "獲得超人幣",
+                dateCreated: "遊戲開始時間",
+                dateFinished: "遊戲完成時間"
             },
             fileName: "遊戲紀錄",
             sheetName: "sheet1"
