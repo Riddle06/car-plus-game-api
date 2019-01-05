@@ -180,6 +180,9 @@ export class ShotGame extends BaseGame {
     const { x, y } = this.superMan.ball;
     let { score, gamePoint } = this.monster;
 
+    // 爆炸音效
+    this.boomSound.play();
+
     if (this.gamePoints >= 35) {
       // 一場最多不拿超過35個
       gamePoint = 0

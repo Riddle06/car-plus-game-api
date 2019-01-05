@@ -64,6 +64,7 @@
     "mssql": "^4.2.2",
     "mysql": "^2.16.0",
     "pad-left": "^2.1.0",
+    "pixi-sound": "^2.0.4",
     "pixi.js": "^4.8.2",
     "reflect-metadata": "^0.1.12",
     "shortid": "^2.2.14",
