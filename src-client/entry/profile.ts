@@ -53,7 +53,7 @@ class ProfilePage extends BasePage {
         
         const profileRet = await this.webSvc.member.getProfile()
 
-        const { nickName, level, gamePoint, carPlusPoint, currentRoleGameItem, experience } = profileRet.item;
+        const { nickName, level, gamePoint, carPlusPoint, currentRoleGameItem, experience, shortId } = profileRet.item;
         this.currentRoleGameItem = currentRoleGameItem;
         const { spriteFolderPath } = currentRoleGameItem;
         
@@ -64,6 +64,7 @@ class ProfilePage extends BasePage {
         this.$info.find("#js-gamePoint").text(gamePoint);
         this.$info.find("#js-carPlusPoint").text(carPlusPoint);
 
+        this.$infoCard.find("#js-shortId").text(shortId);
         this.$infoCard.find("#js-nickName").text(nickName);
         this.$infoCard.find("#js-level").text(`${level}級`);
         this.$infoCard.find("#js-experience").text(`${experience}/${levelUpNeedExperience}`);

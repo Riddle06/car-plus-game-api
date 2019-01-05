@@ -2,8 +2,8 @@
   <h2>遊戲紀錄</h2>
   <div class="form-wrap">
     <el-form label-position="right" label-width="100px" @submit.native.prevent>
-      <el-form-item label="會員Id">
-        <el-input placeholder="請輸入會員Id" v-model="memberId" @keyup.enter.native="getGameHistory(true)"></el-input>
+      <el-form-item label="遊戲Id">
+        <el-input placeholder="請輸入遊戲Id" v-model="memberId" @keyup.enter.native="getGameHistory(true)"></el-input>
       </el-form-item>
       <el-form-item label="日期">
         <el-date-picker type="daterange" v-model="dateGap" range-separator="至" start-placeholder="開始日期" end-placeholder="结束日期">
@@ -28,7 +28,8 @@
   </div>
 
   <el-table :data="history" row-key="id" header-align="center" stripe border highlight-current-row>
-    <el-table-column label="會員Id" prop="member.carPlusMemberId"></el-table-column>
+    <el-table-column label="遊戲Id" prop="member.shortId"></el-table-column>
+    <el-table-column label="格上會員Id" prop="member.carPlusMemberId"></el-table-column>
     {{!-- <el-table-column label="遊戲狀態" align="center">
       <template slot-scope="scope">
         <el-tag :type="scope.row.isFinish ? 'success' : 'warning'">\{{ scope.row.isFinish ? '完成' : '未完成' }}</el-tag>

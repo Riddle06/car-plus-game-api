@@ -38,9 +38,10 @@ class HomePage extends BasePage {
         const profileRet = await this.webSvc.member.getProfile()
         // console.log('[profile]', profileRet)
 
-        const { nickName, level, gamePoint, carPlusPoint, currentRoleGameItem } = profileRet.item;
+        const { nickName, level, gamePoint, carPlusPoint, currentRoleGameItem, shortId } = profileRet.item;
         const { spriteFolderPath } = currentRoleGameItem;
         let infoHtml = this.$info.html()
+            .replace('{shortId}', shortId)
             .replace('{nickName}', nickName)
             .replace('{level}', `${level}級`)
             .replace('{gamePoint}', `${gamePoint}`)

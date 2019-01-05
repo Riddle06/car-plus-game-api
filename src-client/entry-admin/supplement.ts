@@ -14,7 +14,7 @@ class SipplementPage extends BasePage {
           history: [],
 
           form: {
-            carPlusMemberId: '',
+            shortId: '',
             gamePoint: 0,
             reason: '',
             adminUserName: '',
@@ -57,6 +57,10 @@ class SipplementPage extends BasePage {
             // dateStart: this.dateStart,
             // dateEnd: this.dateEnd,
           })
+
+          if (!ret.success) {
+            return;
+          }
 
           this.history = ret.items;
           this.page = { ...this.page, ...ret.page };

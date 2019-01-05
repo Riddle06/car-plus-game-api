@@ -19,7 +19,8 @@
   </div>
 
   <el-table :data="history" row-key="id" header-align="center" stripe border highlight-current-row>
-    <el-table-column label="會員Id" prop="member.carPlusMemberId"></el-table-column>
+    <el-table-column label="遊戲Id" prop="member.shortId"></el-table-column>
+    <el-table-column label="格上會員Id" prop="member.carPlusMemberId"></el-table-column>
     <el-table-column label="會員暱稱" prop="member.nickName"></el-table-column>
     <el-table-column label="異動前超人幣" prop="beforeGamePoint"></el-table-column>
     <el-table-column label="補幣金額" prop="changeGamePoint"></el-table-column>
@@ -50,8 +51,8 @@
 
 <el-dialog title="客訴補幣" center :visible.sync="isDialogOpen" width="60%">
   <el-form :model="form" ref="form" label-position="right" label-width="100px" @submit.native.prevent>
-    <el-form-item label="補幣會員Id" prop="carPlusMemberId" required>
-      <el-input placeholder="請輸入會員Id" v-model="form.carPlusMemberId"></el-input>
+    <el-form-item label="補幣遊戲Id" prop="shortId" required>
+      <el-input placeholder="請輸入遊戲Id" v-model="form.shortId"></el-input>
     </el-form-item>
     <el-form-item label="補入超人幣" prop="gamePoint" required>
       <el-input-number label="請輸入超人幣" :min="1" :max="100000" v-model="form.gamePoint"></el-input-number>

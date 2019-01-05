@@ -40,7 +40,7 @@ class GameHistoryPage extends BasePage {
             pageSize: this.page.size,
             dateStart: this.dateStart,
             dateEnd: this.dateEnd,
-          }, { memberId: this.memberId })
+          }, { shortId: this.memberId })
 
           this.history = ret.items;
           this.page = { ...this.page, ...ret.page };
@@ -51,7 +51,7 @@ class GameHistoryPage extends BasePage {
             token: _this.getAdminToken(),
             dateStart: this.dateStart,
             dateEnd: this.dateEnd,
-            
+            shortId: this.memberId,
           }))
         },
 

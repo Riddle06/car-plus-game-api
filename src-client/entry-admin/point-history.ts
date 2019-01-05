@@ -40,7 +40,11 @@ class PointHistoryPage extends BasePage {
             pageSize: this.page.size,
             dateStart: this.dateStart,
             dateEnd: this.dateEnd,
-          }, { memberId: this.memberId })
+          }, { shortId: this.memberId })
+
+          if (!ret.success) {
+            return;
+          }
 
           this.history = ret.items;
           this.page = { ...this.page, ...ret.page };
@@ -55,6 +59,7 @@ class PointHistoryPage extends BasePage {
             token: _this.getAdminToken(),
             dateStart: this.dateStart,
             dateEnd: this.dateEnd,
+            shortId: this.memberId
           }))
         },
 

@@ -47,7 +47,7 @@ class MembersPage extends BasePage {
           const ret = await _this.adminSvc.adminMember.getMembers({
             pageIndex: this.page.index,
             pageSize: this.page.size
-          }, { memberId: this.memberId });
+          }, { shortId: this.memberId });
 
           if (!ret.success) {
             return;
@@ -94,7 +94,7 @@ class MembersPage extends BasePage {
         exportExcel() {
           window.open(_this.adminSvc.adminExport.getExportMemberWithGameItems({
             token: _this.getAdminToken(),
-            mi: this.memberId
+            shortId: this.memberId,
           }))
         },
 

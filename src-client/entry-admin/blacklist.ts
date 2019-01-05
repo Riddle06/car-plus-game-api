@@ -18,7 +18,7 @@ class BlackList extends BasePage {
           },
 
           blockForm: {
-            carPlusMemberId: '',
+            shortId: '',
             reason: '',
             adminUserName: '',
           },
@@ -40,7 +40,7 @@ class BlackList extends BasePage {
           const ret = await _this.adminSvc.adminMember.getBlockMember({
             pageIndex: this.page.index,
             pageSize: this.page.size
-          }, { memberId: this.memberId });
+          }, { shortId: this.memberId });
 
           if (!ret.success) {
             return;

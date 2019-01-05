@@ -143,7 +143,7 @@ function __fakeAlert(options: AlertOptions): void {
                 <div class="attrBox">
                     <div class="content">
                         <div class="inputList">
-                            <div class="title">${title}</div>
+                            <div class="title" style="padding: 15px;">${title}</div>
                             <div class="text">${text}</div>
                         </div>
                     </div>
