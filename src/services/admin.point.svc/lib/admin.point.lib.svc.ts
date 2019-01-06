@@ -216,7 +216,8 @@ export class AdminPointLibSvc extends BaseConnection {
             adminUserName,
             member,
             gameItem,
-            dateCreated
+            dateCreated,
+            description
         } = param
 
         const ret: AdminMemberPointHistoryVM = {
@@ -239,7 +240,8 @@ export class AdminPointLibSvc extends BaseConnection {
                 shortId: member.shortId
             },
             gameItem: null,
-            dateCreated
+            dateCreated,
+            description
         }
 
         if (gameItem) {
@@ -281,7 +283,8 @@ export class AdminPointLibSvc extends BaseConnection {
             gameItemName,
             dateCreated,
             carPlusMemberId,
-            memberShortId
+            memberShortId,
+            description
         } = param
 
         const ret: AdminMemberPointHistoryVM = {
@@ -307,7 +310,8 @@ export class AdminPointLibSvc extends BaseConnection {
                 id: gameItemId,
                 name: gameItemName,
             } : null,
-            dateCreated
+            dateCreated,
+            description
         }
 
         const gamePointTypes = [

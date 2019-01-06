@@ -119,7 +119,8 @@ export class AdminMembersLibSvc extends BaseConnection {
                 currentRoleGameItem: null,
                 isBlock,
                 shortId,
-                experienceLimit
+                experienceLimit,
+                dateCreated
             }
             return item
         })
@@ -146,7 +147,7 @@ export class AdminMembersLibSvc extends BaseConnection {
         }
 
         const ret = new Result<AdminMemberVM>(true);
-        const { carPlusMemberId, level, gamePoint, nickName, experience, carPlusPoint, isBlock, shortId } = memberEntity
+        const { carPlusMemberId, level, gamePoint, nickName, experience, carPlusPoint, isBlock, shortId, dateCreated } = memberEntity
         const levelInfo = await variableSvc.getLevelInformation()
         const experienceLimit = variableSvc.getExperienceLimit(level, levelInfo.items);
         ret.item = {
@@ -161,7 +162,8 @@ export class AdminMembersLibSvc extends BaseConnection {
             currentRoleGameItem: null,
             isBlock,
             shortId,
-            experienceLimit
+            experienceLimit,
+            dateCreated
         }
 
         const memberGameItemRepository = this.entityManager.getRepository(MemberGameItemEntity);

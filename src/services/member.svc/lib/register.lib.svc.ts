@@ -68,7 +68,8 @@ export class RegisterLibSvc extends BaseConnection {
             nickName: newMemberEntity.nickName,
             currentRoleGameItem: currentRoleRet.item,
             shortId,
-            experienceLimit
+            experienceLimit,
+            dateCreated: newMemberEntity.dateCreated
         }
 
         return ret.setResultValue(true);

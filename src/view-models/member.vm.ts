@@ -10,6 +10,7 @@ export interface MemberInformationVM {
     currentRoleGameItem: GameItemVM
     shortId: string
     experienceLimit: number
+    dateCreated: Date
 }
 
 export interface MemberUpdateInformationParameterVM {

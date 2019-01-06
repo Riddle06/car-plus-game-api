@@ -54,6 +54,7 @@ export interface AdminMemberPointHistoryVM {
     adminUserName: string
     adminUserId: string
     dateCreated: Date
+    description: string
 }
 
 /**
@@ -85,5 +86,5 @@ export interface CreateAdminMemberPointHistoryParameterVM {
      * client side 不需要帶
      */
     memberId?: string
-    
+
 }

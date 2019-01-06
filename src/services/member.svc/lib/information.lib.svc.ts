@@ -26,7 +26,7 @@ export class MemberInformationLibSvc extends BaseConnection {
             throw new AppError(`不存在此會員`, ResultCode.resourceNotFound);
         }
 
-        const { id, nickName, gamePoint, level, experience, carPlusMemberId, shortId } = memberEntity;
+        const { id, nickName, gamePoint, level, experience, carPlusMemberId, shortId, dateCreated } = memberEntity;
 
         let { carPlusPoint } = memberEntity;
 
@@ -56,7 +56,8 @@ export class MemberInformationLibSvc extends BaseConnection {
             carPlusMemberId,
             currentRoleGameItem: currentRoleRet.item,
             shortId,
-            experienceLimit
+            experienceLimit,
+            dateCreated
         };
 
         return ret.setResultValue(true);
