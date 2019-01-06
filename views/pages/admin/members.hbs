@@ -23,11 +23,6 @@
   </div>
 
   <el-table :data="members" row-key="id" header-align="center" stripe border highlight-current-row>
-    <el-table-column label="狀態" align="center">
-      <template slot-scope="scope">
-        <el-tag :type="scope.row.isBlock ? 'danger' : 'success'">\{{ scope.row.isBlock ? '已封鎖' : '正常' }}</el-tag>
-      </template>
-    </el-table-column>
     <el-table-column label="遊戲Id" prop="shortId"></el-table-column>
     <el-table-column label="格上會員Id" prop="carPlusMemberId"></el-table-column>
     <el-table-column label="暱稱" prop="nickName"></el-table-column>
@@ -41,7 +36,16 @@
     </el-table-column>
     <el-table-column label="超人幣" prop="gamePoint"></el-table-column>
     <el-table-column label="格上紅利" prop="carPlusPoint"></el-table-column>
-    <el-table-column label="遊戲帳號建立時間" prop="carPlusPoint"></el-table-column>
+    <el-table-column label="遊戲帳號建立時間">
+      <template slot-scope="scope">
+        \{{ $g_formatDateTime(scope.row.dateCreated) }}
+      </template>
+    </el-table-column>
+    <el-table-column label="是否為黑名單" align="center">
+      <template slot-scope="scope">
+        <el-tag :type="scope.row.isBlock ? 'danger' : 'success'">\{{ scope.row.isBlock ? '是' : '否' }}</el-tag>
+      </template>
+    </el-table-column>
     <el-table-column label="操作" align="center" width="200">
       <template slot-scope="scope">
         <el-button-group>
