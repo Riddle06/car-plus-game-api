@@ -11,7 +11,8 @@ router.get('/history', async (req: RequestExtension, res: ResponseExtension, nex
 
     try {
         const param = new PageQuery<AdminMemberGameHistoryParameterVM>(req.listQuery, {
-            memberId: req.query.mi ? req.query.mi : ""
+            memberId: req.query.mi ? req.query.mi : "",
+            shortId: req.query.shortId ? req.query.shortId : ""
         })
         res.result = await adminGameSvc.getGameHistory(param);
     } catch (error) {

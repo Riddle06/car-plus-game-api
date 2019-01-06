@@ -60,7 +60,7 @@ export abstract class BasePage {
       },
       methods: {
         $g_formatDateTime(date: any): string {
-          return moment(date).format('YYYY/MM/DD HH:ss')
+          return moment(date).format('YYYY/MM/DD HH:mm:ss')
         }
       }
     })

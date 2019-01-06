@@ -139,33 +139,39 @@ export class AdminGameHistoryLibSvc extends BaseConnection {
     async exportGameHistory(param: PageQuery<AdminMemberGameHistoryParameterVM>): Promise<ExportResult> {
         const memberGameHistoryRepository = this.entityManager.getRepository(MemberGameHistoryEntity);
 
-        const conditions: FindConditions<MemberGameHistoryEntity> = {
-            dateFinished: Not(IsNull())
-        };
+        const conditions: string[] = [`memberGameHistory.date_finished is not null`];
+        const parameters: any = {};
 
+        
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
-            conditions.memberId = param.params.memberId
+            conditions.push(`memberVM.car_plus_member_id = :memberId`);
+            parameters.memberId = param.params.memberId
+        }
+
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
+            conditions.push(`memberVM.short_id = :shortId`);
+            parameters.shortId= param.params.shortId
         }
 
         if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
-            conditions.dateCreated = Between<Date>(param.listQueryParam.dateStart, param.listQueryParam.dateEnd)
+            conditions.push(`memberGameHistory.date_created between :dateStart and :dateEnd`);
+            parameters.dateStart = param.listQueryParam.dateStart
+            parameters.dateEnd = param.listQueryParam.dateEnd
         } else if (checker.isDate(param.listQueryParam.dateStart)) {
-            conditions.dateCreated = MoreThan(param.listQueryParam.dateStart)
+            conditions.push(`memberGameHistory.date_created >= :dateStart`);
+            parameters.dateStart = param.listQueryParam.dateStart;
         } else if (checker.isDate(param.listQueryParam.dateEnd)) {
-            conditions.dateCreated = LessThan(param.listQueryParam.dateEnd)
+            conditions.push(`memberGameHistory.date_created >= :dateEnd`);
+            parameters.dateEnd = param.listQueryParam.dateEnd
         }
-
-        const findAndCountRet = await memberGameHistoryRepository.findAndCount({
-            relations: ['memberVM', 'gameVM'],
-            where: {
-                ...conditions
-            },
-            order: {
-                dateCreated: 'DESC'
-            }
-        })
-
-        const memberGameHistoryEntities = findAndCountRet[0]
+        
+        const memberGameHistoryEntities = await memberGameHistoryRepository.createQueryBuilder('memberGameHistory')
+            .innerJoinAndSelect('memberGameHistory.memberVM', 'memberVM')
+            .innerJoinAndSelect('memberGameHistory.gameVM', 'gameVM')
+            .where(conditions.join(' and '))
+            .orderBy('memberGameHistory.date_created', 'DESC')
+            .setParameters(parameters)
+            .getMany();
 
 
         const items = memberGameHistoryEntities.map(entity => {

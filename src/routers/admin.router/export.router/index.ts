@@ -24,7 +24,8 @@ router.get('/dashboard', async (req: RequestExtension, res: ResponseExtension, n
 router.get('/member/game/history', async (req: RequestExtension, res: ResponseExtension, next) => {
     try {
         const param = new PageQuery<AdminMemberGameHistoryParameterVM>(req.listQuery, {
-            memberId: req.query.mi ? req.query.mi : ""
+            memberId: req.query.mi ? req.query.mi : "",
+            shortId: req.query.shortId
         })
         res.exportResult = await adminGameSvc.exportGameHistory(param);
     } catch (error) {

@@ -68,7 +68,7 @@ export class AdminExchangeLibSvc extends BaseConnection {
         }
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
             conditions.push(`m.short_id = :shortId`);
-            parameters.memberId = param.params.shortId;
+            parameters.shortId = param.params.shortId;
         }
 
         if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {
@@ -147,7 +147,7 @@ export class AdminExchangeLibSvc extends BaseConnection {
         }
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
             conditions.push(`m.short_id = :shortId`);
-            parameters.memberId = param.params.shortId;
+            parameters.shortId = param.params.shortId;
         }
 
         if (checker.isDate(param.listQueryParam.dateEnd) && checker.isDate(param.listQueryParam.dateStart)) {

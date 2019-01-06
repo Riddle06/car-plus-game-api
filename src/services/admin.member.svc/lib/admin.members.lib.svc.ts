@@ -74,7 +74,7 @@ export class AdminMembersLibSvc extends BaseConnection {
         }
 
         if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
-            conditions.push(`m.shortId = :shortId`)
+            conditions.push(`m.short_id = :shortId`)
             parameters.shortId = param.params.shortId
         }
 
@@ -208,70 +208,92 @@ export class AdminMembersLibSvc extends BaseConnection {
     }
 
     async exportMembersWithGameItemsExcel(param: PageQuery<AdminMemberListQueryParameterVM>): Promise<ExportResult> {
+        const conditions: string[] = [`1 = 1`];
+        const parameters: any = {};
 
-        const data: MemberWithGameItem[] = await this.entityManager.query(`
-            select 
-            m.id as id,
-            m.nick_name as nickName,
-            m.game_point as gamePoint,
-            m.car_plus_point as carPlusPoint,
-            m.car_plus_member_id as carPlusMemberId,
-            m.date_created as dateCreated,
-            m.experience as experience,
-            m.level as level,
-            m.is_block as isBlock,
-            m.short_id as shortId,
-            isnull(game_item_1.count,0) as gameItem1Count,
-            isnull(game_item_2.count,0) as gameItem2Count,
-            isnull(game_item_3.count,0) as gameItem3Count,
-            isnull(game_item_4.count,0) as gameItem4Count,
-            isnull(game_item_5.count,0) as gameItem5Count,
-            isnull(game_item_6.count,0) as gameItem6Count,
-            isnull(game_item_7.count,0) as gameItem7Count
-                from [member] m 
-                left join (
-                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
-                left join game_item gi on gi.id = i.game_item_id 
-                where gi.name = '一般上班族'
-                group by i.member_id ) as game_item_1 on game_item_1.member_id = m.id
-                
-                left join (
-                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
-                left join game_item gi on gi.id = i.game_item_id 
-                where gi.name = '實習超人'
-                group by i.member_id ) as game_item_2 on game_item_2.member_id = m.id
-                
-                left join (
-                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
-                left join game_item gi on gi.id = i.game_item_id 
-                where gi.name = '超人隊員'
-                group by i.member_id ) as game_item_3 on game_item_3.member_id = m.id
-                
-                left join (
-                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
-                left join game_item gi on gi.id = i.game_item_id 
-                where gi.name = '超人隊長'
-                group by i.member_id ) as game_item_4 on game_item_4.member_id = m.id
-                
-                left join (
-                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
-                left join game_item gi on gi.id = i.game_item_id 
-                where gi.name = '力霸超人'
-                group by i.member_id ) as game_item_5 on game_item_5.member_id = m.id
-                
-                left join (
-                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
-                left join game_item gi on gi.id = i.game_item_id 
-                where gi.name = '富翁果實' and i.remain_times > 0
-                group by i.member_id ) as game_item_6 on game_item_6.member_id = m.id
-                
-                left join (
-                select i.member_id, count(i.remain_times) as [count] from member_game_item i 
-                left join game_item gi on gi.id = i.game_item_id 
-                where gi.name = '能量果實' and i.remain_times > 0
-            group by i.member_id ) as game_item_7 on game_item_7.member_id = m.id
-            order by m.car_plus_member_id asc
-       `)
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.memberId)) {
+            conditions.push(`m.car_plus_member_id = :memberId`)
+            parameters.memberId = param.params.memberId
+        }
+
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.keyword)) {
+            conditions.push(`(m.nick_name like :keyword or m.car_plus_member_id like :keyword)`)
+            parameters.keyword = `%${param.params.keyword}%`;
+        }
+
+        if (!checker.isNullOrUndefinedOrWhiteSpace(param.params.shortId)) {
+            conditions.push(`m.short_id = :shortId`)
+            parameters.shortId = param.params.shortId
+        }
+
+        const sql = ` select 
+        m.id as id,
+        m.nick_name as nickName,
+        m.game_point as gamePoint,
+        m.car_plus_point as carPlusPoint,
+        m.car_plus_member_id as carPlusMemberId,
+        m.date_created as dateCreated,
+        m.experience as experience,
+        m.level as level,
+        m.is_block as isBlock,
+        m.short_id as shortId,
+        isnull(game_item_1.count,0) as gameItem1Count,
+        isnull(game_item_2.count,0) as gameItem2Count,
+        isnull(game_item_3.count,0) as gameItem3Count,
+        isnull(game_item_4.count,0) as gameItem4Count,
+        isnull(game_item_5.count,0) as gameItem5Count,
+        isnull(game_item_6.count,0) as gameItem6Count,
+        isnull(game_item_7.count,0) as gameItem7Count
+            from [member] m 
+            left join (
+            select i.member_id, count(i.remain_times) as [count] from member_game_item i 
+            left join game_item gi on gi.id = i.game_item_id 
+            where gi.name = '一般上班族'
+            group by i.member_id ) as game_item_1 on game_item_1.member_id = m.id
+            
+            left join (
+            select i.member_id, count(i.remain_times) as [count] from member_game_item i 
+            left join game_item gi on gi.id = i.game_item_id 
+            where gi.name = '實習超人'
+            group by i.member_id ) as game_item_2 on game_item_2.member_id = m.id
+            
+            left join (
+            select i.member_id, count(i.remain_times) as [count] from member_game_item i 
+            left join game_item gi on gi.id = i.game_item_id 
+            where gi.name = '超人隊員'
+            group by i.member_id ) as game_item_3 on game_item_3.member_id = m.id
+            
+            left join (
+            select i.member_id, count(i.remain_times) as [count] from member_game_item i 
+            left join game_item gi on gi.id = i.game_item_id 
+            where gi.name = '超人隊長'
+            group by i.member_id ) as game_item_4 on game_item_4.member_id = m.id
+            
+            left join (
+            select i.member_id, count(i.remain_times) as [count] from member_game_item i 
+            left join game_item gi on gi.id = i.game_item_id 
+            where gi.name = '力霸超人'
+            group by i.member_id ) as game_item_5 on game_item_5.member_id = m.id
+            
+            left join (
+            select i.member_id, count(i.remain_times) as [count] from member_game_item i 
+            left join game_item gi on gi.id = i.game_item_id 
+            where gi.name = '富翁果實' and i.remain_times > 0
+            group by i.member_id ) as game_item_6 on game_item_6.member_id = m.id
+            
+            left join (
+            select i.member_id, count(i.remain_times) as [count] from member_game_item i 
+            left join game_item gi on gi.id = i.game_item_id 
+            where gi.name = '能量果實' and i.remain_times > 0
+        group by i.member_id ) as game_item_7 on game_item_7.member_id = m.id
+        where ${conditions.join(' and ')}
+        order by m.car_plus_member_id asc`
+
+
+        const querySql = this.parseSql(sql, parameters)
+
+
+        const data: MemberWithGameItem[] = await this.entityManager.query(querySql.sql, querySql.parameters)
 
         const levelInfo = await variableSvc.getLevelInformation()
 

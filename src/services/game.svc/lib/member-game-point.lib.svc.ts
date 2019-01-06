@@ -277,6 +277,8 @@ export class MemberGamePointLibSvc extends BaseConnection {
         pointHistory.type = PointHistoryType.manual;
         pointHistory.gameItemId = null
         pointHistory.memberGameItemId = null
+        pointHistory.adminUserId = adminParameter.adminUserId;
+        pointHistory.adminUserName = adminParameter.adminUserName;
 
         await this.memberGamePointHistoryRepository.insert(pointHistory);
 
