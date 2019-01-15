@@ -33,7 +33,7 @@ export class RegisterLibSvc extends BaseConnection {
 
         const newMemberInitPointRet = await variableSvc.getFirstLoginGiveGamePointAmount()
         const newMemberEntity = new MemberEntity();
-
+        const shortId: string = await this.getMemberShortId();
         newMemberEntity.id = uniqueId.generateV4UUID();
         newMemberEntity.carPlusMemberId = carPlusMemberId;
         newMemberEntity.carPlusPoint = carPlusPoint;
@@ -43,6 +43,7 @@ export class RegisterLibSvc extends BaseConnection {
         newMemberEntity.gamePoint = 0;
         newMemberEntity.level = 1
         newMemberEntity.nickName = '';
+        newMemberEntity.shortId = shortId;
 
         await this.entityManager.getRepository(MemberEntity).insert(newMemberEntity);
 
@@ -57,7 +58,7 @@ export class RegisterLibSvc extends BaseConnection {
         const levelInfo = await variableSvc.getLevelInformation()
         const experienceLimit = variableSvc.getExperienceLimit(newMemberEntity.level, levelInfo.items);
 
-        const shortId: string = await this.getMemberShortId();
+        
         ret.item = {
             carPlusMemberId: newMemberEntity.carPlusMemberId,
             carPlusPoint: newMemberEntity.carPlusPoint,
