@@ -35,7 +35,7 @@ export class GameEntity extends BaseEntity {
     @Column("nvarchar", {
         nullable: false,
         name: "parameters",
-        length: 1000
+        length: 10000
     })
     parameters: string;
 
