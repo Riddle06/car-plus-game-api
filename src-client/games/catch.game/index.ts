@@ -15,8 +15,9 @@ export interface CatchGameParameters {
     fallSpeed: number
     gameTime: number
     lessTime: number
-    moveSpeed: number,
+    moveSpeed: number
     types: FallItemType[]
+    maxGamePoint: number
 }
 
 
@@ -120,14 +121,18 @@ export class CatchGame extends BaseGame {
 
             // 增加點數 & 金幣
             const { x, y } = this.superMan.sprite;
+            
+            // 隨機獲得超人幣的範圍
+            const { min, max } = item.gamePoint;
             let gamePoint = 0;
+            
             // 接到炸彈 隨機扣 0~5秒
             let time = item.score < 0 ? -Math.floor(Math.random() * (this.parameters.lessTime + 1)) : 0;
 
             if (item.score > 0) {
-                // 有獲得點數才有機會獲得硬幣 & 一場最多不拿超過35個
-                if (this.gamePoints < 35) { // && !Math.floor(Math.random() * 2)
-                    gamePoint = Math.floor(Math.random() * 2);
+                // 有獲得點數才有機會獲得硬幣 & 一場最多不拿超過 {maxGamePoint} 個
+                if (this.gamePoints < this.parameters.maxGamePoint) { // && !Math.floor(Math.random() * 2)
+                    gamePoint = Math.floor(Math.random() * (max - min + 1)) + min;
                 }
                 if (Math.floor(Math.random() * 3) === 2) {
                     this.cheer();

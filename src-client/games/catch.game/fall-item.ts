@@ -4,7 +4,8 @@ import { CatchGameParameters } from './index';
 
 export interface FallItemType {
   score: number,
-  name: string
+  name: string,
+  gamePoint: { min: number, max: number }
 }
 
 export class FallItem {
@@ -15,6 +16,10 @@ export class FallItem {
 
   public sprite: PIXI.Sprite = null;
   public score: number = 0;
+  public gamePoint: FallItemType['gamePoint'] = {
+    min: 0,
+    max: 0,
+  }
 
 
   constructor(app: PIXI.Application, parameters: CatchGameParameters) {
@@ -33,6 +38,7 @@ export class FallItem {
 
     const type = this.types[Math.floor(Math.random() * this.types.length)];
     this.score = type.score;
+    this.gamePoint = type.gamePoint;
     this.sprite = new PIXI.Sprite(PIXI.loader.resources[type.name].texture);
     this.sprite.height = (this.sprite.height / this.sprite.width) * (this.app.screen.width / 5);
     this.sprite.width = this.app.screen.width / 5;
