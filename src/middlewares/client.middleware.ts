@@ -5,6 +5,7 @@ import * as jwt from "jsonwebtoken";
 import { MemberToken } from "@view-models/verification.vm";
 import { memberSvc } from "@services";
 import { NextFunction } from "express";
+import { configurations } from "@configuration";
 
 /**
  * 如果沒有 client id client side 會自動生成 client id
@@ -32,21 +33,21 @@ export const clientMiddleware = async (req: RequestExtension, res: ResponseExten
     // 沒有 query string 的情況下會用 token 
     if (checker.isNullOrUndefinedOrWhiteSpace(req.query.mi)) {
         if (checker.isNullOrUndefinedOrWhiteSpace(token)) {
-            res.redirect('/no-token')
+            res.redirect(configurations.officialHost)
             return;
         }
     } else {
         if (checker.isNullOrUndefinedOrWhiteSpace(token)) {
             const success = await getMemberLoginToken(clientId, req, res)
             if (!success) {
-                res.redirect('/no-token'); return;
+                res.redirect(configurations.officialHost); return;
             }
         } else {
             const tokenVM = jwt.decode(token, { complete: true }) as MemberToken
             // 如果 query string 跟 cookie 記得不一樣就會幫他註冊一筆
             if (tokenVM.payload.mi !== req.query.mi) {
                 const success = await getMemberLoginToken(clientId, req, res)
-                if (!success) { res.redirect('/no-token'); return; }
+                if (!success) { res.redirect(configurations.officialHost); return; }
             }
         }
     }
@@ -57,7 +58,7 @@ export const clientMiddleware = async (req: RequestExtension, res: ResponseExten
 
 
 export const adminClientMiddleware = async (req: RequestExtension, res: ResponseExtension, next: NextFunction) => {
-    
+
     console.log(req.originalUrl)
     if (req.originalUrl.indexOf('/administration/login') > -1) {
         next();
@@ -68,7 +69,7 @@ export const adminClientMiddleware = async (req: RequestExtension, res: Response
     if (checker.isNullOrUndefinedOrWhiteSpace(token)) {
         res.redirect('/administration/login'); return;
     }
-    
+
     next();
 }
 

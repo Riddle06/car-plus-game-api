@@ -24,6 +24,7 @@ interface Configurations {
     db: DatabaseConfig
     token: TokenConfig
     dbCarPlus: DatabaseConfig
+    officialHost: string
 }
 
 function getNodeEnv(env: string): "dev" | "sit" | "production" {
@@ -71,6 +72,6 @@ export const configurations: Configurations = {
         password: process.env.DB_CAR_PLUS_PASSWORD,
         databaseName: process.env.DB_CAR_PLUS_DATABASE_NAME,
         connectionName: 'carPlusSystem'
-    }
-
+    },
+    officialHost: process.env.OFFICIAL_HOST || "https://www.car-plus.com.tw"
 }
