@@ -20,6 +20,19 @@ class ShotGamePage extends BasePage {
             this.webSvc.member.getProfile(),
             this.webSvc.game.getGameHistory(this.gameId)
         ]);
+
+        if (!ganeListRet.success || !profileRet.success || !gameHistoryRet.success) {
+            this.toggleLoader(false);
+            this.fakeAlert({
+                title: ganeListRet.message + profileRet.message + gameHistoryRet.message,
+                text: '',
+                closeCallback() {
+                    window.location.reload();
+                }
+            });
+            return;
+        }
+
         // 遊戲參數
         const { parameters } = ganeListRet.items.find(item => item.code === GameCode.shot);
 

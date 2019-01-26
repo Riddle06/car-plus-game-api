@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { BaseGame, loaderHandler, hitTestRectangle, GameConfig } from '../base.game';
 import { Cannon } from './cannon';
 import { SuperMan } from './super-man';
-import { Monster, MoveMode } from './monster';
+import { Monster, MoveMode, IlevelReward } from './monster';
 // import * as dat from "dat.gui";
 // const gui = new dat.GUI();
 
@@ -23,6 +23,8 @@ export interface ShotGameParameters {
   shellInitPower: number
   shellInitWeightSpeed: number
   moveModes: MoveMode[]
+  levelRewards: IlevelReward[]
+  maxGamePoint: number
 }
 
 export class ShotGame extends BaseGame {
@@ -64,7 +66,7 @@ export class ShotGame extends BaseGame {
     this.cannon = await new Cannon(this.application, this.parameters).init();
     this.superMan = new SuperMan(this.application, this.cannon, this.superManSpriteFolderPath);
     this.superMan.man = await this.superMan.initMan();
-    this.monster = await new Monster(this.application, this.parameters.moveModes).init();
+    this.monster = await new Monster(this.application, this.parameters.moveModes, this.parameters.levelRewards).init();
     this.cannon.sprite.addChild(this.superMan.man);
     this.stage.addChild(this.cannon.sprite);
     this.stage.addChild(this.monster.sprite);
@@ -183,8 +185,8 @@ export class ShotGame extends BaseGame {
     // 爆炸音效
     this.boomSound.play();
 
-    if (this.gamePoints >= 35) {
-      // 一場最多不拿超過35個
+    if (this.gamePoints >= this.parameters.maxGamePoint) {
+      // 一場最多不拿超過{maxGamePoint}個
       gamePoint = 0
     }
 

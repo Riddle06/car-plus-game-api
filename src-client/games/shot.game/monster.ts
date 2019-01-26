@@ -8,6 +8,12 @@ export interface MoveMode {
   radius: number
 }
 
+export interface IlevelReward {
+  level: number
+  score: number
+  gamePoint:  { min: number, max: number }
+}
+
 export enum Direction {
   left = 1,
   right = 2,
@@ -35,22 +41,30 @@ export class Monster {
     { xSpeed: 0, ySpeed: 0, circleSpeed: 5, radius: 60 }, // mode 4
     { xSpeed: .5, ySpeed: .5, circleSpeed: 5, radius: 30 }, // mode 5
   ]
+  private levelRewards: IlevelReward[] = [];
 
   // public sprite: PIXI.extras.AnimatedSprite = null;
   public sprite: PIXI.Graphics = null;
 
-  constructor(app: PIXI.Application, moveModes: MoveMode[]) {
+  constructor(app: PIXI.Application, moveModes: MoveMode[], levelRewards: IlevelReward[]) {
     this.app = app;
     this.moveModes = moveModes;
+    this.levelRewards = levelRewards;
+  }
+
+  get levelReward(): IlevelReward {
+    const maxLevel = this.levelRewards.length;
+    if (this.level > maxLevel) return this.levelRewards[maxLevel - 1];
+    return this.levelRewards[this.level - 1];
   }
 
   get score(): number {
-    return this.level;
+    return this.levelReward.score;
   }
 
   get gamePoint(): number {
-    if (this.level < 15) return 1;
-    return 2;
+    const { max, min } = this.levelReward.gamePoint;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   get moveMode(): MoveMode {
