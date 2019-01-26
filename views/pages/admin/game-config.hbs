@@ -1,4 +1,4 @@
-<div>
+<div v-loading="isLoading">
   <h2>遊戲參數</h2>
 
   <div class="row-block">
@@ -12,90 +12,127 @@
   
   <el-tabs type="border-card" v-model="activeTab">
     <el-tab-pane label="超人接接樂" name="catch" v-if="!isEdit || activeTab === 'catch'">
-      <el-row :gutter="15">
-        <el-col :span="12">
-          <el-form :model="catchGame" ref="catchGameForm" label-position="right" label-width="150px" :disabled="!isEdit"
-            @submit.native.prevent>
-            <el-form-item label="遊戲時間(秒)" prop="gameTime" required>
-              <el-input-number v-model="catchGame.gameTime" :min="10" :max="1000" :step="1" ></el-input-number>
-            </el-form-item>
-            <el-form-item label="物品掉落速度(px)" prop="fallSpeed" required>
-              <el-input-number v-model="catchGame.fallSpeed" :min="0.01"></el-input-number>
-            </el-form-item>
-            <el-form-item label="扣除時間(秒)" prop="lessTime" required>
-              <el-input-number v-model="catchGame.lessTime" :max="catchGame.gameTime"></el-input-number>
-              <div>每次接到炸彈會隨機扣 0 ~ \{{ catchGame.lessTime }} 秒</div>
-            </el-form-item>
-            <el-form-item label="超人移動速度(px)" prop="moveSpeed" required>
-              <el-input-number v-model="catchGame.moveSpeed" min="0.01"></el-input-number>
-            </el-form-item>
-            
-
-            <el-card class="row-block" shadow="never" header="掉落物品參數">
-              <el-form-item v-for="(item, i) in catchGame.types" :label="(i === 0 ? '炸彈分數' : `禮物${i}分數`)" :key="i">
-                <el-input-number v-model="item.score" :step="1"></el-input-number>
+      <el-form :model="catchGame" ref="catchGameForm" label-position="right" label-width="150px" :disabled="!isEdit" size="mini" @submit.native.prevent>
+        <el-row :gutter="15">
+          <el-col :md="24" :lg="12">
+      
+              <el-form-item label="遊戲時間(秒)" prop="gameTime" required>
+                <el-input-number v-model="catchGame.gameTime" :min="10" :max="1000" :step="1" ></el-input-number>
               </el-form-item>
-            </el-card>
+              <el-form-item label="物品掉落速度(px)" prop="fallSpeed" required>
+                <el-input-number v-model="catchGame.fallSpeed" :min="0.01"></el-input-number>
+              </el-form-item>
+              <el-form-item label="扣除時間(秒)" prop="lessTime" required>
+                <el-input-number v-model="catchGame.lessTime" :max="catchGame.gameTime"></el-input-number>
+                <div class="tips">每次接到炸彈會隨機扣 0 ~ \{{ catchGame.lessTime }} 秒</div>
+              </el-form-item>
+              <el-form-item label="超人移動速度(px)" prop="moveSpeed" required>
+                <el-input-number v-model="catchGame.moveSpeed" min="0.01"></el-input-number>
+              </el-form-item>
+              <el-form-item label="最多可獲得超人幣" prop="maxGamePoint" required>
+                <el-input-number v-model="catchGame.maxGamePoint" :min="0" :max="1000" :step="1" ></el-input-number>
+              </el-form-item>
 
-          </el-form>
-        </el-col>
-        <el-col :span="12">
-          <el-card shadow="never">
-            <pre>\{{ catchGame }}</pre>
-          </el-card>
-        </el-col>
-      </el-row>
+              <el-card class="row-block" shadow="never" header="掉落物品參數">
+                <el-form-item v-for="(item, i) in catchGame.types" :label="(i === 0 ? '炸彈' : `禮物${i}`)" :key="i">
+                  <span class="sub-label">分數</span>
+                  <el-input-number v-model="item.score" :step="1"></el-input-number>
+                  <div v-show="i !== 0">
+                    <div style="height: 1px; background: #ddd; margin: 10px 0;"></div>
+                    <span class="sub-label">超人幣</span>
+                    <el-input-number v-model="item.gamePoint.min" :min="0" :max="item.gamePoint.max" :step="1"></el-input-number>
+                    ~
+                    <el-input-number v-model="item.gamePoint.max" :min="item.gamePoint.min" :max="1000" :step="1"></el-input-number>
+                    <div class="tips">每次接到會隨機獲得 \{{ item.gamePoint.min }} ~ \{{ item.gamePoint.max }} 個超人幣</div>
+                  </div>
+                </el-form-item>
+              </el-card>
+
+          </el-col>
+          <el-col :md="24" :lg="12">
+            <div shadow="never">
+              <el-collapse >
+                 <el-collapse-item title="參數 JSON" name="1">
+                    <pre>\{{ catchGame }}</pre>
+                 </el-collapse-item>
+              </el-collapse>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
     </el-tab-pane>
     <el-tab-pane label="射擊吧！超人" name="shot" v-if="!isEdit || activeTab === 'shot'">
-      <el-row :gutter="15">
-        <el-col :span="12">
-          <el-form :model="shotGame" ref="shotGameForm" label-position="right" label-width="180px" :disabled="!isEdit"
-            @submit.native.prevent>
-            <el-form-item label="砲管旋轉角度最大(deg)" prop="degreeConfig.max" required>
-              <el-input-number v-model="shotGame.degreeConfig.max" :min="shotGame.degreeConfig.min" :max="180" :step="1"></el-input-number>
-            </el-form-item>
-            <el-form-item label="砲管旋轉角度最小(deg)" prop="degreeConfig.min" required>
-              <el-input-number v-model="shotGame.degreeConfig.min" :max="shotGame.degreeConfig.max" :max="0" :step="1"></el-input-number>
-            </el-form-item>
-            <div class="row-block"></div>
+      <el-form :model="shotGame" ref="shotGameForm" label-position="right" label-width="180px" :disabled="!isEdit" size="mini"
+        @submit.native.prevent>
+        <el-row :gutter="15">
+          <el-col :md="24" :lg="12">
+              <el-form-item label="砲管旋轉角度最大(deg)" prop="degreeConfig.max" required>
+                <el-input-number v-model="shotGame.degreeConfig.max" :min="shotGame.degreeConfig.min" :max="180" :step="1"></el-input-number>
+              </el-form-item>
+              <el-form-item label="砲管旋轉角度最小(deg)" prop="degreeConfig.min" required>
+                <el-input-number v-model="shotGame.degreeConfig.min" :max="shotGame.degreeConfig.max" :max="0" :step="1"></el-input-number>
+              </el-form-item>
+              <div class="row-block"></div>
 
-            <el-form-item label="砲管旋轉速度(deg)" prop="rotationSpeed" required>
-              <el-input-number v-model="shotGame.rotationSpeed" :min="0" :max="1" :step="0.001"></el-input-number>
-            </el-form-item>
-            <el-form-item label="發射初速度(px)" prop="shellInitPower" required>
-              <el-input-number v-model="shotGame.shellInitPower" :min="1"></el-input-number>
-            </el-form-item>
-            <el-form-item label="初始重量速度(px)" prop="shellInitWeightSpeed" required>
-              <el-input-number v-model="shotGame.shellInitWeightSpeed"></el-input-number>
-            </el-form-item>
+              <el-form-item label="砲管旋轉速度(deg)" prop="rotationSpeed" required>
+                <el-input-number v-model="shotGame.rotationSpeed" :min="0" :max="1" :step="0.001"></el-input-number>
+              </el-form-item>
+              <el-form-item label="發射初速度(px)" prop="shellInitPower" required>
+                <el-input-number v-model="shotGame.shellInitPower" :min="1"></el-input-number>
+              </el-form-item>
+              <el-form-item label="初始重量速度(px)" prop="shellInitWeightSpeed" required>
+                <el-input-number v-model="shotGame.shellInitWeightSpeed"></el-input-number>
+              </el-form-item>
 
-            <div class="row-block"></div>
+              <div class="row-block"></div>
 
-            <el-card class="row-block" shadow="never" v-for="(item, i) in shotGame.moveModes" :header="`怪物移動模式${i + 1}`"
-              :key="i">
-              <el-form-item label="水平移動速度(px)" :prop="`moveModes[${i}].xSpeed`" required>
-                <el-input-number v-model="item.xSpeed"></el-input-number>
+              <el-card class="row-block" shadow="never" v-for="(item, i) in shotGame.moveModes" :header="`怪物移動模式${i + 1}`"
+                :key="i">
+                <el-form-item label="水平移動速度(px)" :prop="`moveModes[${i}].xSpeed`" required>
+                  <el-input-number v-model="item.xSpeed"></el-input-number>
+                </el-form-item>
+                <el-form-item label="垂直移動速度(px)" :prop="`moveModes[${i}].ySpeed`" required>
+                  <el-input-number v-model="item.ySpeed"></el-input-number>
+                </el-form-item>
+                <el-form-item label="繞圈速度(px)" :prop="`moveModes[${i}].circleSpeed`" required>
+                  <el-input-number v-model="item.circleSpeed"></el-input-number>
+                </el-form-item>
+                <el-form-item label="繞圈半徑(px)" :prop="`moveModes[${i}].radius`" required>
+                  <el-input-number v-model="item.radius"></el-input-number>
+                </el-form-item>
+              </el-card>
+
+
+          </el-col>
+          <el-col :md="24" :lg="12" >
+            <el-card shadow="never" header="分數設定">
+              <el-form-item label="最多可獲得超人幣" prop="maxGamePoint" required>
+                <el-input-number v-model="shotGame.maxGamePoint" :min="0" :max="1000" :step="1" ></el-input-number>
               </el-form-item>
-              <el-form-item label="垂直移動速度(px)" :prop="`moveModes[${i}].ySpeed`" required>
-                <el-input-number v-model="item.ySpeed"></el-input-number>
+              <el-form-item v-for="(item, i) in shotGame.levelRewards" :label="`Level ${item.level}`" :key="i">
+                <span class="sub-label">分數</span>
+                <el-input-number v-model="item.score" :step="1"></el-input-number>
+                <div style="height: 1px; background: #ddd; margin: 10px 0;"></div>
+                <span class="sub-label">超人幣</span>
+                <el-input-number v-model="item.gamePoint.min" :min="0" :max="item.gamePoint.max" :step="1"></el-input-number>
+                ~
+                <el-input-number v-model="item.gamePoint.max" :min="item.gamePoint.min" :max="1000" :step="1"></el-input-number>
+                <div class="tips">打中怪物時會隨機獲得 \{{ item.gamePoint.min }} ~ \{{ item.gamePoint.max }} 個超人幣</div>
               </el-form-item>
-              <el-form-item label="繞圈速度(px)" :prop="`moveModes[${i}].circleSpeed`" required>
-                <el-input-number v-model="item.circleSpeed"></el-input-number>
-              </el-form-item>
-              <el-form-item label="繞圈半徑(px)" :prop="`moveModes[${i}].radius`" required>
-                <el-input-number v-model="item.radius"></el-input-number>
-              </el-form-item>
+              <div class="tips">Level 15之後全都依照Level 15設定獲得獎勵</div>
             </el-card>
-
-
-          </el-form>
-        </el-col>
-        <el-col :span="12">
-          <el-card shadow="never">
-            <pre>\{{ shotGame }}</pre>
-          </el-card>
-        </el-col>
-      </el-row>
+          </el-col>
+          <el-col :span="24">
+            <div class="row-block" shadow="never">
+              <el-collapse >
+                 <el-collapse-item title="參數 JSON" name="1">
+                    <pre>\{{ shotGame }}</pre>
+                 </el-collapse-item>
+              </el-collapse>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
     </el-tab-pane>
   </el-tabs>
 </div>

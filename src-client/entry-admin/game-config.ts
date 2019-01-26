@@ -1,5 +1,6 @@
 import { BasePage } from "./base.page";
 import * as Vue from 'vue/dist/vue.common'
+import { cloneDeep as _cloneDeep, merge as _merge } from 'lodash';
 
 class GameConfigPage extends BasePage {
   async vueInit() {
@@ -26,7 +27,25 @@ class GameConfigPage extends BasePage {
               { xSpeed: 1, ySpeed: 1, circleSpeed: 0, radius: 0 },
               { xSpeed: 0, ySpeed: 0, circleSpeed: 5, radius: 60 },
               { xSpeed: 0.5, ySpeed: 0.5, circleSpeed: 5, radius: 30 }
-            ]
+            ],
+            levelRewards: [
+              { level: 1, score: 1, gamePoint: { min: 1, max: 1 } },
+              { level: 2, score: 2, gamePoint: { min: 1, max: 1 } },
+              { level: 3, score: 3, gamePoint: { min: 1, max: 1 } },
+              { level: 4, score: 4, gamePoint: { min: 1, max: 1 } },
+              { level: 5, score: 5, gamePoint: { min: 1, max: 1 } },
+              { level: 6, score: 6, gamePoint: { min: 1, max: 1 } },
+              { level: 7, score: 7, gamePoint: { min: 1, max: 1 } },
+              { level: 8, score: 8, gamePoint: { min: 1, max: 1 } },
+              { level: 9, score: 9, gamePoint: { min: 1, max: 1 } },
+              { level: 10, score: 10, gamePoint: { min: 1, max: 1 } },
+              { level: 11, score: 11, gamePoint: { min: 1, max: 1 } },
+              { level: 12, score: 12, gamePoint: { min: 1, max: 1 } },
+              { level: 13, score: 13, gamePoint: { min: 1, max: 1 } },
+              { level: 14, score: 14, gamePoint: { min: 1, max: 1 } },
+              { level: 15, score: 15, gamePoint: { min: 1, max: 1 } },
+            ],
+            maxGamePoint: 35,
           },
 
           catchGame: {
@@ -35,14 +54,16 @@ class GameConfigPage extends BasePage {
             lessTime: 5,
             moveSpeed: 3,
             types: [
-              { score: -2, name: 'bomb' },
-              { score: 3, name: "gift01" },
-              { score: 3, name: "gift02" },
-              { score: 3, name: "gift03" }
-            ]
+              { score: -2, name: 'bomb', gamePoint: { min: 0, max: 0 } },
+              { score: 3, name: "gift01", gamePoint: { min: 0, max: 1 } },
+              { score: 3, name: "gift02", gamePoint: { min: 0, max: 1 } },
+              { score: 3, name: "gift03", gamePoint: { min: 0, max: 1 } }
+            ],
+            maxGamePoint: 35,
           },
 
           isEdit: false,
+          isLoading: true,
         }
       },
       computed: {
@@ -63,6 +84,7 @@ class GameConfigPage extends BasePage {
       },
       methods: {
         async getGameList() {
+          this.isLoading = true;
           const ret = await _this.adminSvc.adminGame.getGameList();
           console.log(ret);
           if (!ret.success) return;
@@ -73,12 +95,13 @@ class GameConfigPage extends BasePage {
         initData() {
           this.gameList.forEach(game => {
             if (game.code === 'shot') {
-              this.shotGame = { ...this.shotGame, ...JSON.parse(JSON.stringify(game.parameters)) };
+              this.shotGame = _merge(this.shotGame, _cloneDeep(game.parameters));
             }
             if (game.code === 'catch') {
-              this.catchGame = { ...this.catchGame, ...JSON.parse(JSON.stringify(game.parameters)) };
+              this.catchGame = _merge(this.catchGame, _cloneDeep(game.parameters));
             }
           })
+          this.isLoading = false;
         },
 
         async updateGameData() {
