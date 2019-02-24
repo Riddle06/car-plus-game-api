@@ -13,6 +13,8 @@ class ReportPage extends BasePage {
           dateGap: [],
 
           dashboard: {
+            // FIXME: 這是舊的資料格式
+            date: '',
             gameCount: 0,
             memberCount: 0,
             memberHasPlayGameCount: 0,
@@ -35,7 +37,12 @@ class ReportPage extends BasePage {
           return _this.moment(this.dateGap[1]).add(1, 'day').toISOString();
         },
         reports() {
-          return [this.dashboard];
+          // FIXME: 這是假資料
+          let temp = [];
+          for(let i=0; i < 50; i++) {
+            temp.push(this.dashboard)
+          }
+          return temp;
         }
       },
       watch: {
@@ -71,9 +78,9 @@ class ReportPage extends BasePage {
         }
       },
       created() {
-        if(!this.$g_isAdmin) {
-          window.location.replace('/administration')
-        }
+        // if(!this.$g_isAdmin) {
+        //   window.location.replace('/administration')
+        // }
       }
     })
   }

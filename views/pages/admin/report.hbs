@@ -3,7 +3,8 @@
   <div class="form-wrap">
     <el-form>
       <el-form-item label="日期">
-        <el-date-picker type="daterange" v-model="dateGap" range-separator="至" start-placeholder="開始日期" end-placeholder="结束日期">
+        <el-date-picker type="daterange" v-model="dateGap" range-separator="至" start-placeholder="開始日期"
+          end-placeholder="结束日期">
         </el-date-picker>
       </el-form-item>
     </el-form>
@@ -21,10 +22,31 @@
     </el-row>
   </div>
 
-  <el-table :data="reports" v-if="dateStart" header-align="center" stripe border highlight-current-row>
-    <el-table-column label="登入人次" prop="memberCount" align="center"></el-table-column>
-    <el-table-column label="遊戲場次" prop="gameCount" align="center"></el-table-column>
-    <el-table-column label="總遊戲人次" prop="memberHasPlayGameCount" align="center"></el-table-column>
+  <el-table :data="reports" height="65vh" header-align="center" stripe border highlight-current-row>
+    <el-table-column label="Day" align="center">
+      <template slot-scope="scope">
+        \{{ $g_formatDateTime(scope.row.date) }}
+      </template>
+    </el-table-column>
+    <el-table-column label="營運人次">
+      <el-table-column label="登入人次" prop="memberCount" align="center"></el-table-column>
+      <el-table-column label="遊戲場次" prop="gameCount" align="center"></el-table-column>
+      <el-table-column label="平均遊戲場數(場次/人次)" prop="memberHasPlayGameCount" align="center"></el-table-column>
+    </el-table-column>
+    <el-table-column label="超人接接樂">
+      <el-table-column label="場數" prop="memberCount" align="center"></el-table-column>
+      <el-table-column label="獲得分數" prop="gameCount" align="center"></el-table-column>
+      <el-table-column label="獲得超人幣" prop="memberHasPlayGameCount" align="center"></el-table-column>
+    </el-table-column>
+    <el-table-column label="射擊吧超人">
+      <el-table-column label="場數" prop="memberCount" align="center"></el-table-column>
+      <el-table-column label="獲得分數" prop="gameCount" align="center"></el-table-column>
+      <el-table-column label="獲得超人幣" prop="memberHasPlayGameCount" align="center"></el-table-column>
+    </el-table-column>
+    <el-table-column label="紅利兌換">
+      <el-table-column label="超人幣消費量" prop="memberCount" align="center"></el-table-column>
+      <el-table-column label="格上紅利消費量" prop="gameCount" align="center"></el-table-column>
+    </el-table-column>
   </el-table>
 
 </div>

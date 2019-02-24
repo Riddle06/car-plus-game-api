@@ -45,6 +45,7 @@ export abstract class BaseGame {
 
     protected boomSound: Sound = null; // 爆炸音效
     protected getSound: Sound = null; // 獲得道具音效
+    protected failSound: Sound = null; // 失敗音效
 
     private dashboardContainer: PIXI.Container = null; // 儀表板用舞台
 
@@ -124,6 +125,10 @@ export abstract class BaseGame {
         })
         this.getSound = Sound.from({
             url: '/static/audio/get.mp3',
+            preload: true,
+        })
+        this.failSound = Sound.from({
+            url: '/static/audio/fail.wav',
             preload: true,
         })
     }

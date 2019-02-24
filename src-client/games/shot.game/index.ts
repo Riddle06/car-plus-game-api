@@ -207,6 +207,9 @@ export class ShotGame extends BaseGame {
   }
 
   missed() {
+    // 失敗音效
+    this.failSound.play();
+
     this.life[this.lifeStep].heart.visible = false;
     this.life[this.lifeStep].hurt.visible = true;
     const redEffect = new PIXI.Graphics();
