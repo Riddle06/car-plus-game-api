@@ -232,7 +232,6 @@ CREATE TABLE carPlusGame.dbo.member_login_daily_history
 );
 
 
-
 INSERT INTO carPlusGame.dbo.admin_user (id,name,account,password,date_created,date_updated) VALUES 
 ('45929BC8-D0BA-476E-851A-89448C9B0020','管理者','carplus','24fe07faf9348a8bfd4d3929ebab84613c7575c5680f9461cd1f6e04f5c7bd9b','2018-12-02 18:01:48.000','2018-12-02 18:01:48.000')
 ,('92D609E7-186C-4D90-A088-EB6A1A5EF9D4','客服','service','7420efe99e1a3a16ceae0d1fcfa082398f62d87948859940d5e7536903975906','2018-12-02 18:01:48.000','2018-12-02 18:01:48.000')
@@ -385,3 +384,21 @@ INSERT INTO carPlusGame.dbo.vars ([key],description,meta_str_1,meta_str_2,meta_i
 ;
 
 ALTER TABLE carPlusGame.dbo.[member] ADD short_id varchar(50) DEFAULT '' NOT NULL;
+
+----- 2019-02-26
+
+CREATE TABLE carPlusGame.dbo.game_operational_report
+( 
+  [date_record] datetime2 NOT NULL,
+  [login_times] INT NOT NULL DEFAULT '0',
+  [game_times] INT NOT NULL DEFAULT '0',
+  [catch_game_times] INT NOT NULL DEFAULT '0',
+  [catch_game_score] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [catch_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [shot_game_times] INT NOT NULL DEFAULT '0',
+  [shot_game_score] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [cost_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [cost_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY ([date_record])
+);
+
