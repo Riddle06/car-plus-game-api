@@ -2,7 +2,7 @@ import { Index, Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, BaseEntit
 
 
 @Entity("game_operational_report")
-export class GameOperationalReport extends BaseEntity {
+export class GameOperationalReportEntity extends BaseEntity {
 
 
     @PrimaryColumn({
