@@ -61,7 +61,7 @@ class ShopMerchPage extends BasePage {
     }
 
     render(): void {
-        const { type, name, description, gamePoint, carPlusPoint, spriteFolderPath, levelMinLimit } = this.item;
+        const { type, name, description, gamePoint, carPlusPoint, spriteFolderPath, levelMinLimit, enableBuy } = this.item;
         const isHave = !!this.memberItem && !!this.memberItem.memberGameItemIds.length;
         const isLock = this.memberLevel < levelMinLimit;
 
@@ -127,7 +127,7 @@ class ShopMerchPage extends BasePage {
                         <!--  show: 顯示 -->
                         <div class="status__tips ${enoughPoint ? '' : 'show'}">您的${isGamePoint ? '格上紅利' : '超人幣'}不足!</div>
                         <!-- lock: 鎖住 -->
-                        <div class="status ${enoughPoint ? 'show' : ''}">
+                        <div class="status ${enoughPoint && enableBuy ? 'show' : 'lock'}">
                         <div id="js-buy" class="button__buy type-btn" data-btn="merch-prop"><img src="/static/images/btn_buy.png" alt=""></div>
                         </div>
                     </div>

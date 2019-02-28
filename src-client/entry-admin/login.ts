@@ -12,21 +12,20 @@ class LoginPage extends BasePage {
         return {
           account: '',
           password: '',
+
+          isLoading: false,
         }
       },
       methods: {
         async login() {
+          this.isLoading = true;
           const ret = await _this.adminSvc.adminAuth.login({
             account: this.account,
             password: this.password
           });
+          this.isLoading = false;
 
           if (!ret.success) {
-            this.$notify({
-              type: 'error',
-              title: '登入失敗',
-              message: ret.message
-            });
             return;
           }
           cookie.set('admin', ret.item, { expires: 1 });

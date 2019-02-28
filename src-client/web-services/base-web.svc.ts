@@ -47,8 +47,8 @@ export abstract class BaseWebSvc {
 
         this.axiosInstance.interceptors.response.use(response => {
             const { success, code, message } = response.data;
-
-            if(!success && code === 403 && response.config.url.indexOf('api/member')) {
+            
+            if(!success && code === 403 && response.config.url.indexOf('api/member') >= 0) {
                 window['__fakeAlert']({
                     title: message,
                     text: '',
