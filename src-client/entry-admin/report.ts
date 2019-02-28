@@ -61,7 +61,7 @@ class ReportPage extends BasePage {
             dateEnd: this.dateEnd,
           })
 
-          this.dashboard = ret.item;
+          this.dashboard = ret.items;
         },
         
         exportExcel() {

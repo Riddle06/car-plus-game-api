@@ -11,6 +11,7 @@ import { MemberLoginEntity } from '@entities/member-login.entity';
 import * as jwt from "jsonwebtoken";
 import * as luxon from "luxon";
 import { configurations } from '@configuration';
+import { eventTrigger } from '@services/event.trigger.svc';
 
 export class MemberLoginLibSvc extends BaseConnection {
 
@@ -134,6 +135,10 @@ export class MemberLoginLibSvc extends BaseConnection {
                     dateRecord
                 }).execute()
         }
+
+        await eventTrigger.addAnalysisFields({
+            loginTimes: 1
+        });
     }
 
 }

@@ -6,6 +6,7 @@ import { Result } from '@view-models/common.vm';
 import { MemberGamePointHistoryEntity } from '@entities/member-game-point-history.entity';
 import { MemberEntity } from '@entities/member.entity';
 import { carPlusSvc } from '../../car-plus.svc/index';
+import { eventTrigger } from '@services/event.trigger.svc';
 
 type MemberGameItemParameter = {
     gameItemId: string
@@ -115,11 +116,12 @@ export class MemberGamePointLibSvc extends BaseConnection {
                 carPlusPoint
             }).execute()
 
-        
+
         await carPlusSvc.minusCarPlusPoint(memberEntity.carPlusMemberId, carPlusPoint, this.queryRunner)
 
         ret.item = this.parseMemberGamePointHistoryToHistoryVM(pointHistory);
 
+        await eventTrigger.addAnalysisFields({ costCarPlusPoint: carPlusPoint });
 
         return ret.setResultValue(true);
     }
@@ -163,9 +165,13 @@ export class MemberGamePointLibSvc extends BaseConnection {
                 carPlusPoint
             }).execute();
 
-        await carPlusSvc.plusCarPlusPoint(memberEntity.carPlusMemberId, carPlusPoint,this.queryRunner);
+        await carPlusSvc.plusCarPlusPoint(memberEntity.carPlusMemberId, carPlusPoint, this.queryRunner);
 
         ret.item = this.parseMemberGamePointHistoryToHistoryVM(pointHistory);
+
+        await eventTrigger.addAnalysisFields({
+            costGamePoint: gamePoint
+        })
 
         return ret.setResultValue(true);
     }
@@ -208,6 +214,10 @@ export class MemberGamePointLibSvc extends BaseConnection {
             }).execute();
 
         ret.item = this.parseMemberGamePointHistoryToHistoryVM(pointHistory);
+
+        await eventTrigger.addAnalysisFields({
+            costGamePoint: gamePoint
+        });
 
         return ret.setResultValue(true);
     }

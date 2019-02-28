@@ -39,6 +39,12 @@ export class EventTriggerLibSvc extends BaseConnection {
             setDic.shotGameScore = () => "shot_game_score + :shotGameScore";
             values.shotGameScore = param.shotGameScore
         }
+
+        if (!checker.isNullOrUndefinedObject(param.shotGamePoint)) {
+            setDic.shotGamePoint = () => "shot_game_point + :shotGamePoint";
+            values.shotGamePoint = param.shotGamePoint
+        }
+
         if (!checker.isNullOrUndefinedObject(param.costGamePoint)) {
             setDic.costGamePoint = () => "cost_game_point + :costGamePoint";
             values.costGamePoint = param.costGamePoint
@@ -47,13 +53,13 @@ export class EventTriggerLibSvc extends BaseConnection {
             setDic.costCarPlusPoint = () => "cost_car_plus_point + :costCarPlusPoint";
             values.costCarPlusPoint = param.costCarPlusPoint
         }
-
-        await this.entityManager.createQueryBuilder().update(GameOperationalReportEntity)
+        const updateResult = await this.entityManager.createQueryBuilder().update(GameOperationalReportEntity)
             .set(setDic)
             .where({
                 dateRecord
             })
             .setParameters(values)
+            .execute();
 
         return;
     }

@@ -26,9 +26,9 @@ export const responseEndMiddleware = async (req: RequestExtension, res: Response
         if (res.result) {
 
             res.json(res.result)
-        } else if (res.appError) {
+        } else if (res.appError && res.appError instanceof AppError) {
             res.json(res.appError.getResult())
-        } else { 
+        } else {
             res.json((new AppError(`path: ${req.path} error`, ResultCode.clientError)).getResult())
         }
 

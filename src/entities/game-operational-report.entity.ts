@@ -36,7 +36,7 @@ export class GameOperationalReportEntity extends BaseEntity {
     catchGameTimes: number
 
     @Column({
-        type: "int",
+        type: "decimal",
         name: "catch_game_score",
         default: 0,
         nullable: false
@@ -44,7 +44,7 @@ export class GameOperationalReportEntity extends BaseEntity {
     catchGameScore: number
 
     @Column({
-        type: "int",
+        type: "decimal",
         name: "catch_game_point",
         default: 0,
         nullable: false
@@ -61,14 +61,24 @@ export class GameOperationalReportEntity extends BaseEntity {
     shotGameTimes: number
 
     @Column({
-        type: "int",
+        type: "decimal",
         name: "shot_game_score",
         default: 0,
         nullable: false
     })
     shotGameScore: number
+
     @Column({
-        type: "int",
+        type: "decimal",
+        name: "shot_game_point",
+        default: 0,
+        nullable: false
+    })
+    shotGamePoint: number
+
+
+    @Column({
+        type: "decimal",
         name: "cost_game_point",
         default: 0,
         nullable: false
@@ -76,7 +86,7 @@ export class GameOperationalReportEntity extends BaseEntity {
     costGamePoint: number
 
     @Column({
-        type: "int",
+        type: "decimal",
         name: "cost_car_plus_point",
         default: 0,
         nullable: false

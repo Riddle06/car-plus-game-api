@@ -11,6 +11,7 @@ import * as expressHandlebars from "express-handlebars";
 import * as cors from "cors";
 import AdminRouter from './routers/admin.router';
 import { memberSvc } from "@services";
+import { eventTrigger } from "@services/event.trigger.svc";
 
 const app = express();
 

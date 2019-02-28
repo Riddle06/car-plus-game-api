@@ -6,6 +6,7 @@ import { AdminMemberGameHistoryParameterVM, AdminMemberGameHistoryVM, AdminGameD
 import { PageQuery, ListResult, Result } from './../../view-models/common.vm';
 import { dbProvider } from '@utilities';
 import { ExportResult } from '@utilities/exporter';
+import { OperationalReportItemVM } from '@view-models/operational-report.vm';
 
 class AdminGameSvc {
 
@@ -74,7 +75,7 @@ class AdminGameSvc {
         }
     }
 
-    async getGameDashboard(params: PageQuery): Promise<Result<AdminGameDashboardVM>> {
+    async getGameDashboard(params: PageQuery): Promise<ListResult<OperationalReportItemVM>> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {
             const adminGameDashboardLibSvc = new AdminGameDashboardLibSvc(queryRunner)

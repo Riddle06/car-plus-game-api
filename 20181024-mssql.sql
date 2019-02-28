@@ -397,6 +397,7 @@ CREATE TABLE carPlusGame.dbo.game_operational_report
   [catch_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
   [shot_game_times] INT NOT NULL DEFAULT '0',
   [shot_game_score] decimal(18,2) NOT NULL DEFAULT '0.00',
+  [shot_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
   [cost_game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
   [cost_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY ([date_record])

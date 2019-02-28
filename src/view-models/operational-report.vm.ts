@@ -5,7 +5,7 @@ export interface OperationalReportQueryParameter {
     dateEnd: Date
 }
 
-export interface OperationalReportItem extends AnalysisFields {
+export interface OperationalReportItemVM extends AnalysisFields {
     dateRecord: Date
     loginAndGameTimesRate: number
 }
@@ -18,6 +18,7 @@ export interface AnalysisFields {
     catchGamePoint: number
     shotGameTimes: number
     shotGameScore: number
+    shotGamePoint: number
     costGamePoint: number
     costCarPlusPoint: number
 }
