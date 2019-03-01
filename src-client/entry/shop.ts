@@ -75,10 +75,10 @@ class ShopPage extends BasePage {
             `
         }).join(''))
 
-        this.$("#js-prop").html(this.props.map(obj => {
-            const enable = obj.enableBuy && this.level >= obj.levelMinLimit;
+        this.$("#js-prop").html(this.props.filter(obj => obj.enableBuy).map(obj => {
+            const enable = this.level >= obj.levelMinLimit;
             const isGamePoint = obj.type === 3;
-            const isCarPlus = obj.type === 4;
+            // const isCarPlus = obj.type === 4;
 
             return `
                 <div class="item type-btn ${enable ? 'js-buy' : 'item--lock'}" data-id="${obj.id}">
