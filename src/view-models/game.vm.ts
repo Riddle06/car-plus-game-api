@@ -7,6 +7,10 @@ export interface GameVM {
     code: GameCode
 }
 
+export interface GameItemUpdateParam {
+    enable: boolean
+}
+
 
 export interface GameItemVM {
     id: string

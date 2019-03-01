@@ -1,3 +1,4 @@
+import { GameItemUpdateParam } from './../../view-models/game.vm';
 import { QueryRunner } from 'typeorm';
 import { AdminUserEntity } from './../../entities/admin-user.entity';
 import { MemberGameLibSvc } from './lib/member-game.lib.svc';
@@ -81,6 +82,21 @@ class GameSvc {
         try {
             const gameLibSvc = new GameLibSvc(queryRunner);
             const ret = await gameLibSvc.getGameItemById(id);
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async setCarPlusPointEnable(param: GameItemUpdateParam): Promise<Result<GameItemVM>> {
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const gameLibSvc = new GameLibSvc(queryRunner);
+            const ret = await gameLibSvc.setCarPlusPointEnable(param);
             await queryRunner.commitTransaction();
             return ret;
         } catch (error) {

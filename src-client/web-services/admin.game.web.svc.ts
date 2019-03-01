@@ -1,7 +1,7 @@
 import { Result, PageInfo, ListResult } from '@view-models/common.vm';
 import { BaseWebSvc } from "./base-web.svc";
 import { OperationalReportItemVM } from '@view-models/operational-report.vm';
-import { GameVM } from '@view-models/game.vm';
+import { GameVM, GameItemUpdateParam, GameItemVM } from '@view-models/game.vm';
 export class AdminGameWebSvc extends BaseWebSvc {
 
     /**
@@ -27,6 +27,13 @@ export class AdminGameWebSvc extends BaseWebSvc {
     async updateGame(id: string, parameter: object): Promise<Result<GameVM>> {
         const res = await this.axiosAdminInstance.put(`/admin/api/game/${id}`, {
             ...parameter
+        })
+        return res.data;
+    }
+
+    async updateCarPlusPointGameItemEnable(param: GameItemUpdateParam): Promise<Result<GameItemVM>> { 
+        const res = await this.axiosAdminInstance.put(`/admin/api/game/car-plus-point/enable`, {
+            ...param
         })
         return res.data;
     }

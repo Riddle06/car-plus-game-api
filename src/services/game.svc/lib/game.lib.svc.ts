@@ -1,4 +1,4 @@
-import { GameItemVM, GameCode } from './../../../view-models/game.vm';
+import { GameItemVM, GameCode, GameItemUpdateParam, GameItemType } from './../../../view-models/game.vm';
 import { GameItemEntity } from './../../../entities/game-item.entity';
 import { BaseConnection } from "@services/base-connection";
 import { BaseResult, ListResult, Result, AppError } from "@view-models/common.vm";
@@ -33,6 +33,38 @@ export class GameLibSvc extends BaseConnection {
         })
 
         return ret.setResultValue(true)
+    }
+
+    async setCarPlusPointEnable(param: GameItemUpdateParam): Promise<Result<GameItemVM>> {
+        const gameItemRepository = await this.entityManager.getRepository(GameItemEntity);
+
+        const carPlusPointGameItemEntity = await gameItemRepository.findOne({
+            where: {
+                type: GameItemType.carPlusPoint
+            }
+        });
+
+        if (checker.isNullOrUndefinedObject(carPlusPointGameItemEntity)) { 
+            throw new AppError('查無此商品')
+        }
+
+        await gameItemRepository.update({ id: carPlusPointGameItemEntity.id }, { enabled: param.enable });
+        
+        const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath, levelMinLimit } = carPlusPointGameItemEntity
+        const ret = new Result<GameItemVM>();
+        ret.item = {
+            id,
+            description,
+            name,
+            imageUrl,
+            gamePoint,
+            carPlusPoint,
+            type,
+            enableBuy: param.enable,
+            spriteFolderPath,
+            levelMinLimit: levelMinLimit
+        }
+        return ret;
     }
 
     async getGameItemById(gameItemId: string): Promise<Result<GameItemVM>> {
