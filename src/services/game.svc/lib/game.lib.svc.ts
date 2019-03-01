@@ -49,9 +49,9 @@ export class GameLibSvc extends BaseConnection {
         }
 
         await gameItemRepository.update({ id: carPlusPointGameItemEntity.id }, { enabled: param.enable });
-        
+
         const { id, description, name, imageUrl, gamePoint, carPlusPoint, type, spriteFolderPath, levelMinLimit } = carPlusPointGameItemEntity
-        const ret = new Result<GameItemVM>();
+        const ret = new Result<GameItemVM>(true);
         ret.item = {
             id,
             description,
