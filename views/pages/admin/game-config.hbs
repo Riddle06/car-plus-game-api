@@ -3,8 +3,10 @@
 
   <div class="row-block">
     <el-button v-show="!isEdit" type="info" icon="el-icon-edit-outline" @click="isEdit = true">編輯</el-button>
+    <span v-show="!isEdit" class="tips">要按【編輯】才能夠進行修改</span>
     <div v-show="isEdit">
-      <el-button type="primary" icon="el-icon-circle-check" @click="updateGameData">確認</el-button>
+      <el-button v-if="activeTab !== 'carplus'" type="primary" icon="el-icon-circle-check" @click="updateGameData">確認</el-button>
+      <el-button v-else type="primary" icon="el-icon-circle-check" @click="updateGameItem">確認</el-button>
       <el-button type="default" icon="el-icon-circle-close" @click="isEdit = false">取消</el-button>
     </div>  
   </div>
@@ -133,6 +135,14 @@
           </el-col>
         </el-row>
       </el-form>
+    </el-tab-pane>
+    <el-tab-pane label="兌換格上紅利設定" name="carplus"  v-if="!isEdit || activeTab === 'carplus'">
+      <el-form>
+        <el-form-item>
+          <el-switch v-model="carPlusEnable" active-text="上架" inactive-text="下架" :disabled="!isEdit"></el-switch>
+        </el-form-item>
+      </el-form>
+      <div class="tips">\{{ carPlusEnable ? '' : '使用者將無法使用超人幣購買格上紅利' }}</div>
     </el-tab-pane>
   </el-tabs>
 </div>

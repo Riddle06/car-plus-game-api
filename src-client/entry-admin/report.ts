@@ -28,7 +28,7 @@ class ReportPage extends BasePage {
         },
         dateEnd() {
           if (!this.dateGap || !this.dateGap.length) return ''
-          return _this.moment(this.dateGap[1]).add(1, 'day').toISOString();
+          return _this.moment(this.dateGap[1]).endOf('days').toISOString();
         }
       },
       watch: {

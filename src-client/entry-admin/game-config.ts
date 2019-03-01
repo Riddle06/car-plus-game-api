@@ -62,6 +62,7 @@ class GameConfigPage extends BasePage {
             maxGamePoint: 35,
           },
 
+          carPlusEnable: false,
           isEdit: false,
           isLoading: true,
         }
@@ -90,6 +91,15 @@ class GameConfigPage extends BasePage {
           if (!ret.success) return;
 
           this.gameList = ret.items;
+        },
+        async getGameItemStatus() {
+          // 取得所有道具
+          const ret = await _this.webSvc.game.getGameItems();
+          console.log(ret);
+          if (!ret.success) return;
+
+          // 尋找兌換格上紅利，沒有就代表沒啟用
+          this.carPlusEnable = ret.items.findIndex(obj => obj.id === '2D58AB3C-272F-4587-B9FC-17045B6DA54A') >= 0;
         },
 
         initData() {
@@ -132,9 +142,33 @@ class GameConfigPage extends BasePage {
           });
           await this.getGameList();
           this.isEdit = false;
+        },
+
+        async updateGameItem() {
+          const bool = await this.$msgbox({
+            ..._this.messageBoxOption,
+            type: 'info',
+            title: '確定要送出嗎？',
+            message: ``
+          }).catch(err => false);
+          if (!bool) {
+            return;
+          }
+
+          const ret = await _this.adminSvc.adminGame.updateCarPlusPointGameItemEnable({ enable: this.carPlusEnable })
+          console.log(ret);
+          if (!ret.success) return;
+
+          this.$notify({
+            type: 'success',
+            title: '修改成功'
+          });
+          this.getGameItemStatus();
+          this.isEdit = false;
         }
       },
       async created() {
+        this.getGameItemStatus();
         await this.getGameList();
         this.initData();
       }

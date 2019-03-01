@@ -1,4 +1,4 @@
-import { adminSvc } from "../web-services";
+import webSvc, { adminSvc } from "../web-services";
 import { GameItemType } from '@view-models/game.vm';
 import { AdminUserVM } from '@view-models/admin.auth.vm';
 import { PointType } from '@view-models/admin.point.vm';
@@ -10,6 +10,7 @@ import '../assets/scss/admin/index.scss';
 
 export abstract class BasePage {
   protected adminSvc = adminSvc;
+  protected webSvc = webSvc;
   protected moment = moment;
   protected loadingInstance = null;
   protected profile: AdminUserVM = {
