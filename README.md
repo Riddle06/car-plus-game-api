@@ -186,3 +186,18 @@ CAR_PLUS_TEST_ID_3 = 688103
       "moveSpeed": 3
     }
 ```
+
+
+# 資料重置
+truncate 
+
+- member
+- member_game_history
+- member_game_history_game_item
+- member_game_item
+- member_login
+- member_game_point_history
+- member_block_history
+- member_game_item_order
+- member_login_daily_history
+- game_operational_report
