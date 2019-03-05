@@ -20,14 +20,14 @@ export class VarsEntity extends BaseEntity {
     })
     description: string;
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: true,
         name: "meta_date_1"
     })
     metaDate1: Date | null;
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: true,
         name: "meta_date_2"
     })

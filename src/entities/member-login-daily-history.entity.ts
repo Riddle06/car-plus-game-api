@@ -11,13 +11,13 @@ export class MemberLoginDailyHistory extends BaseEntity {
     memberId: string
 
     @PrimaryColumn({
-        type: "datetime2",
+        type: "datetime",
         name: "date_record"
     })
     dateRecord: Date
 
     @Column({
-        type: "datetime2",
+        type: "datetime",
         name: "date_created",
         default: "GETDATE()",
         nullable: false
@@ -25,7 +25,7 @@ export class MemberLoginDailyHistory extends BaseEntity {
     dateCreated: Date
 
     @Column({
-        type: "datetime2",
+        type: "datetime",
         name: "date_updated",
         default: "GETDATE()",
         nullable: false

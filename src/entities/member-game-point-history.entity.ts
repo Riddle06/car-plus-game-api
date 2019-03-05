@@ -51,7 +51,7 @@ export class MemberGamePointHistoryEntity extends BaseEntity {
     changeGamePoint: number;
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         default: "GETDATE()",
         name: "date_created"

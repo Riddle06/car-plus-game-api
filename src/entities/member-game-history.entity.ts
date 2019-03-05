@@ -59,7 +59,7 @@ export class MemberGameHistoryEntity extends BaseEntity {
     changeLevel: number;
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         default: "GETDATE()",
         name: "date_created"
@@ -67,7 +67,7 @@ export class MemberGameHistoryEntity extends BaseEntity {
     dateCreated: Date;
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: true,
         name: "date_finished"
     })

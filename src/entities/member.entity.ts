@@ -25,7 +25,7 @@ export class MemberEntity extends BaseEntity {
     carPlusPoint: number = 0;
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         default: "GETDATE()",
         name: "date_created"
@@ -33,7 +33,7 @@ export class MemberEntity extends BaseEntity {
     dateCreated: Date = new Date();
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         default: "GETDATE()",
         name: "date_updated"

@@ -42,13 +42,13 @@ export class MemberBlockHistoryEntity extends BaseEntity {
     })
     adminUserId: string
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         name: "date_created"
     })
     dateCreated: Date
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         name: "date_updated"
     })

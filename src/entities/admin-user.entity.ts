@@ -29,14 +29,14 @@ export class AdminUserEntity extends BaseEntity {
     password: string
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         name: "date_created",
         default: "GETDATE()"
     })
     dateCreated: Date
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         name: "date_updated",
         default: "GETDATE()"

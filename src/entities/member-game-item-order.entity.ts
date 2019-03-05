@@ -41,7 +41,7 @@ export class MemberGameItemOrderEntity extends BaseEntity {
     })
     pointAmount: number
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         name: "date_created"
     })

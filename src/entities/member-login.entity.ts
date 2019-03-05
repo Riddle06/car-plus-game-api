@@ -18,7 +18,7 @@ export class MemberLoginEntity extends BaseEntity {
     clientId: string;
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         default: "GETDATE()",
         name: "date_created"
@@ -26,14 +26,14 @@ export class MemberLoginEntity extends BaseEntity {
     dateCreated: Date;
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: true,
         name: "date_last_logout"
     })
     dateLastLogout: Date | null;
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         default: "GETDATE()",
         name: "date_updated"

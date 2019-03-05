@@ -16,14 +16,14 @@ export class MemberGameHistoryGameItemEntity extends BaseEntity {
     })
     memberGameHistoryId: string
 
-    @Column("datetime2", {
+    @Column("datetime", {
         default: "GETDATE()",
         nullable: false,
         name: "date_created"
     })
     dateCreated: Date = new Date()
 
-    @Column("datetime2", {
+    @Column("datetime", {
         default: "GETDATE()",
         nullable: false,
         name: "date_updated"

@@ -28,7 +28,7 @@ CREATE TABLE carPlusGame.dbo.game_item
   [image_url] nvarchar(500) NOT NULL DEFAULT '',
   [game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
   [car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
   [enabled_add_score_rate] bit NOT NULL DEFAULT '0' ,
   [enabled_add_game_point_rate] bit NOT NULL DEFAULT '0',
   [used_times] int NOT NULL DEFAULT '-1' ,
@@ -64,8 +64,8 @@ CREATE TABLE carPlusGame.dbo.member
   [car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00' ,
   [game_point] decimal(18,2) NOT NULL DEFAULT '0.00' ,
   [nick_name] nvarchar(50) NOT NULL DEFAULT '',
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
-  [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
+  [date_updated] datetime NOT NULL DEFAULT GETDATE(),
   [is_block] bit NOT NULL DEFAULT 0,
   PRIMARY KEY ([id])
 )
@@ -79,8 +79,8 @@ CREATE TABLE carPlusGame.dbo.member_game_history
   [game_id] UNIQUEIDENTIFIER NOT NULL,
   [game_score] decimal(18,2) NOT NULL DEFAULT '0.00',
   [game_point] decimal(18,2) NOT NULL DEFAULT '0.00',
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
-  [date_finished] datetime2(0) DEFAULT NULL,
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
+  [date_finished] datetime DEFAULT NULL,
   [before_experience] decimal(18,2) NOT NULL DEFAULT '0.00',
   [after_experience] decimal(18,2) NOT NULL DEFAULT '0.00',
   [change_experience] decimal(18,2) NOT NULL DEFAULT '0.00',
@@ -97,8 +97,8 @@ CREATE TABLE carPlusGame.dbo.member_game_history_game_item
 (
   [member_game_item_id] UNIQUEIDENTIFIER NOT NULL,
   [member_game_history_id] UNIQUEIDENTIFIER NOT NULL,
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
-  [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
+  [date_updated] datetime NOT NULL DEFAULT GETDATE(),
   PRIMARY KEY ([member_game_item_id],[member_game_history_id])
 )
 ;
@@ -110,11 +110,11 @@ CREATE TABLE carPlusGame.dbo.member_game_item
   [member_id] UNIQUEIDENTIFIER NOT NULL,
   [game_item_id] UNIQUEIDENTIFIER NOT NULL,
   [enabled] bit NOT NULL,
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
-  [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
+  [date_updated] datetime NOT NULL DEFAULT GETDATE(),
   [total_used_times] int NOT NULL,
   [remain_times] int NOT NULL,
-  [date_last_used] datetime2(0) DEFAULT NULL,
+  [date_last_used] datetime DEFAULT NULL,
   [is_using] bit NOT NULL DEFAULT '0' ,
   [member_game_point_history_id] UNIQUEIDENTIFIER DEFAULT NULL,
   PRIMARY KEY ([id])
@@ -130,9 +130,9 @@ CREATE TABLE carPlusGame.dbo.member_login
   [client_id] UNIQUEIDENTIFIER NOT NULL,
   [member_id] UNIQUEIDENTIFIER NOT NULL,
   [is_logout] bit NOT NULL DEFAULT '0',
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
-  [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
-  [date_last_logout] datetime2(0) DEFAULT NULL,
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
+  [date_updated] datetime NOT NULL DEFAULT GETDATE(),
+  [date_last_logout] datetime DEFAULT NULL,
   PRIMARY KEY ([client_id],[member_id])
 )
 ;
@@ -148,8 +148,8 @@ CREATE TABLE carPlusGame.dbo.vars
   [meta_int_1] int DEFAULT NULL,
   [meta_int_2] int DEFAULT NULL,
   [meta_str_long] nvarchar(max),
-  [meta_date_1] datetime2(0) DEFAULT NULL,
-  [meta_date_2] datetime2(0) DEFAULT NULL,
+  [meta_date_1] datetime DEFAULT NULL,
+  [meta_date_2] datetime DEFAULT NULL,
   PRIMARY KEY ([key])
 )
 ;
@@ -166,7 +166,7 @@ CREATE TABLE carPlusGame.dbo.member_game_point_history
   [before_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
   [after_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
   [change_car_plus_point] decimal(18,2) NOT NULL DEFAULT '0.00',
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
   [description] nvarchar(100) NOT NULL DEFAULT '',
   [game_item_id] UNIQUEIDENTIFIER DEFAULT NULL,
   [member_game_item_id] UNIQUEIDENTIFIER DEFAULT NULL,
@@ -184,8 +184,8 @@ CREATE TABLE carPlusGame.dbo.admin_user
   [name] nvarchar(50) NOT NULL DEFAULT '',
   [account] nvarchar(50) NOT NULL,
   [password] nvarchar(500) NOT NULL,
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
-  [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
+  [date_updated] datetime NOT NULL DEFAULT GETDATE(),
   PRIMARY KEY ([id])
 );
 
@@ -198,8 +198,8 @@ CREATE TABLE carPlusGame.dbo.member_block_history
   [is_deleted] bit NOT NULL DEFAULT '0',
   [admin_user_name] nvarchar(100) NOT NULL DEFAULT '',
   [admin_user_id] UNIQUEIDENTIFIER NOT NULL,
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
-  [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
+  [date_updated] datetime NOT NULL DEFAULT GETDATE(),
   [delete_admin_user_name] nvarchar(100) NULL DEFAULT NULL,
   [delete_admin_user_id] UNIQUEIDENTIFIER NULL DEFAULT NULL,
   PRIMARY KEY ([id])
@@ -214,7 +214,7 @@ CREATE TABLE carPlusGame.dbo.member_game_item_order
   [point_type] INT NOT NULL DEFAULT '0',
   [game_item_count] INT NOT NULL DEFAULT '0',
   [point_amount] decimal(18,2) NOT NULL DEFAULT '0.00' ,
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
   [member_game_point_history_id] UNIQUEIDENTIFIER NOT NULL,
   [member_game_item_id] UNIQUEIDENTIFIER NOT NULL,
   PRIMARY KEY ([id])
@@ -224,9 +224,9 @@ CREATE TABLE carPlusGame.dbo.member_game_item_order
 CREATE TABLE carPlusGame.dbo.member_login_daily_history
 (
   [member_id] UNIQUEIDENTIFIER NOT NULL,
-  [date_record] datetime2 NOT NULL,
-  [date_created] datetime2(0) NOT NULL DEFAULT GETDATE(),
-  [date_updated] datetime2(0) NOT NULL DEFAULT GETDATE(),
+  [date_record] datetime NOT NULL,
+  [date_created] datetime NOT NULL DEFAULT GETDATE(),
+  [date_updated] datetime NOT NULL DEFAULT GETDATE(),
   [login_times] INT NOT NULL DEFAULT '0',
   PRIMARY KEY ([member_id],[date_record])
 );
@@ -389,7 +389,7 @@ ALTER TABLE carPlusGame.dbo.[member] ADD short_id varchar(50) DEFAULT '' NOT NUL
 
 CREATE TABLE carPlusGame.dbo.game_operational_report
 ( 
-  [date_record] datetime2 NOT NULL,
+  [date_record] datetime NOT NULL,
   [login_times] INT NOT NULL DEFAULT '0',
   [game_times] INT NOT NULL DEFAULT '0',
   [catch_game_times] INT NOT NULL DEFAULT '0',

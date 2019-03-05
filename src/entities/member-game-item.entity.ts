@@ -31,7 +31,7 @@ export class MemberGameItemEntity extends BaseEntity {
     memberGamePointHistoryId: string | null;
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         default: "GETDATE()",
         name: "date_created"
@@ -39,7 +39,7 @@ export class MemberGameItemEntity extends BaseEntity {
     dateCreated: Date = new Date();
 
 
-    @Column("datetime2", {
+    @Column("datetime", {
         nullable: false,
         default: "GETDATE()",
         name: "date_updated"
@@ -67,7 +67,7 @@ export class MemberGameItemEntity extends BaseEntity {
     })
     remainTimes: number
 
-    @Column("datetime2", {
+    @Column("datetime", {
         name: "date_last_used",
         nullable: true
     })

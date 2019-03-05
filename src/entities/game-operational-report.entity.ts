@@ -6,7 +6,7 @@ export class GameOperationalReportEntity extends BaseEntity {
 
 
     @PrimaryColumn({
-        type: "datetime2",
+        type: "datetime",
         name: "date_record"
     })
     dateRecord: Date
