@@ -190,14 +190,26 @@ CAR_PLUS_TEST_ID_3 = 688103
 
 # 資料重置
 truncate 
+```sql
+TRUNCATE TABLE member;
+TRUNCATE TABLE member_game_history;
+TRUNCATE TABLE member_game_history_game_item;
+TRUNCATE TABLE member_game_item;
+TRUNCATE TABLE member_login;
+TRUNCATE TABLE member_game_point_history;
+TRUNCATE TABLE member_block_history;
+TRUNCATE TABLE member_game_item_order;
+TRUNCATE TABLE member_login_daily_history;
+TRUNCATE TABLE game_operational_report;
+```
 
-- member
-- member_game_history
-- member_game_history_game_item
-- member_game_item
-- member_login
-- member_game_point_history
-- member_block_history
-- member_game_item_order
-- member_login_daily_history
-- game_operational_report
+
+# 
+遊戲測試機
+電腦名稱：customer-test
+IP:192.168.0.168
+ID:administrator
+PW:aD12497194
+※此機台的連線方式為，請先連到192.168.0.41之後，在這個機台再開遠端桌面連線到192.168.0.168
+
+ 
