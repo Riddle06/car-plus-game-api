@@ -77,6 +77,21 @@ class GameSvc {
         }
     }
 
+    async adminGetGameItems(): Promise<ListResult<GameItemVM>> { 
+        const queryRunner = await dbProvider.createTransactionQueryRunner()
+        try {
+            const gameLibSvc = new GameLibSvc(queryRunner);
+            const ret = await gameLibSvc.adminGetGameItem();
+            await queryRunner.commitTransaction();
+            return ret;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
     async getGameItemById(memberToken: MemberToken, id: string): Promise<Result<GameItemVM>> {
         const queryRunner = await dbProvider.createTransactionQueryRunner()
         try {

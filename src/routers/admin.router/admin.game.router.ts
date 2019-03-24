@@ -34,6 +34,19 @@ router.get('/', async (req: RequestExtension, res: ResponseExtension, next) => {
     next();
 })
 
+// 取得遊戲道具列表
+router.get('/item', async (req: RequestExtension, res: ResponseExtension, next) => {
+
+    try {
+        const ret = await gameSvc.adminGetGameItems() 
+        res.result = ret;
+    } catch (error) {
+        res.appError = error;
+    }
+
+    next();
+})
+
 
 
 // 更新遊戲參數

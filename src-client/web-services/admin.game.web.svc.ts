@@ -24,6 +24,11 @@ export class AdminGameWebSvc extends BaseWebSvc {
         return res.data;
     }
 
+    async getGameItemList(): Promise<ListResult<GameItemVM>> {
+        const res = await this.axiosAdminInstance.get('/admin/api/game/item')
+        return res.data;
+    }
+
     async updateGame(id: string, parameter: object): Promise<Result<GameVM>> {
         const res = await this.axiosAdminInstance.put(`/admin/api/game/${id}`, {
             ...parameter

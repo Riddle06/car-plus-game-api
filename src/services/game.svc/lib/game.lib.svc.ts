@@ -44,7 +44,7 @@ export class GameLibSvc extends BaseConnection {
             }
         });
 
-        if (checker.isNullOrUndefinedObject(carPlusPointGameItemEntity)) { 
+        if (checker.isNullOrUndefinedObject(carPlusPointGameItemEntity)) {
             throw new AppError('查無此商品')
         }
 
@@ -102,6 +102,10 @@ export class GameLibSvc extends BaseConnection {
         }
 
         return ret.setResultValue(true);
+    }
+
+    async adminGetGameItem(): Promise<ListResult<GameItemVM>> {
+        return this.getGameItems(null)
     }
 
     async getGameItems(reMemberId: string): Promise<ListResult<GameItemVM>> {

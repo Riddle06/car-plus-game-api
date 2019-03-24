@@ -1,6 +1,7 @@
 import { BasePage } from "./base.page";
 import * as Vue from 'vue/dist/vue.common'
 import { cloneDeep as _cloneDeep, merge as _merge } from 'lodash';
+import { GameItemType } from "@view-models/game.vm";
 
 class GameConfigPage extends BasePage {
   async vueInit() {
@@ -94,12 +95,12 @@ class GameConfigPage extends BasePage {
         },
         async getGameItemStatus() {
           // 取得所有道具
-          const ret = await _this.webSvc.game.getGameItems();
+          const ret = await _this.adminSvc.adminGame.getGameItemList();
           console.log(ret);
           if (!ret.success) return;
 
           // 尋找兌換格上紅利，沒有就代表沒啟用
-          this.carPlusEnable = ret.items.findIndex(obj => obj.id === '2D58AB3C-272F-4587-B9FC-17045B6DA54A') >= 0;
+          this.carPlusEnable = ret.items.findIndex(obj => obj.type === GameItemType.carPlusPoint ) >= 0;
         },
 
         initData() {
