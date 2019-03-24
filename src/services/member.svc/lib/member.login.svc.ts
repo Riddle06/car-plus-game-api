@@ -112,9 +112,9 @@ export class MemberLoginLibSvc extends BaseConnection {
                 dateRecord
             }
         })
-
+        let needAddLoginTimes: boolean = false;
         if (checker.isNullOrUndefinedObject(memberDailyHistoryEntity)) {
-
+            needAddLoginTimes = true;
             await memberLoginDailyHistoryRepository.insert({
                 memberId,
                 dateRecord,
@@ -136,9 +136,13 @@ export class MemberLoginLibSvc extends BaseConnection {
                 }).execute()
         }
 
-        await eventTrigger.addAnalysisFields({
-            loginTimes: 1
-        });
+        if (needAddLoginTimes) {
+            await eventTrigger.addAnalysisFields({
+                loginTimes: 1
+            });
+        }
+
+
     }
 
 }
