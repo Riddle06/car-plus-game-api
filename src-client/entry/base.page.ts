@@ -79,10 +79,17 @@ export abstract class BasePage {
     }
 
     private setInitialScale(): void {
-        const windowWidth = jsCookie.get('windowWidth');
+        const windowWidth = window.screen.width;
 
         if (this.mql.matches) {
-            jsCookie.set('windowWidth', `${window.screen.width}`)
+            jsCookie.set('windowWidth', `${windowWidth}`)
+
+            const pathname = window.location.pathname;
+            if (!pathname.includes('/shot-game/')
+                && !pathname.includes('/catch-game/')
+                && !pathname.includes('/tutorial')) {
+                this.setViewportMeta(windowWidth);
+            }
         }
 
         // const $meta: HTMLMetaElement = document.querySelector('[name=viewport]');
