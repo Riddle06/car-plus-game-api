@@ -43,6 +43,7 @@ export abstract class BaseGame {
     protected effectContainer: PIXI.Container = null; // 特效使用的容器
     protected tips: PIXI.Sprite = null; // 開始提示
 
+    protected bgm: Sound = null; // 背景音樂
     protected boomSound: Sound = null; // 爆炸音效
     protected getSound: Sound = null; // 獲得道具音效
     protected failSound: Sound = null; // 失敗音效
@@ -113,7 +114,7 @@ export abstract class BaseGame {
     }
 
     private setGameSound(): void {
-        Sound.from({
+        this.bgm = Sound.from({
             url: '/static/audio/bgm.mp3',
             autoPlay: true,
             loop: true,

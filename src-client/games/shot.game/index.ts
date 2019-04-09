@@ -49,7 +49,7 @@ export class ShotGame extends BaseGame {
     super(config);
     this.parameters = config.parameters;
     this.shellInitPower = this.parameters.shellInitPower;
-    this.shellInitWeightSpeed = this.parameters.shellInitWeightSpeed;
+    this.shellInitWeightSpeed = this.parameters.shellInitWeightSpeed; 
 }
 
   protected async initImages(): Promise<void> {
@@ -92,6 +92,10 @@ export class ShotGame extends BaseGame {
 
     this.application.stage.on('touchstart', () => {
       // console.log(`touchstart`)
+
+      if (!this.bgm.isPlaying) {
+        this.bgm.play();
+      }
 
       if (this.shotting || this.lifeStep >= 2 || !this.superMan.isReady) return;
       this.tips.visible = false;

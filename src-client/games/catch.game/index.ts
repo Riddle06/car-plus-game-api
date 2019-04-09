@@ -177,6 +177,11 @@ export class CatchGame extends BaseGame {
     }
 
     play(): void {
+       
+        if (!this.bgm.isPlaying) {
+            this.bgm.play();
+        }
+
         this.tips.visible = false;
         if (this.isPlaying || this.isGameEnd) return;
 
