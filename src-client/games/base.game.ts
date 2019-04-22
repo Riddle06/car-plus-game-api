@@ -115,7 +115,7 @@ export abstract class BaseGame {
 
     private setGameSound(): void {
         this.bgm = Sound.from({
-            url: '/static/audio/bgm.mp3',
+            url: '/static/audio/game-background-music.mp3',
             autoPlay: true,
             loop: true,
         });
